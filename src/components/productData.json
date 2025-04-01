@@ -1,0 +1,36 @@
+[
+    {
+      "id": 1,
+      "title": "Relaxo slipper",
+      "image": "/steptodown.com834921 1.png",
+      "location": "Jaysingpura bagar, Mathura, Uttar Pradesh",
+      "posted_days_ago": 4,
+      "original_price": 135.00,
+      "discount_price": 526.00,
+      "discount_percentage": -289.63,
+      "status": "Live"
+    },
+    {
+      "id": 2,
+      "title": "Adidas shoes",
+      "image": "/steptodown.com834921 1.png",
+      "location": "Jaysingpura bagar, Mathura, Uttar Pradesh",
+      "posted_days_ago": 4,
+      "original_price": 1800.00,
+      "discount_price": 9000.00,
+      "discount_percentage": -400.00,
+      "status": "Live"
+    },
+    {
+      "id": 3,
+      "title": "Predator League firm ground Boots",
+      "image": "/steptodown.com834921 1.png",
+      "location": "Jaysingpura bagar, Mathura, Uttar Pradesh",
+      "posted_days_ago": 4,
+      "original_price": 1800.00,
+      "discount_price": 8999.00,
+      "discount_percentage": -399.94,
+      "status": "Live"
+    }
+  ]
+  

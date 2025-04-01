@@ -1,0 +1,175 @@
+// import { useState } from "react";
+// import PhoneInput from "react-phone-input-2";
+// import "react-phone-input-2/lib/style.css";
+
+// const ForgotPassword = () => {
+//   const [phone, setPhone] = useState("");
+
+//   return (
+//     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+//       {/* Header */}
+//       <div className="w-full max-w-md px-6 shadow-lg rounded-md">
+//         <div className="flex items-center justify-between py-4">
+//           <button className="text-2xl">←</button>
+//           <h2 className="text-xl font-semibold">Forgot Password</h2>
+//           <span></span>
+//         </div>
+
+//         {/* Illustration */}
+//         <div className="flex justify-center">
+//           <img
+//             src="/Forgot password-cuate.svg"
+//             alt="Forgot Password"
+//             className="h-56"
+//           />
+//         </div>
+
+//         {/* Phone Number Input */}
+//         <div className="mt-6">
+//           <label className="block text-gray-700 text-sm font-semibold mb-2">
+//             Phone number
+//           </label>
+//           <div className="relative flex items-center border rounded-lg p-2">
+//             <PhoneInput
+//               country={"in"}
+//               value={phone}
+//               onChange={(value) => setPhone(value)}
+//               inputProps={{
+//                 required: true,
+//                 placeholder: "Enter Phone number",
+//                 className: "w-full pl-16 text-lg outline-none border-none",
+//               }}
+//               containerClass="flex-grow"
+//               buttonClass="absolute left-3"
+//             />
+//             <span className="absolute right-4 text-gray-400 text-sm">
+//               {phone.length}/10
+//             </span>
+//           </div>
+//         </div>
+
+//         {/* Submit Button */}
+//         <button
+//           className="w-full bg-orange-500 text-white text-lg py-3 rounded-lg mt-6 mb-6 hover:bg-orange-600"
+//           disabled={phone.length < 10}
+//         >
+//           Submit
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ForgotPassword;
+
+import { useState } from "react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import axios from "axios";
+
+const ForgotPassword = () => {
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await axios.post(
+        "https://api.upswap.app/api/send-otp/",
+        {
+          phone_number: `+${phone}`, // Ensure phone number format
+        }
+      );
+
+      if (response.status === 200) {
+        setMessage({ type: "success", text: "OTP sent successfully!" });
+      } else {
+        setMessage({ type: "error", text: "Something went wrong. Try again!" });
+      }
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Failed to send OTP",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      {/* Header */}
+      <div className="w-full max-w-md px-6 shadow-lg rounded-md">
+        <div className="flex items-center justify-between py-4">
+          <button className="text-2xl">←</button>
+          <h2 className="text-xl font-semibold">Forgot Password</h2>
+          <span></span>
+        </div>
+
+        {/* Illustration */}
+        <div className="flex justify-center">
+          <img
+            src="/Forgot password-cuate.svg"
+            alt="Forgot Password"
+            className="h-56"
+          />
+        </div>
+
+        {/* Phone Number Input */}
+        <div className="mt-6">
+          <label className="block text-gray-700 text-sm font-semibold mb-2">
+            Phone number
+          </label>
+          <div className="relative flex items-center border rounded-lg p-2">
+            <PhoneInput
+              country={"in"}
+              value={phone}
+              onChange={(value) => setPhone(value)}
+              inputProps={{
+                required: true,
+                placeholder: "Enter Phone number",
+                className: "w-full pl-16 text-lg outline-none border-none",
+              }}
+              containerClass="flex-grow"
+              buttonClass="absolute left-3"
+            />
+            <span className="absolute right-4 text-gray-400 text-sm">
+               {phone.length}/10
+             </span>
+          </div>
+        </div>
+
+        {/* Message Display */}
+        {message && (
+          <div
+            className={`mt-4 text-center text-sm p-2 rounded-lg ${
+              message.type === "success"
+                ? "bg-green-100 text-green-600"
+                : "bg-red-100 text-red-600"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        {/* Submit Button */}
+        <button
+          onClick={handleSubmit}
+          className={`w-full text-white text-lg py-3 rounded-lg mt-6 mb-6 ${
+            phone.length < 10 || loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-orange-500 hover:bg-orange-600"
+          }`}
+          disabled={phone.length < 10 || loading}
+        >
+          {loading ? "Sending..." : "Submit"}
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ForgotPassword;
