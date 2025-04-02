@@ -62,30 +62,41 @@
 
 // export default ForgotPassword;
 
+
+
+
+
+
+
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import axios from "axios";
+import axios from "axios";import 
+{ useNavigate } from "react-router-dom";
+
 
 const ForgotPassword = () => {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
+  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     setLoading(true);
     setMessage(null);
-
+  
     try {
       const response = await axios.post(
         "https://api.upswap.app/api/send-otp/",
         {
-          phone_number: `+${phone}`, // Ensure phone number format
+          phone_number: phone, // Send phone number
         }
       );
-
+  
       if (response.status === 200) {
+        localStorage.setItem("phone_number", phone); // Store phone in localStorage
         setMessage({ type: "success", text: "OTP sent successfully!" });
+        navigate("/VerifyOtpForgotPassword");
       } else {
         setMessage({ type: "error", text: "Something went wrong. Try again!" });
       }
@@ -98,6 +109,7 @@ const ForgotPassword = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
@@ -125,20 +137,18 @@ const ForgotPassword = () => {
           </label>
           <div className="relative flex items-center border rounded-lg p-2">
             <PhoneInput
-              country={"in"}
               value={phone}
-              onChange={(value) => setPhone(value)}
+              onChange={(value) => setPhone(value)} // Ensure correct format
               inputProps={{
                 required: true,
                 placeholder: "Enter Phone number",
                 className: "w-full pl-16 text-lg outline-none border-none",
               }}
-              containerClass="flex-grow"
-              buttonClass="absolute left-3"
             />
+
             <span className="absolute right-4 text-gray-400 text-sm">
-               {phone.length}/10
-             </span>
+              {phone.length}/10
+            </span>
           </div>
         </div>
 

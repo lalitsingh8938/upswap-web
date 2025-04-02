@@ -15,7 +15,9 @@ import Header from "./components/Dashboard/Header";
 import { ToastContainer } from "react-toastify";
 import Login from "./components/Authentication/Login";
 import VerifyOtp from "./components/Authentication/VerifyOtp";
+import VerifyOtpForgotPassword from "./components/Authentication/VerifyOtpForgotPassword";
 import ForgotPassword from './components/Authentication/ForgotPassword';
+import ResetPassword from './components/Authentication/ResetPassword';
 
 function App() {
   return (
@@ -37,7 +39,9 @@ function App() {
         <Route path="/" element={<Register />} />
         <Route path="Login" element={<Login />} />
         <Route path="VerifyOtp" element={<VerifyOtp />} />
+        <Route path="VerifyOtpForgotPassword" element={<VerifyOtpForgotPassword />} />
         <Route path="ForgotPassword" element={<ForgotPassword />} />
+        <Route path="ResetPassword" element={<ResetPassword />} />
         {/* Layout ke andar saare routes */}
         <Route path="/*" element={<Layout />}>
           <Route path="MainMenu" element={<MainMenu />} />

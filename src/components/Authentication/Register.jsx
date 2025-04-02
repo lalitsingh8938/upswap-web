@@ -46,28 +46,28 @@ function Register() {
 
   // 📍 Fetch User Location (Latitude & Longitude)
   // const getLocation = () => {
-    // if (navigator.geolocation) {
-    //   navigator.geolocation.getCurrentPosition(
-    //     (position) => {
-    //       setFormData((prevData) => ({
-    //         ...prevData,
-    //         latitude: position.coords.latitude,
-    //         longitude: position.coords.longitude,
-    //       }));
-    //       console.log(
-    //         "Location set:",
-    //         position.coords.latitude,
-    //         position.coords.longitude
-    //       );
-    //     },
-    //     (error) => {
-    //       console.error("Error fetching location:", error);
-    //       toast.checked("Please allow location access!");
-    //     }
-    //   );
-    // } else {
-    //   toast.error("Geolocation is not supported by this browser.");
-    // }
+  // if (navigator.geolocation) {
+  //   navigator.geolocation.getCurrentPosition(
+  //     (position) => {
+  //       setFormData((prevData) => ({
+  //         ...prevData,
+  //         latitude: position.coords.latitude,
+  //         longitude: position.coords.longitude,
+  //       }));
+  //       console.log(
+  //         "Location set:",
+  //         position.coords.latitude,
+  //         position.coords.longitude
+  //       );
+  //     },
+  //     (error) => {
+  //       console.error("Error fetching location:", error);
+  //       toast.checked("Please allow location access!");
+  //     }
+  //   );
+  // } else {
+  //   toast.error("Geolocation is not supported by this browser.");
+  // }
   // };
 
   // 📌 Handle Form Submission (Send Data to API)
@@ -78,7 +78,7 @@ function Register() {
       name: formData.name,
       username: formData.username,
       email: formData.email,
-      // phone_number: formData.phone,
+      phone_number: formData.phone_number, // Add the phone number here
       date_of_birth: formData.date_of_birth,
       gender: formData.gender,
       password: formData.password,
@@ -86,36 +86,26 @@ function Register() {
       country_code: formData.country_code,
       dial_code: formData.dial_code,
       country: formData.country,
-      // social_id: formData.social_id,
-      // type: formData.type,
-      // fcm_token: formData.fcm_token,
-      // latitude: formData.latitude,
-      // longitude: formData.longitude,
-      // termsAccepted: formData.termsAccepted,
     };
-    // console.log(formData);
-    // console.log("Country Data:", countryData);
 
-    console.log("Final Form Data Before Sending:", formData); // Debugging ke liye
-    // 🔹 Access token ko localStorage me save karein
     try {
       const response = await axios.post(
         "https://api.upswap.app/api/register/",
-        formData
+        formattedData
       );
 
-      console.log("User registered:", response.data);
-
-      // 🔹 Access token ko localStorage me save karein (Response milne ke baad)
       if (response.data && response.data.access) {
         localStorage.setItem("access", response.data.access);
-        console.log("Access token saved:", response.data.access);
+        localStorage.setItem("phone_number", response.data.user.phone_number); 
+
+        // To retrieve the phone number from localStorage later
+        const storedPhoneNumber = localStorage.getItem("phone_number");
+        console.log(storedPhoneNumber);
       }
 
       toast.success("Registration successful!");
       navigate("/VerifyOtp");
     } catch (error) {
-      console.error("Error registering user:", error);
       toast.error("Registration failed!");
     }
   };
