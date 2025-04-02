@@ -132,7 +132,7 @@ const ResetPassword = () => {
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className="w-full bg-orange-500 text-white rounded-lg py-3 mt-5 text-base font-semibold"
+          className="w-full bg-[#FE7A3A] text-white rounded-lg py-3 mt-5 text-base font-semibold"
           disabled={loading}
         >
           {loading ? "Resetting..." : "Submit"}

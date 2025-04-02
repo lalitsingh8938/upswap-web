@@ -129,7 +129,7 @@ const Login = () => {
         </div>
 
         <button
-          className="w-full bg-orange-500 text-white p-3 rounded-md mt-4 hover:bg-orange-600"
+          className="w-full bg-[#FE7A3A] text-white p-3 rounded-md mt-4 hover:bg-orange-600"
           onClick={handleLogin}
           disabled={loading}
         >

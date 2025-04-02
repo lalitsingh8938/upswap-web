@@ -277,7 +277,7 @@ function Register() {
             <button
               type="submit"
               disabled={isLoading} // Fix: Directly checking email & password
-              className="w-full bg-orange-500 text-white py-2 rounded"
+              className="w-full bg-[#FE7A3A] text-white py-2 rounded"
             >
               {isLoading ? "Register in..." : "Register"}
             </button>

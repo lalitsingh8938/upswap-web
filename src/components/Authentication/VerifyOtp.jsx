@@ -103,14 +103,14 @@ const OtpVerification = () => {
       {/* Verify Button */}
       <button
         onClick={handleVerifyOtp}
-        className="px-6 py-2 bg-orange-500 text-white rounded-md"
+        className="px-6 py-2 bg-[#FE7A3A] text-white rounded-md"
         disabled={loading}
       >
         {loading ? "Verifying..." : "Verify OTP"}
       </button>
 
       {/* Message */}
-      {message && <p className="mt-3 text-red-500">{message}</p>}
+      {message && <p className="mt-3 bg-[#FE7A3A]">{message}</p>}
 
       {/* Resend OTP Timer */}
       <p className="text-gray-500">
