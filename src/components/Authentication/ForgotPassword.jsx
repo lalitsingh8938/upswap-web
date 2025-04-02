@@ -1,9 +1,10 @@
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import axios from "axios";import 
-{ useNavigate } from "react-router-dom";
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ForgotPassword = () => {
   const [phone, setPhone] = useState("");
@@ -14,7 +15,7 @@ const ForgotPassword = () => {
   const handleSubmit = async () => {
     setLoading(true);
     setMessage(null);
-  
+
     try {
       const response = await axios.post(
         "https://api.upswap.app/api/send-otp/",
@@ -22,32 +23,31 @@ const ForgotPassword = () => {
           phone_number: phone, // Send phone number
         }
       );
-  
+
       if (response.status === 200) {
         localStorage.setItem("phone_number", phone); // Store phone in localStorage
-        setMessage({ type: "success", text: "OTP sent successfully!" });
-        navigate("/VerifyOtpForgotPassword");
+        toast.success("OTP sent successfully!");
+        setTimeout(() => navigate("/VerifyOtpForgotPassword"), 2000); // Redirect after 2 seconds
       } else {
-        setMessage({ type: "error", text: "Something went wrong. Try again!" });
+        toast.error("Something went wrong. Try again!");
       }
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: error.response?.data?.message || "Failed to send OTP",
-      });
+      toast.error(error.response?.data?.message || "Failed to send OTP");
     } finally {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+      <ToastContainer position="top-center" autoClose={3000} />
       {/* Header */}
       <div className="w-full max-w-md px-6 shadow-lg rounded-md">
         <div className="flex items-center justify-between py-4">
-          <button className="text-2xl">←</button>
-          <h2 className="text-xl font-semibold">Forgot Password</h2>
+          <button className="text-2xl text-[#FE7A3A]">←</button>
+          <h2 className="text-xl font-semibold text-[#FE7A3A]">
+            Forgot Password
+          </h2>
           <span></span>
         </div>
 
