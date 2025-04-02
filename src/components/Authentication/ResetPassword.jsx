@@ -78,7 +78,7 @@ const ResetPassword = () => {
 
         <div className="flex justify-center my-5">
           <img
-            src="/Forgot password-cuate.svg"
+            src="/sdfss f.png"
             alt="Reset Illustration"
             className="w-48 h-auto"
           />
