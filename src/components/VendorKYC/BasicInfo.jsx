@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { Pencil } from "lucide-react";
 
 const BasicInfo = () => {
   const navigate = useNavigate(); // Initialize navigate
@@ -19,7 +20,7 @@ const BasicInfo = () => {
               className="w-24 h-24 rounded-full border-4 border-orange-400"
             />
             <label className="absolute bottom-0 right-0 bg-orange-500 text-white p-1 rounded-full cursor-pointer">
-              📷
+              <Pencil size={16} />
             </label>
           </div>
         </div>
