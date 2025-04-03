@@ -4,7 +4,7 @@ import { Pencil } from "lucide-react";
 
 export default function PersonalAccount() {
   return (
-    <div className="bg-gradient-to-r from-orange-500 to-orange-300 h-screen p-4">
+    <div className="bg-[#FE7A3A] h-screen p-4">
       <div className="flex items-center text-white text-lg font-semibold pb-4">
         <button className="mr-4">&#x276E;</button>
         My Personal Account

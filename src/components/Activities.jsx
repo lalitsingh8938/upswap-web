@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
@@ -161,7 +159,7 @@ const ActivityCard = ({ activity }) => {
 const App = () => {
   const navigate = useNavigate(); // Initialize navigate
   return (
-    <div className="p-4 bg-gray-100 min-h-screen">
+    <div className=" bg-gray-100 min-h-screen">
       <div className="flex justify-around bg-white py-2 border-b">
         <button
           className="text-gray-400 border-gray-400 px-4 py-2"
@@ -169,7 +167,7 @@ const App = () => {
         >
           Deals
         </button>
-        <button className="text-orange-500 border-b-2 border-orange-500 px-4 py-2">
+        <button className="text-[#FE7A3A] border-b-2 border-[#FE7A3A] px-4 py-2">
           Activities
         </button>
       </div>

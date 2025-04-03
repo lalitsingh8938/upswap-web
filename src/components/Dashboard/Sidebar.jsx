@@ -105,11 +105,11 @@ export default function MainMenu() {
   return (
     <div className="min-h-screen flex items-center bg-gray-100 ">
       <div className="fixed left-0 top-0 w-1/5 h-screen bg-white overflow-y-auto">
-        <div className="bg-gradient-to-r from-orange-400 to-orange-600 text-white text-center p-1 rounded-md shadow-md">
-          <h2 className="text-xl font-semibold py-6">Main Menu</h2>
+        <div className="bg-[#FE7A3A] text-white text-center p-1 rounded-md shadow-md">
+          <h2 className="font-semibold items-center px-6 py-6 rounded-lg">Main Menu</h2>
         </div>
 
-        <div className="mt-16 space-y-3">
+        <div className="mt-14 space-y-3">
           {menuItems.map((item, index) => (
             <div
               key={index}

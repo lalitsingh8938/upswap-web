@@ -3,7 +3,7 @@ import { FaBell, FaBars } from "react-icons/fa";
 
 function Header() {
   return (
-    <header className="bg-gradient-to-r from-orange-500 to-red-500 text-white flex justify-between items-center px-6 py-6 rounded-lg">
+    <header className="bg-[#FE7A3A] text-white flex justify-between items-center px-6 py-6 rounded-lg">
       
       {/* Left Side - Logo */}
       <h1 className="text-2xl font-bold">UpSwap</h1>

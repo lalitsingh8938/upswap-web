@@ -8,7 +8,6 @@ import {
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-
 const products = [
   {
     id: 1,
@@ -159,17 +158,18 @@ const products = [
 const DealsPage = () => {
   const navigate = useNavigate(); // useNavigate hook ka use karein
   return (
-    <div className="bg-gray-100 min-h-screen">
-      {/* Header */}
-      
-
+    <div className="bg-gray-100 min-h-screen ">
       {/* Tabs */}
-      <div className="flex justify-around bg-white py-2 border-b">
-        <button className="text-orange-500 border-b-2 border-orange-500 px-4 py-2">
+      <div className="flex justify-around bg-white py-2">
+        <button className="text-[#FE7A3A] border-b-2 border-[#FE7A3A] px-4 py-2">
           Deals
         </button>
-        <button className="text-gray-400 px-4 py-2"
-         onClick={() => navigate("/Activities")}>Activities</button>
+        <button
+          className="text-gray-400 px-4 py-2"
+          onClick={() => navigate("/Activities")}
+        >
+          Activities
+        </button>
       </div>
 
       {/* Search Bar */}
@@ -231,18 +231,6 @@ const DealsPage = () => {
 };
 
 export default DealsPage;
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React from "react";
 
@@ -326,7 +314,6 @@ export default DealsPage;
 //           </div>
 //         ))}
 //       </div>
-
 
 //     </div>
 //   );
