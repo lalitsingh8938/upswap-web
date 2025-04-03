@@ -6,12 +6,12 @@ const UpswapFeatures = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 text-center font-bold text-lg relative">
+      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 text-center font-bold text-lg relative rounded-lg">
         <span>New Feature</span>
       </div>
       
       {/* Feature Section */}
-      <div className="bg-white p-4 shadow-md rounded-md m-4 flex flex-col items-center text-center">
+      <div className="bg-white p-4 shadow-md rounded-lg m-4 flex flex-col items-center text-center">
   <img
     src="/upswapfeatures.png"
     alt="UpSwap Feature"

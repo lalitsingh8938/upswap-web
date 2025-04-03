@@ -28,6 +28,7 @@ export default function MainMenu() {
       icon: <FaStore />,
       title: "Explore Nearby Vendors",
       subtitle: "Explore and save local favourite vendors",
+      route: "/DealsPage",
     },
     {
       icon: <FaBriefcase />,
@@ -40,11 +41,13 @@ export default function MainMenu() {
       icon: <FaQuestionCircle />,
       title: "Help Center",
       subtitle: "Contact Us, Report, tutorials & more",
+      route: "/MyActivities",
     },
     {
       icon: <FaGift />,
       title: "Refer a Friend",
       subtitle: "Earn rewards for inviting friends",
+      route: "/UpswapVendors",
     },
   ];
 
