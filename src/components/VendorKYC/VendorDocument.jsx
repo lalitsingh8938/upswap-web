@@ -14,7 +14,7 @@ const VendorDocument = () => {
         </h2>
 
         {/* Business Description */}
-        <label className="block text-gray-700 mb-1">Business description</label>
+        <label className="block text-gray-700 mb-1 mt-2 font-semibold">Business Description</label>
 
         <textarea
           className="w-full border p-2 rounded-lg mb-4 text-gray-600"
@@ -23,8 +23,8 @@ const VendorDocument = () => {
         ></textarea>
 
         {/* Upload Business Documents */}
-        <h3 className="text-gray-700 mb-2">
-          Upload business related documents
+        <h3 className="text-gray-700 mb-2 font-semibold">
+          Upload Business related documents
         </h3>
         <div className="flex justify-between gap-2 mb-4">
           <div className="flex flex-col items-center border-2 border-dashed border-orange-400 p-4 w-1/2 rounded-lg">
@@ -42,7 +42,7 @@ const VendorDocument = () => {
         </div>
 
         {/* Upload Business Photos */}
-        <h3 className="text-gray-700 mb-2">Upload Business related photos</h3>
+        <h3 className="text-gray-700 mb-2 font-semibold">Upload Business related photos</h3>
         <div className="flex justify-between gap-2 mb-4">
           <div className="flex flex-col items-center border-2 border-dashed border-orange-400 p-4 w-1/2 rounded-lg">
             <FaUpload className="text-orange-500 text-2xl" />
@@ -64,8 +64,8 @@ const VendorDocument = () => {
         </button>
 
         {/* Bank Details */}
-        <h3 className="text-gray-700 mb-2">Bank details</h3>
-        <label className="block text-gray-700 mb-1">Account number</label>
+        <h3 className="text-gray-700 mb-2 font-semibold">Bank Details</h3>
+        <label className="block text-gray-700 mb-1 font-semibold">Account Number</label>
         <input
           type="text"
           className="w-full border p-2 rounded-lg text-gray-600"
@@ -76,7 +76,7 @@ const VendorDocument = () => {
         <div className="flex justify-between mt-6">
           <button
             className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
-            onClick={() => navigate("/VendorKYC")} // Replace with actual previous page route
+            onClick={() => navigate("/BasicInfo")} // Replace with actual previous page route
           >
             Back
           </button>

@@ -33,7 +33,7 @@ export default function MainMenu() {
       icon: <FaBriefcase />,
       title: "My Business Account",
       subtitle: "Complete your profile for posting deals",
-      route: "/VendorKYC",
+      route: "/BasicInfo",
       approved: true,
     },
     {

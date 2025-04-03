@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-const VendorKYC = () => {
+const BasicInfo = () => {
   const navigate = useNavigate(); // Initialize navigate
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
@@ -25,7 +25,9 @@ const VendorKYC = () => {
         </div>
 
         {/* Full Name */}
-        <label className="block text-gray-700 mb-1">Full Name</label>
+        <label className="block text-gray-700 mb-1 font-semibold">
+          Full Name
+        </label>
         <input
           type="text"
           className="w-full border p-2 rounded-lg mb-3"
@@ -33,7 +35,9 @@ const VendorKYC = () => {
         />
 
         {/* Phone Number */}
-        <label className="block text-gray-700 mb-1">Phone Number</label>
+        <label className="block text-gray-700 mb-1 font-semibold">
+          Phone Number
+        </label>
         <div className="flex items-center border p-2 rounded-lg mb-3">
           <span className="mr-2">🇮🇳 +91</span>
           <input
@@ -44,13 +48,15 @@ const VendorKYC = () => {
         </div>
         <div className="flex items-center gap-2 mb-3">
           <input type="checkbox" id="samePhone" className="w-4 h-4" />
-          <label htmlFor="samePhone" className="text-gray-600">
+          <label htmlFor="samePhone" className="text-gray-600 font-semibold">
             Same as personal phone number
           </label>
         </div>
 
         {/* Business Email ID */}
-        <label className="block text-gray-700 mb-1">Business Email ID</label>
+        <label className="block text-gray-700 mb-1 font-semibold">
+          Business Email ID
+        </label>
         <input
           type="email"
           className="w-full border p-2 rounded-lg mb-3"
@@ -58,13 +64,13 @@ const VendorKYC = () => {
         />
         <div className="flex items-center gap-2 mb-3">
           <input type="checkbox" id="sameEmail" className="w-4 h-4" />
-          <label htmlFor="sameEmail" className="text-gray-600">
+          <label htmlFor="sameEmail" className="text-gray-600 font-semibold">
             Same as personal email id
           </label>
         </div>
 
         {/* Business Establishment Year */}
-        <label className="block text-gray-700 mb-1">
+        <label className="block text-gray-700 mb-1 font-semibold">
           Business Establishment Year
         </label>
         <input
@@ -74,7 +80,9 @@ const VendorKYC = () => {
         />
 
         {/* Business Description */}
-        <label className="block text-gray-700 mb-1">Business description</label>
+        <label className="block text-gray-700 mb-1 font-semibold">
+          Business Description
+        </label>
         <textarea
           className="w-full border p-2 rounded-lg"
           placeholder="Enter your business description"
@@ -92,4 +100,4 @@ const VendorKYC = () => {
   );
 };
 
-export default VendorKYC;
+export default BasicInfo;

@@ -19,7 +19,7 @@ import VerifyOtpForgotPassword from "./components/Authentication/VerifyOtpForgot
 import ForgotPassword from "./components/Authentication/ForgotPassword";
 import ResetPassword from "./components/Authentication/ResetPassword";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import VendorKYC from "./components/VendorKYC/VendorKYC";
+import BasicInfo from "./components/VendorKYC/BasicInfo";
 import VendorDocument from "./components/VendorKYC/VendorDocument";
 import BankDetails from "./components/VendorKYC/BankDetails";
 import ServiceTime from "./components/VendorKYC/ServiceTime";
@@ -63,7 +63,7 @@ function App() {
             <Route path="Activities" element={<Activities />} />
             <Route path="DealsPage" element={<DealsPage />} />
             <Route path="Header" element={<Header />} />
-            <Route path="VendorKYC" element={<VendorKYC />} />
+            <Route path="BasicInfo" element={<BasicInfo />} />
             <Route path="VendorDocument" element={<VendorDocument />} />
             <Route path="BankDetails" element={<BankDetails />} />
             <Route path="ServiceTime" element={<ServiceTime />} />

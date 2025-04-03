@@ -16,17 +16,17 @@ const BankDetails = () => {
           Become a Vendor
         </h2>
         {/* Bank Details Section */}
-        <h3 className="text-gray-700 mb-2 font-semibold">Bank details</h3>
-        <label className="block text-gray-600 mb-1">Account number</label>
+        <h3 className="text-gray-700 mb-2 font-semibold mt-4">Bank details</h3>
+        <label className="block text-gray-600 mb-1 font-semibold">Account Number</label>
         <input type="text" className="w-full border p-2 rounded-lg mb-2 text-gray-600" placeholder="Enter bank account number" />
         
-        <label className="block text-gray-600 mb-1">Re-type account number</label>
+        <label className="block text-gray-600 mb-1 font-semibold">Re-type Account Number</label>
         <input type="text" className="w-full border p-2 rounded-lg mb-2 text-gray-600" placeholder="Confirm account number" />
 
-        <label className="block text-gray-600 mb-1">Bank name</label>
+        <label className="block text-gray-600 mb-1 font-semibold">Bank Name</label>
         <input type="text" className="w-full border p-2 rounded-lg mb-2 text-gray-600" placeholder="Bank name" />
 
-        <label className="block text-gray-600 mb-1">IFSC code</label>
+        <label className="block text-gray-600 mb-1 font-semibold">IFSC Code</label>
         <input type="text" className="w-full border p-2 rounded-lg mb-4 text-gray-600" placeholder="Enter your bank IFSC code" />
 
         <button className="w-full bg-orange-500 text-white p-2 rounded-lg mb-4 hover:bg-orange-600">
