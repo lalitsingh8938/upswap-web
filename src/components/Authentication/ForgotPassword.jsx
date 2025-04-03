@@ -44,7 +44,8 @@ const ForgotPassword = () => {
       {/* Header */}
       <div className="w-full max-w-md px-6 shadow-lg rounded-md">
         <div className="flex items-center justify-between py-4">
-          <button className="text-2xl text-[#FE7A3A]">←</button>
+          <button className="text-2xl text-[#FE7A3A]"
+             onClick={() => navigate("/Login")}>←</button>
           <h2 className="text-xl font-semibold text-[#FE7A3A]">
             Forgot Password
           </h2>

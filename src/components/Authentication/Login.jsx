@@ -1,37 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
-import { FcGoogle } from "react-icons/fc";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+import { GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  //   const [latitude, setLatitude] = useState(null);
-  //   const [longitude, setLongitude] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Get user's location
-  //   const getLocation = () => {
-  //     if ("geolocation" in navigator) {
-  //       navigator.geolocation.getCurrentPosition(
-  //         (position) => {
-  //           setLatitude(position.coords.latitude);
-  //           setLongitude(position.coords.longitude);
-  //         },
-  //         (error) => console.error("Error getting location:", error)
-  //       );
-  //     }
-  //   };
-
-  // Call getLocation when component mounts
-  //   useState(() => {
-  //     getLocation();
-  //   }, []);
   const handleLogin = async () => {
     if (!email || !password) {
       toast.error("Please enter email and password");
@@ -40,36 +21,71 @@ const Login = () => {
 
     setLoading(true);
 
-    const data = {
-      email,
-      password,
-      //   fcm_token: null, // Optional
-      //   latitude: latitude ? latitude.toString() : null,
-      //   longitude: longitude ? longitude.toString() : null,
-    };
-
     try {
-      const response = await axios.post(
-        "https://api.upswap.app/api/login/",
-        data
-      );
+      const response = await axios.post("https://api.upswap.app/api/login/", {
+        email,
+        password,
+      });
 
-      console.log("Login Successful:", response.data);
-
-      // ✅ Access & Refresh Token ko LocalStorage me save karein
       if (response.data.access && response.data.refresh) {
         localStorage.setItem("access", response.data.access);
-        localStorage.setItem("refresh", response.data.refresh);
+        localStorage.setItem("refresh_token", response.data.refresh);
+        // console.log("refresh_token", response.data.refresh);
+
+        // localStorage.setItem("refresh_token", refresh);
         toast.success("Login successfully!");
-        navigate("/DealsPage"); // Redirect to DealsPage after successful login
+        navigate("/DealsPage");
       } else {
         toast.error("Login successful but token missing.");
       }
     } catch (error) {
-      console.error("Login Failed:", error.response?.data || error.message);
       toast.error("Login failed. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ✅ Google Login Functionality
+  const handleGoogleLogin = async (credentialResponse) => {
+    try {
+      if (!credentialResponse.credential) {
+        toast.error("Google Login Failed: No credential received.");
+        return;
+      }
+
+      // ✅ JWT Token ko decode karo
+      const decodedToken = jwtDecode(credentialResponse.credential);
+      console.log("Decoded Google User Data:", decodedToken);
+
+      // ✅ Extract necessary user data
+      const payload = {
+        social_id: decodedToken.sub, // Google User ID
+        email: decodedToken.email,
+        name: decodedToken.name,
+        // phone_number: null,
+        type: "Google",
+      };
+
+      // ✅ Backend API call
+      const response = await axios.post(
+        "https://api.upswap.app/api/social-login/",
+        payload
+      );
+
+      if (response.data.access && response.data.refresh) {
+        localStorage.setItem("access", response.data.access);
+        localStorage.setItem("refresh", response.data.refresh);
+        toast.success("Google Login Successful!");
+        navigate("/DealsPage");
+      } else {
+        toast.error("Login successful but token missing.");
+      }
+    } catch (error) {
+      toast.error("Google Login Failed.");
+      console.error(
+        "Google Login Error:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -77,8 +93,12 @@ const Login = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 border">
       <div className="w-full max-w-md px-6 shadow-lg rounded-md">
         <div className="flex items-center justify-between bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 rounded-t-lg">
-          <button className="text-lg">←</button>
-          <h2 className="text-lg font-semibold">Login</h2>
+          <button className="text-lg" onClick={() => navigate("/")}>
+            ←
+          </button>
+          <h2 className="text-lg font-semibold" onClick={() => navigate("/")}>
+            Login
+          </h2>
           <button className="text-lg">🏠</button>
         </div>
 
@@ -94,9 +114,6 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          {email && (
-            <span className="absolute right-3 top-4 text-green-500">✔</span>
-          )}
         </div>
 
         <div className="relative w-full mt-4">
@@ -142,10 +159,11 @@ const Login = () => {
           <hr className="flex-grow border-gray-300" />
         </div>
 
-        <button className="w-full flex items-center justify-center gap-2 bg-gray-100 p-3 rounded-md hover:bg-gray-200">
-          <FcGoogle className="h-6 w-6" />
-          <span className="font-medium">Login with Google</span>
-        </button>
+        {/* ✅ Google Login Button */}
+        <GoogleLogin
+          onSuccess={handleGoogleLogin}
+          onError={() => toast.error("Google Login Failed")}
+        />
 
         <div className="text-center mt-4 mb-6">
           <p
