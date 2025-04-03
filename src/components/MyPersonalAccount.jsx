@@ -1,15 +1,13 @@
-
-
 import { Pencil } from "lucide-react";
 
 export default function PersonalAccount() {
   return (
-    <div className="bg-[#FE7A3A] h-screen p-4">
+    <div className="bg-[#FE7A3A] h-screen p-4 rounded-lg">
       <div className="flex items-center text-white text-lg font-semibold pb-4">
         <button className="mr-4">&#x276E;</button>
         My Personal Account
       </div>
-      
+
       <div className="bg-white rounded-xl shadow-lg p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -20,10 +18,12 @@ export default function PersonalAccount() {
             />
             <div>
               <p className="font-bold text-black">FOOD HUB</p>
-              <p className="text-orange-500 text-sm font-semibold">0.0/5 ⭐⭐⭐⭐⭐</p>
+              <p className="text-orange-500 text-sm font-semibold">
+                0.0/5 ⭐⭐⭐⭐⭐
+              </p>
             </div>
           </div>
-          <button className="text-gray-500 flex items-center gap-1">
+          <button className="text-gray-500 flex items-center gap-1 ">
             <Pencil size={16} /> Edit Profile
           </button>
         </div>
@@ -39,5 +39,3 @@ export default function PersonalAccount() {
     </div>
   );
 }
-
-

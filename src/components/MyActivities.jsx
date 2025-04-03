@@ -34,7 +34,7 @@ const MyActivity = () => {
   return (
     <div className="w-full min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-[#FE7A3A] p-4 text-white flex justify-between items-center">
+      <div className="bg-[#FE7A3A] p-4 text-white flex justify-between items-center rounded-lg">
         <button className="text-xl">&larr;</button>
         <h2 className="text-lg font-semibold">My Activity</h2>
         <IoMdReorder size={24} />
