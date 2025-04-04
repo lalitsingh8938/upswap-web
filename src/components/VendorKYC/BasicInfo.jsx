@@ -111,6 +111,7 @@ import axios from "axios";
 
 const BasicInfo = () => {
   const navigate = useNavigate();
+  const [previewImage, setPreviewImage] = useState();
   const [profileImage, setProfileImage] = useState();
   const [formData, setFormData] = useState({
     user: "",
@@ -121,16 +122,18 @@ const BasicInfo = () => {
     business_description: "",
   });
 
-  // Handle File Change and Auto Upload
   const handleFileChange = async (event) => {
+    if (event.target.files.length === 0) return;
+
     const file = event.target.files[0];
     if (!file) return;
 
-    // Show image preview
-    const previewURL = URL.createObjectURL(file);
-    setProfileImage(previewURL);
+    // Check if file is same as previous one
+    if (previewImage && previewImage.name === file.name) return;
 
-    // Prepare FormData
+    const previewURL = URL.createObjectURL(file);
+    setPreviewImage(previewURL);
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -141,20 +144,15 @@ const BasicInfo = () => {
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("access")}`, // Ensure user is authenticated
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
         }
       );
 
-      console.log("Response:", response.data);
+      console.log("Uploaded Image URL:", response.data.profile_pic);
       setProfileImage(response.data.profile_pic);
     } catch (error) {
-      console.error("Error uploading image:", error);
-
-      if (error.response) {
-        console.log("Response Data:", error.response.data); // Log exact API error
-      }
-
+      console.error("Upload error:", error);
       alert("Failed to upload image");
     }
   };
@@ -181,15 +179,15 @@ const BasicInfo = () => {
         <div className="flex justify-center mt-4">
           <div className="relative">
             <img
-              src={profileImage}
+              src={profileImage || previewImage || "/default-avatar.png"}
               alt="Profile"
-              className="w-24 h-24 rounded-full border-4 border-orange-400"
+              className="w-24 h-24 rounded-full border-4 border-orange-400 object-cover"
             />
             <label className="absolute bottom-0 right-0 bg-orange-500 text-white p-1 rounded-full cursor-pointer">
               <Pencil size={16} />
               <input
                 type="file"
-                accept="file/*"
+                accept="image/*"
                 className="hidden"
                 onChange={handleFileChange}
               />
@@ -203,10 +201,10 @@ const BasicInfo = () => {
         </label>
         <input
           type="text"
-          name="fullName"
+          name="full_name"
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="Enter full name"
-          value={formData.fullName}
+          value={formData.full_name}
           onChange={handleChange}
         />
 
@@ -218,10 +216,10 @@ const BasicInfo = () => {
           <span className="mr-2">🇮🇳 +91</span>
           <input
             type="text"
-            name="phoneNumber"
+            name="phone_number"
             className="flex-1 outline-none"
             placeholder="Business Phone number"
-            value={formData.phoneNumber}
+            value={formData.phone_number}
             onChange={handleChange}
           />
         </div>
@@ -239,10 +237,10 @@ const BasicInfo = () => {
         </label>
         <input
           type="email"
-          name="businessEmail"
+          name="business_email_id"
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="Business email id"
-          value={formData.businessEmail}
+          value={formData.business_email_id}
           onChange={handleChange}
         />
 
@@ -259,10 +257,10 @@ const BasicInfo = () => {
         </label>
         <input
           type="text"
-          name="businessYear"
+          name="business_establishment_year"
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="Enter Business establishment year"
-          value={formData.businessYear}
+          value={formData.business_establishment_year}
           onChange={handleChange}
         />
 
@@ -271,11 +269,11 @@ const BasicInfo = () => {
           Business Description
         </label>
         <textarea
-          name="businessDescription"
+          name="business_description"
           className="w-full border p-2 rounded-lg"
           placeholder="Enter your business description"
           rows="3"
-          value={formData.businessDescription}
+          value={formData.business_description}
           onChange={handleChange}
         ></textarea>
 
@@ -292,10 +290,6 @@ const BasicInfo = () => {
 };
 
 export default BasicInfo;
-
-
-
-
 
 // import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
