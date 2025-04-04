@@ -30,10 +30,14 @@ const Login = () => {
       if (response.data.access && response.data.refresh) {
         localStorage.setItem("access", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
+
         // console.log("refresh_token", response.data.refresh);
 
         // localStorage.setItem("refresh_token", refresh);
         toast.success("Login successfully!");
+        localStorage.setItem("user_id", response.data.user.id);
+
+
         navigate("/DealsPage");
       } else {
         toast.error("Login successful but token missing.");
@@ -75,6 +79,7 @@ const Login = () => {
       if (response.data.access && response.data.refresh) {
         localStorage.setItem("access", response.data.access);
         localStorage.setItem("refresh", response.data.refresh);
+        
         toast.success("Google Login Successful!");
         navigate("/DealsPage");
       } else {

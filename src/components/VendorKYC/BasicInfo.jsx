@@ -103,7 +103,6 @@
 // };
 
 // export default BasicInfo;
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil } from "lucide-react";
@@ -113,22 +112,27 @@ const BasicInfo = () => {
   const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState();
   const [profileImage, setProfileImage] = useState();
+
+  // ✅ Get user ID from localStorage
+  const userId = localStorage.getItem("user_id");
+
+  // ✅ Initialize form data with user ID
   const [formData, setFormData] = useState({
-    user: "",
+    user: userId,
     full_name: "",
     phone_number: "",
+    business_description: "",
     business_email_id: "",
     business_establishment_year: "",
-    business_description: "",
   });
 
+  // ✅ File change handler
   const handleFileChange = async (event) => {
     if (event.target.files.length === 0) return;
 
     const file = event.target.files[0];
     if (!file) return;
 
-    // Check if file is same as previous one
     if (previewImage && previewImage.name === file.name) return;
 
     const previewURL = URL.createObjectURL(file);
@@ -157,12 +161,12 @@ const BasicInfo = () => {
     }
   };
 
-  // Handle Input Change
+  // ✅ Input change handler
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save Data and Navigate
+  // ✅ Save and navigate
   const handleNext = () => {
     localStorage.setItem("vendorData", JSON.stringify(formData));
     navigate("/VendorDocument");
