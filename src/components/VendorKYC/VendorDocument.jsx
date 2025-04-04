@@ -89,7 +89,7 @@ const VendorDocument = () => {
 
   const handleNext = () => {
     localStorage.setItem("business_description", businessDescription);
-    localStorage.setItem("bank_account_number", accountNumber);
+    // localStorage.setItem("bank_account_number", accountNumber);
     navigate("/BankDetails");
   };
 
@@ -178,7 +178,7 @@ const VendorDocument = () => {
           </div>
         )}
 
-        <button className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-2 rounded-lg mt-4">
+        {/* <button className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-2 rounded-lg mt-4">
           <FaPlus /> Add Address
         </button>
 
@@ -192,7 +192,7 @@ const VendorDocument = () => {
           placeholder="Enter bank account number"
           value={accountNumber}
           onChange={(e) => setAccountNumber(e.target.value)}
-        />
+        /> */}
 
         <div className="flex justify-between mt-6">
           <button
