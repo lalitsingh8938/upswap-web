@@ -132,7 +132,7 @@ const BasicInfo = () => {
 
     // Prepare FormData
     const formData = new FormData();
-    formData.append("profile_pic", file);
+    formData.append("file", file);
 
     try {
       const response = await axios.post(
@@ -189,7 +189,7 @@ const BasicInfo = () => {
               <Pencil size={16} />
               <input
                 type="file"
-                accept="image/*"
+                accept="file/*"
                 className="hidden"
                 onChange={handleFileChange}
               />
@@ -292,6 +292,10 @@ const BasicInfo = () => {
 };
 
 export default BasicInfo;
+
+
+
+
 
 // import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
