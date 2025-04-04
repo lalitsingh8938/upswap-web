@@ -178,11 +178,14 @@ const VendorDocument = () => {
           </div>
         )}
 
-        {/* <button className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-2 rounded-lg mt-4">
+        <button
+          className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-2 rounded-lg mt-4"
+          onClick={() => navigate("/AddAddress")}
+        >
           <FaPlus /> Add Address
         </button>
 
-        <h3 className="text-gray-700 mt-4 mb-2 font-semibold">Bank Details</h3>
+        {/* <h3 className="text-gray-700 mt-4 mb-2 font-semibold">Bank Details</h3>
         <label className="block text-gray-700 mb-1 font-semibold">
           Account Number
         </label>

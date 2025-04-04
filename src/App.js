@@ -23,6 +23,8 @@ import BasicInfo from "./components/VendorKYC/BasicInfo";
 import VendorDocument from "./components/VendorKYC/VendorDocument";
 import BankDetails from "./components/VendorKYC/BankDetails";
 import ServiceTime from "./components/VendorKYC/ServiceTime";
+import AddAddress from "./components/VendorKYC/AddAddress";
+import AddService from "./components/VendorKYC/AddService";
 
 function App() {
   return (
@@ -67,6 +69,8 @@ function App() {
             <Route path="VendorDocument" element={<VendorDocument />} />
             <Route path="BankDetails" element={<BankDetails />} />
             <Route path="ServiceTime" element={<ServiceTime />} />
+            <Route path="AddAddress" element={<AddAddress />} />
+            <Route path="AddService" element={<AddService />} />
           </Route>
         </Routes>
       </Router>

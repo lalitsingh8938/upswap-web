@@ -36,7 +36,10 @@ const Login = () => {
         // localStorage.setItem("refresh_token", refresh);
         toast.success("Login successfully!");
         localStorage.setItem("user_id", response.data.user.id);
-
+        if (response.data && response.data.user && response.data.user.country) {
+          localStorage.setItem("country", response.data.user.country);
+      }
+      
 
         navigate("/DealsPage");
       } else {
