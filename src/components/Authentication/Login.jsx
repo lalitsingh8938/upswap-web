@@ -38,8 +38,10 @@ const Login = () => {
         localStorage.setItem("user_id", response.data.user.id);
         if (response.data && response.data.user && response.data.user.country) {
           localStorage.setItem("country", response.data.user.country);
-      }
-      
+          localStorage.setItem("country_code", response.data.user.country_code);
+          localStorage.setItem("dial_code", response.data.user.dial_code);
+        }
+        
 
         navigate("/DealsPage");
       } else {
@@ -82,7 +84,7 @@ const Login = () => {
       if (response.data.access && response.data.refresh) {
         localStorage.setItem("access", response.data.access);
         localStorage.setItem("refresh", response.data.refresh);
-        
+
         toast.success("Google Login Successful!");
         navigate("/DealsPage");
       } else {

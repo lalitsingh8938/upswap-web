@@ -133,6 +133,19 @@ const BankDetails = () => {
 
 export default BankDetails;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
   /* Add Services Section */
 }

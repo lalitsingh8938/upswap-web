@@ -28,8 +28,6 @@ const BasicInfo = () => {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (previewImage && previewImage.name === file.name) return;
-
     const previewURL = URL.createObjectURL(file);
     setPreviewImage(previewURL);
 
@@ -48,8 +46,14 @@ const BasicInfo = () => {
         }
       );
 
-      console.log("Uploaded Image URL:", response.data.profile_pic);
-      setProfileImage(response.data.profile_pic);
+      // ✅ response is an array, so get first URL
+      const uploadedProfilePic = response.data[0];
+
+      console.log("Uploaded Image URL:", uploadedProfilePic);
+      setProfileImage(uploadedProfilePic);
+
+      // ✅ Save to localStorage
+      localStorage.setItem("profile_image_url", uploadedProfilePic);
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload image");

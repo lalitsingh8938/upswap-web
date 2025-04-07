@@ -97,11 +97,12 @@ function Register() {
       if (response.data && response.data.access) {
         localStorage.setItem("access", response.data.access);
         localStorage.setItem("phone_number", response.data.user.phone_number);
-
-        // To retrieve the phone number from localStorage later
-        const storedPhoneNumber = localStorage.getItem("phone_number");
-        console.log(storedPhoneNumber);
+      
+        // ✅ Save country code & dial code
+        // localStorage.setItem("country_code", formData.country_code);
+        // localStorage.setItem("dial_code", formData.dial_code);
       }
+      
 
       toast.success("Registration successful!");
       navigate("/VerifyOtp");
