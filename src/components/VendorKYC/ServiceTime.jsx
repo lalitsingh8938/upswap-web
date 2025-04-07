@@ -832,11 +832,14 @@ const ServiceTime = () => {
         user: userId,
         full_name: vendorData?.full_name || "",
         phone_number: vendorData?.phone_number || "",
-        business_email_id: "",
-        business_establishment_year: 2020,
-        business_description: "Everything is fine.",
-        uploaded_business_documents: JSON.parse(localStorage.getItem("uploaded_business_documents1")),  // businessDocuments?.map(
-          // (url) => url.document_url
+        business_email_id: vendorData?.business_email_id || "",
+        business_establishment_year:
+          vendorData?.business_establishment_year || "",
+        business_description: vendorData?.business_description || "",
+        uploaded_business_documents: JSON.parse(
+          localStorage.getItem("uploaded_business_documents1")
+        ), // businessDocuments?.map(
+        // (url) => url.document_url
         // ),
         uploaded_images: JSON.parse(localStorage.getItem("uploaded_images1")), // businessImages?.map((url) => url.image_url),
         // [
@@ -858,74 +861,54 @@ const ServiceTime = () => {
             dial_code,
             state: address?.state || "",
             city: address?.city || "",
-            pincode: "360578",
-            latitude: "21.63366",
-            longitude: "69.627973",
-          },
-          {
-            house_no_building_name: "402/2",
-            road_name_area_colony: "Mathura-Vrindavan",
-            country: "India",
-            state: "Uttar Pradesh",
-            city: "Agra",
-            pincode: "281122",
-            latitude: "28.06081",
-            longitude: "76.59947",
+            pincode: address?.pincode || "",
+            latitude: "",
+            longitude: "",
           },
         ],
-        country_code: "IN",
-        dial_code: "+91",
-        bank_account_number: "12345678901",
-        retype_bank_account_number: "12345678901",
-        bank_name: "HDFC",
-        ifsc_code: "HDFC0000001",
+        // country_code: "IN",
+        // dial_code: "+91",
+        bank_account_number: bankDetails?.bank_account_number || "",
+        retype_bank_account_number:
+          bankDetails?.retype_bank_account_number || "",
+
+        bank_name: bankDetails?.bank_name || "",
+        ifsc_code: bankDetails?.ifsc_code || "",
         services: [
           {
-            service_category: "Others",
-            item_name: "Drawing Class",
-            item_description: "All types of drawings.",
-            item_price: "500",
-          },
-          {
-            service_category: "Consultants",
-            item_name: "Consulting",
-            item_description: "Consulting",
-            item_price: "500",
+            service_category: serviceData?.service_category || "",
+            item_name: serviceData?.item_name || "",
+            item_description: serviceData?.item_description || "",
+            item_price: serviceData?.item_price || "",
           },
         ],
-        business_hours: [
-          { day: "Sunday", time: "11:00 AM - 7:00 PM" },
-          { day: "Monday", time: "10:00 AM - 8:00 PM" },
-          { day: "Tuesday", time: "10:00 AM - 8:00 PM" },
-          { day: "Wednesday", time: "10:00 AM - 8:00 PM" },
-          { day: "Thursday", time: "10:00 AM - 8:00 PM" },
-          { day: "Friday", time: "10:00 AM - 8:00 PM" },
-          { day: "Saturday", time: "10:00 AM - 8:00 PM" },
-        ],
-      };
-
-      const payload = {
-        profile_pic: profilePicUrl,
-        user: userId,
-        country_code,
-        dial_code,
-        full_name: vendorData?.full_name || "",
-        phone_number: vendorData?.phone_number || "",
-        business_email_id: vendorData?.business_email_id || "",
-        business_establishment_year:
-          vendorData?.business_establishment_year || "",
-        business_description: vendorData?.business_description || "",
-        uploaded_business_documents: JSON.parse(localStorage.getItem("uploaded_business_documents1")),
-        uploaded_images: JSON.parse(localStorage.getItem("uploaded_images1")),
-        same_as_personal_phone_number: true,
-        same_as_personal_email_id: true,
-        addresses: [address],
-        ...bankDetails,
-        services: [serviceData],
         business_hours: formattedHours,
       };
 
-      console.log("🚀 Final Payload:", payload);
+      // const payload = {
+      //   profile_pic: profilePicUrl,
+      //   user: userId,
+      //   country_code,
+      //   dial_code,
+      //   full_name: vendorData?.full_name || "",
+      //   phone_number: vendorData?.phone_number || "",
+      //   business_email_id: vendorData?.business_email_id || "",
+      //   business_establishment_year:
+      //     vendorData?.business_establishment_year || "",
+      //   business_description: vendorData?.business_description || "",
+      //   uploaded_business_documents: JSON.parse(
+      //     localStorage.getItem("uploaded_business_documents1")
+      //   ),
+      //   uploaded_images: JSON.parse(localStorage.getItem("uploaded_images1")),
+      //   same_as_personal_phone_number: true,
+      //   same_as_personal_email_id: true,
+      //   addresses: [address],
+      //   ...bankDetails,
+      //   services: [serviceData],
+      //   business_hours: formattedHours,
+      // };
+
+      console.log("🚀 Final Payload:", formData);
 
       const response = await fetch(
         "https://api.upswap.app/api/vendor-kyc/create/",
@@ -935,7 +918,7 @@ const ServiceTime = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("access")}`,
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(formData),
         }
       );
 
@@ -944,7 +927,7 @@ const ServiceTime = () => {
       if (response.ok) {
         console.log("✅ KYC Submitted Successfully:", result);
         alert("KYC Submitted Successfully!");
-        navigate("/success");
+        navigate("/DealsPage"); // Optional redirect
       } else {
         console.error("❌ API Error:", result);
         alert(`API Error: ${result?.message?.[0] || "Something went wrong."}`);
@@ -967,77 +950,108 @@ const ServiceTime = () => {
   };
 
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Set Business Hours</h2>
-      <ul>
-        {businessHours.map((item, index) => (
-          <li
-            key={item.day}
-            className="mb-4 border-b pb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => handleToggle(index)}
-                className={`px-2 py-1 rounded ${
-                  item.active ? "bg-green-500 text-white" : "bg-gray-300"
-                }`}
-              >
-                {item.active ? "Open" : "Closed"}
-              </button>
-              <span className="font-semibold">{item.day}</span>
-            </div>
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-500 to-white p-4 rounded-lg">
+      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-xl font-semibold text-center text-white bg-orange-500 py-3 rounded-lg">
+          Become a Vendor
+        </h2>
 
-            <div className="flex items-center gap-2 mt-2 sm:mt-0">
+        <div className="bg-orange-500 text-white p-3 rounded-lg text-lg font-semibold flex justify-between my-4">
+          Choose Business Hours <span className="cursor-pointer">▼</span>
+        </div>
+
+        <div className="bg-white border rounded-lg border-orange-400 p-3 my-4">
+          {businessHours.map((item, index) => (
+            <div
+              key={index}
+              className="flex flex-col sm:flex-row justify-between items-center py-2 border-b last:border-0 gap-2"
+            >
+              <span className="text-gray-700 font-medium w-[80px]">
+                {item.day}
+              </span>
+
               {item.editing ? (
-                <>
+                <div className="flex gap-2 items-center">
                   <TimePicker
-                    value={item.start}
                     onChange={(value) =>
                       handleTimeChange(index, "start", value)
                     }
+                    value={item.start}
+                    disableClock
+                    clearIcon={null}
                   />
+                  <span className="text-gray-600 text-center ml-5">to</span>
                   <TimePicker
-                    value={item.end}
                     onChange={(value) => handleTimeChange(index, "end", value)}
+                    value={item.end}
+                    disableClock
+                    clearIcon={null}
                   />
-                  <button
-                    onClick={() => handleSave(index)}
-                    className="text-green-600"
-                  >
-                    <FaCheck />
-                  </button>
-                </>
+                </div>
               ) : (
-                <>
-                  <span>
-                    {item.start} - {item.end}
-                  </span>
-                  <button
-                    onClick={() => handleEditClick(index)}
-                    className="text-blue-600"
-                  >
-                    <FaPen />
-                  </button>
-                </>
+                <span className="text-gray-600 w-[150px] text-center">
+                  {item.start} - {item.end}
+                </span>
               )}
-            </div>
-          </li>
-        ))}
-      </ul>
 
-      <div className="flex gap-4 mt-6">
-        <button
-          onClick={handleSaveToLocal}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Save to Local
-        </button>
-        <button
-          onClick={handleSubmit}
-          className="bg-green-600 text-white px-4 py-2 rounded"
-        >
-          Submit
-        </button>
+              {item.editing ? (
+                <FaCheck
+                  className="text-green-600 cursor-pointer ml-5"
+                  onClick={() => handleSave(index)}
+                />
+              ) : (
+                <FaPen
+                  className="text-gray-500 cursor-pointer mx-2"
+                  onClick={() => handleEditClick(index)}
+                />
+              )}
+
+              <label className="relative inline-flex items-center cursor-pointer ml-2">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={item.active}
+                  onChange={() => handleToggle(index)}
+                />
+                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-orange-500 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:left-1 after:top-1 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all"></div>
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2 my-4">
+          <input
+            type="checkbox"
+            className="w-5 h-5 border border-orange-500 rounded-md"
+          />
+          <span className="text-gray-600">
+            Share a few details to enhance your Upswap experience
+          </span>
+        </div>
+
+        {/* ✅ Three Buttons */}
+        <div className="flex justify-between mt-6 gap-2">
+          <button
+            className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 w-full"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
+
+          <button
+            className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 w-full"
+            onClick={handleSaveToLocal}
+          >
+            Save Data
+          </button>
+
+          <button
+            className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 w-full"
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </div>
   );
