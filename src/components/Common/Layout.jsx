@@ -16,8 +16,6 @@
 
 // export default Layout;
 
-
-
 import Header from "../Dashboard/Header";
 import Sidebar from "../Dashboard/Sidebar";
 import { Outlet } from "react-router-dom";
@@ -42,7 +40,11 @@ const Layout = () => {
   return (
     <div className="flex">
       {isSidebarOpen && <Sidebar />}
-      <div className={`flex-grow transition-all duration-300 ${isSidebarOpen ? "ml-96" : "ml-0"}`}>
+      <div
+        className={`flex-grow transition-all duration-300 ${
+          isSidebarOpen ? "ml-96" : "ml-0"
+        }`}
+      >
         <Header />
         <Outlet />
       </div>

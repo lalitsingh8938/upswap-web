@@ -229,6 +229,7 @@ const ServiceTime = () => {
       if (response.ok) {
         // console.log("✅ KYC Submitted Successfully:", result);
         toast.success("KYC Submitted Successfully!");
+        localStorage.clear();
         navigate("/DealsPage"); // Optional redirect
       } else {
         console.error("❌ API Error:", result);
