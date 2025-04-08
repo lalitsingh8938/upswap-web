@@ -1,4 +1,5 @@
-import { FaPlus, FaPen } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,70 +13,122 @@ const BankDetails = () => {
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
 
-  // Save data to localStorage on submit
+  // Save bank details to localStorage
   const handleSubmit = () => {
-    if (
-      accountNumber &&
-      reAccountNumber &&
-      accountNumber === reAccountNumber &&
-      bankName &&
-      ifscCode
-    ) {
-      localStorage.setItem("bank_account_number", accountNumber);
-      localStorage.setItem("retype_bank_account_number", reAccountNumber);
-      localStorage.setItem("bank_name", bankName);
-      localStorage.setItem("ifsc_code", ifscCode);
-
-      toast.success("Bank details saved successfully!");
-    } else {
-      toast.warn(
-        "Please fill all fields correctly and make sure account numbers match."
-      );
+    if (!accountNumber.trim()) {
+      toast.warn("Please enter your Account Number");
+      return;
     }
+    if (!reAccountNumber.trim()) {
+      toast.warn("Please re-type your Account Number");
+      return;
+    }
+    if (accountNumber !== reAccountNumber) {
+      toast.warn("Account numbers do not match.");
+      return;
+    }
+    if (!bankName.trim()) {
+      toast.warn("Please enter your Bank Name");
+      return;
+    }
+    if (!ifscCode.trim()) {
+      toast.warn("Please enter IFSC Code");
+      return;
+    }
+
+    localStorage.setItem("bank_account_number", accountNumber);
+    localStorage.setItem("retype_bank_account_number", reAccountNumber);
+    localStorage.setItem("bank_name", bankName);
+    localStorage.setItem("ifsc_code", ifscCode);
+
+    toast.success("Bank details saved successfully!");
   };
 
-  // Navigate only if data is already saved
-  const handleNext = () => {
-    const isDataSaved =
-      localStorage.getItem("bank_account_number") &&
-      localStorage.getItem("retype_bank_account_number") &&
-      localStorage.getItem("bank_name") &&
-      localStorage.getItem("ifsc_code");
-
-    if (isDataSaved) {
-      navigate("/ServiceTime");
-    } else {
-      toast.warn("Please submit your bank details first before proceeding.");
+  const handleSaveService = () => {
+    if (!accountNumber || !reAccountNumber || !bankName || !ifscCode) {
+      toast.warn(
+        "Please fill all the required bank fields before saving services."
+      );
+      return;
     }
+
+    if (accountNumber !== reAccountNumber) {
+      toast.warn("Account numbers do not match.");
+      return;
+    }
+
+    toast.success("Service saved successfully!");
+    // You can add your save logic here
+  };
+
+  const handleNext = () => {
+    const bank_account_number = localStorage.getItem("bank_account_number");
+    const retype_bank_account_number = localStorage.getItem(
+      "retype_bank_account_number"
+    );
+    const bank_name = localStorage.getItem("bank_name");
+    const ifsc_code = localStorage.getItem("ifsc_code");
+    const services = localStorage.getItem("services");
+
+    if (
+      !bank_account_number ||
+      !retype_bank_account_number ||
+      !bank_name ||
+      !ifsc_code
+    ) {
+      toast.warn("Please fill and submit your bank details first.");
+      return;
+    }
+
+    if (bank_account_number !== retype_bank_account_number) {
+      toast.warn("Account numbers do not match.");
+      return;
+    }
+
+    if (!services || JSON.parse(services).length === 0) {
+      toast.warn("Please add at least one service before proceeding.");
+      return;
+    }
+
+    navigate("/ServiceTime");
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-semibold text-center text-white bg-orange-500 py-3 rounded-lg">
-          Become a Vendor
-        </h2>
+    <div className="relative flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+      <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+        <button
+          className="absolute top-2 right-3 text-gray-600 hover:text-gray-800"
+          onClick={() => navigate("/VendorDocument")}
+        >
+          <FaTimes size={20} />
+        </button>
+        <div className="relative bg-orange-500 text-white py-3 px-4 rounded-lg flex justify-center items-center">
+          <h2 className="text-xl font-semibold">Become a Vendor</h2>
+        </div>
         <h3 className="text-gray-700 mb-2 font-semibold mt-4">Bank details</h3>
+
         <label className="block text-gray-600 mb-1 font-semibold">
           Account Number
         </label>
         <input
-          type="text"
+          type="number"
           value={accountNumber}
           onChange={(e) => setAccountNumber(e.target.value)}
           className="w-full border p-2 rounded-lg mb-2 text-gray-600"
           placeholder="Enter bank account number"
         />
+
         <label className="block text-gray-600 mb-1 font-semibold">
           Re-type Account Number
         </label>
         <input
-          type="text"
+          type="number"
           value={reAccountNumber}
           onChange={(e) => setReAccountNumber(e.target.value)}
           className="w-full border p-2 rounded-lg mb-2 text-gray-600"
           placeholder="Confirm account number"
         />
+
         <label className="block text-gray-600 mb-1 font-semibold">
           Bank Name
         </label>
@@ -86,6 +139,7 @@ const BankDetails = () => {
           className="w-full border p-2 rounded-lg mb-2 text-gray-600"
           placeholder="Bank name"
         />
+
         <label className="block text-gray-600 mb-1 font-semibold">
           IFSC Code
         </label>
@@ -96,6 +150,7 @@ const BankDetails = () => {
           className="w-full border p-2 rounded-lg mb-4 text-gray-600"
           placeholder="Enter your bank IFSC code"
         />
+
         {/* Submit Button */}
         <button
           className="w-full bg-orange-500 text-white p-2 rounded-lg mb-4 hover:bg-orange-600"
@@ -103,21 +158,24 @@ const BankDetails = () => {
         >
           Submit
         </button>
+
         <label className="block text-gray-600 mb-1 font-semibold">
-        Add Services Section
+          Add Services Section
         </label>
-        <button className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-3 rounded-lg mb-4"
-          onClick={() => navigate("/AddService")} // Replace with actual route to add service page
-          >
+        <button
+          className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-3 rounded-lg mb-4"
+          onClick={() => navigate("/AddService")}
+        >
           <FaPlus /> Add services provided by your business
         </button>
+
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-6">
           <button
-            className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
-            onClick={() => navigate("/VendorDocument")}
+            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            onClick={handleSaveService}
           >
-            Back
+            Save Service
           </button>
           <button
             className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
@@ -132,47 +190,3 @@ const BankDetails = () => {
 };
 
 export default BankDetails;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{
-  /* Add Services Section */
-}
-{
-  /* <button className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-3 rounded-lg mb-4">
-          <FaPlus /> Add services provided by your business
-        </button> */
-}
-
-{
-  /* Business Hours Section */
-}
-{
-  /* <div className="bg-orange-500 text-white p-3 rounded-t-lg text-lg font-semibold cursor-pointer">
-          Choose Business Hours
-        </div>
-        <div className="bg-white border border-orange-400 rounded-b-lg p-3">
-          {businessHours.map((item, index) => (
-            <div key={index} className="flex justify-between items-center py-2 border-b last:border-0">
-              <span className="text-gray-700 font-medium">{item.day}</span>
-              <span className="text-gray-600">{item.time}</span>
-              <FaPen className="text-gray-500 cursor-pointer" />
-              <label className="switch">
-                <input type="checkbox" checked={item.active} readOnly />
-                <span className="slider round"></span>
-              </label>
-            </div>
-          ))}
-        </div> */
-}

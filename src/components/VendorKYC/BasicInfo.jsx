@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil } from "lucide-react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const BasicInfo = () => {
   const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState();
   const [profileImage, setProfileImage] = useState();
 
-  // ✅ Get user ID from localStorage
   const userId = localStorage.getItem("user_id");
 
-  // ✅ Initialize form data with user ID
   const [formData, setFormData] = useState({
     user: userId,
     full_name: "",
@@ -21,7 +21,6 @@ const BasicInfo = () => {
     business_establishment_year: "",
   });
 
-  // ✅ File change handler
   const handleFileChange = async (event) => {
     if (event.target.files.length === 0) return;
 
@@ -46,13 +45,8 @@ const BasicInfo = () => {
         }
       );
 
-      // ✅ response is an array, so get first URL
       const uploadedProfilePic = response.data[0];
-
-      console.log("Uploaded Image URL:", uploadedProfilePic);
       setProfileImage(uploadedProfilePic);
-
-      // ✅ Save to localStorage
       localStorage.setItem("profile_image_url", uploadedProfilePic);
     } catch (error) {
       console.error("Upload error:", error);
@@ -60,13 +54,40 @@ const BasicInfo = () => {
     }
   };
 
-  // ✅ Input change handler
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Save and navigate
   const handleNext = () => {
+    const {
+      full_name,
+      phone_number,
+      business_description,
+      business_email_id,
+      business_establishment_year,
+    } = formData;
+
+    if (!full_name) {
+      toast.warning("Please enter your full name");
+      return;
+    }
+    if (!phone_number) {
+      toast.warning("Please enter your phone number");
+      return;
+    }
+    if (!business_email_id) {
+      toast.warning("Please enter your business email ID");
+      return;
+    }
+    if (!business_establishment_year) {
+      toast.warning("Please enter business establishment year");
+      return;
+    }
+    if (!business_description) {
+      toast.warning("Please enter your business description");
+      return;
+    }
+
     localStorage.setItem("vendorData", JSON.stringify(formData));
     navigate("/VendorDocument");
   };
@@ -118,7 +139,7 @@ const BasicInfo = () => {
         <div className="flex items-center border p-2 rounded-lg mb-3">
           <span className="mr-2">🇮🇳 +91</span>
           <input
-            type="text"
+            type="number"
             name="phone_number"
             className="flex-1 outline-none"
             placeholder="Business Phone number"
@@ -159,7 +180,7 @@ const BasicInfo = () => {
           Business Establishment Year
         </label>
         <input
-          type="text"
+          type="number"
           name="business_establishment_year"
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="Enter Business establishment year"
@@ -172,6 +193,7 @@ const BasicInfo = () => {
           Business Description
         </label>
         <textarea
+          type="text"
           name="business_description"
           className="w-full border p-2 rounded-lg"
           placeholder="Enter your business description"
@@ -187,6 +209,9 @@ const BasicInfo = () => {
         >
           Next
         </button>
+
+        {/* Toast Container */}
+        <ToastContainer position="top-center" autoClose={3000} />
       </div>
     </div>
   );

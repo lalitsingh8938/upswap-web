@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { Country, State, City } from "country-state-city";
+import Select from "react-select";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddAddress = ({ onClose }) => {
   const navigate = useNavigate();
@@ -14,6 +18,68 @@ const AddAddress = ({ onClose }) => {
     country: "",
   });
 
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+
+  const [stateOptions, setStateOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
+
+  const countryOptions = Country.getAllCountries().map((country) => ({
+    value: country.isoCode,
+    label: country.name,
+  }));
+
+  useEffect(() => {
+    if (selectedCountry) {
+      const states = State.getStatesOfCountry(selectedCountry.value);
+      setStateOptions(
+        states.map((state) => ({
+          value: state.isoCode,
+          label: state.name,
+        }))
+      );
+      setFormData((prev) => ({
+        ...prev,
+        country: selectedCountry.label,
+        state: "",
+        city: "",
+      }));
+      setSelectedState(null);
+      setSelectedCity(null);
+    }
+  }, [selectedCountry]);
+
+  useEffect(() => {
+    if (selectedCountry && selectedState) {
+      const cities = City.getCitiesOfState(
+        selectedCountry.value,
+        selectedState.value
+      );
+      setCityOptions(
+        cities.map((city) => ({
+          value: city.name,
+          label: city.name,
+        }))
+      );
+      setFormData((prev) => ({
+        ...prev,
+        state: selectedState.label,
+        city: "",
+      }));
+      setSelectedCity(null);
+    }
+  }, [selectedState]);
+
+  useEffect(() => {
+    if (selectedCity) {
+      setFormData((prev) => ({
+        ...prev,
+        city: selectedCity.label,
+      }));
+    }
+  }, [selectedCity]);
+
   useEffect(() => {
     const storedCountry = localStorage.getItem("country");
     if (storedCountry) {
@@ -25,15 +91,65 @@ const AddAddress = ({ onClose }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Save to localStorage when user clicks "Add Address"
+  // const handleAddAddress = () => {
+  //   localStorage.setItem("address", JSON.stringify(formData));
+  // };
+
   const handleAddAddress = () => {
+    const {
+      house_no_building_name,
+      road_name_area_colony,
+      country,
+      state,
+      city,
+      pincode,
+    } = formData;
+
+    if (
+      !house_no_building_name ||
+      !road_name_area_colony ||
+      !country ||
+      !state ||
+      !city ||
+      !pincode
+    ) {
+      toast.warn("Please fill all the fields before saving the address.");
+      return;
+    }
+
     localStorage.setItem("address", JSON.stringify(formData));
+    localStorage.setItem("country", country);
+    toast.success("Address saved successfully!");
   };
 
-  // ✅ Navigate to next page
   const handleNext = () => {
-    navigate("/BankDetails");
+    const {
+      house_no_building_name,
+      road_name_area_colony,
+      country,
+      state,
+      city,
+      pincode,
+    } = formData;
+
+    // Check if any field is empty
+    if (
+      !house_no_building_name ||
+      !road_name_area_colony ||
+      !country ||
+      !state ||
+      !city ||
+      !pincode
+    ) {
+      toast.warn(
+        "Please fill all the fields before proceeding to the next step."
+      );
+      return; // Stop navigation
+    }
+
+    // Save data and navigate
     if (onClose) onClose();
+    navigate("/BankDetails");
   };
 
   const handleClose = () => {
@@ -44,12 +160,14 @@ const AddAddress = ({ onClose }) => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
+        <ToastContainer position="top-center" autoClose={3000} />
+
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Add Address Info</h2>
           <button
             onClick={handleClose}
-            className="text-gray-600 hover:text-gray-800 absolute top-4 right-4"
+            className="text-gray-600 hover:text-red-800 absolute top-4 right-4"
           >
             <FaTimes size={20} />
           </button>
@@ -74,40 +192,34 @@ const AddAddress = ({ onClose }) => {
           placeholder="Enter road name, area, colony"
         />
 
-        <input
-          type="text"
-          name="country"
-          value={formData.country}
-          readOnly
-          className="w-full border p-2 rounded-lg mb-3 bg-gray-100 cursor-not-allowed"
+        <Select
+          options={countryOptions}
+          value={selectedCountry}
+          onChange={(value) => setSelectedCountry(value)}
+          placeholder="Select Country"
+          className="w-full rounded-lg mb-3"
         />
 
-        <select
-          name="state"
-          value={formData.state}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-lg mb-3 bg-white"
-        >
-          <option value="">State</option>
-          <option value="Maharashtra">Maharashtra</option>
-          <option value="Delhi">Delhi</option>
-          <option value="Karnataka">Karnataka</option>
-        </select>
+        <Select
+          options={stateOptions}
+          value={selectedState}
+          onChange={(value) => setSelectedState(value)}
+          placeholder="Select State"
+          isDisabled={!selectedCountry}
+          className="w-full rounded-lg mb-3"
+        />
 
-        <select
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-lg mb-3 bg-white"
-        >
-          <option value="">City</option>
-          <option value="Mumbai">Mumbai</option>
-          <option value="Bangalore">Bangalore</option>
-          <option value="Delhi">Delhi</option>
-        </select>
+        <Select
+          options={cityOptions}
+          value={selectedCity}
+          onChange={(value) => setSelectedCity(value)}
+          placeholder="Select City"
+          isDisabled={!selectedState}
+          className="w-full rounded-lg mb-3"
+        />
 
         <input
-          type="text"
+          type="number"
           name="pincode"
           value={formData.pincode}
           onChange={handleChange}
@@ -118,10 +230,10 @@ const AddAddress = ({ onClose }) => {
         {/* Buttons */}
         <div className="flex justify-between mt-6">
           <button
-            className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
             onClick={handleAddAddress}
           >
-            Add Address
+            Save Address
           </button>
           <button
             className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"

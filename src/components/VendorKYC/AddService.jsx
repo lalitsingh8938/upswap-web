@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AddService = ({ onClose }) => {
   const navigate = useNavigate();
@@ -16,14 +18,30 @@ const AddService = ({ onClose }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save to localStorage when "Add Service" (bottom-left) is clicked
+  // Save to localStorage
   const handleAddService = () => {
     localStorage.setItem("serviceData", JSON.stringify(formData));
+    toast.success("Service saved successfully!");
   };
 
-  // When "Next" (bottom-right) is clicked, you can navigate or call next step
+  // Validation before navigating
   const handleNext = () => {
-    navigate("/ServiceTime"); // replace with your actual next route
+    const { item_name, service_category, item_description, item_price } =
+      formData;
+
+    if (
+      !item_name.trim() ||
+      !service_category.trim() ||
+      !item_description.trim() ||
+      !item_price.trim()
+    ) {
+      toast.warn("Please fill all fields before proceeding.");
+      return;
+    }
+
+    // All fields filled: save and navigate
+    localStorage.setItem("serviceData", JSON.stringify(formData));
+    navigate("/ServiceTime");
   };
 
   const handleClose = () => {
@@ -37,7 +55,7 @@ const AddService = ({ onClose }) => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
       <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        {/* Cross Button */}
+        {/* ❌ Cross Button */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
@@ -82,7 +100,7 @@ const AddService = ({ onClose }) => {
         ></textarea>
 
         <input
-          type="text"
+          type="number"
           name="item_price"
           value={formData.item_price}
           onChange={handleChange}
@@ -94,7 +112,7 @@ const AddService = ({ onClose }) => {
         <div className="flex justify-between mt-6">
           <button
             onClick={handleAddService}
-            className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600"
+            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
           >
             Add Service
           </button>
