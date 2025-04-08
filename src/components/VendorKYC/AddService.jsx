@@ -58,7 +58,7 @@ const AddService = ({ onClose }) => {
         {/* ❌ Cross Button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-800"
+          className="absolute top-4 right-4 text-gray-600 hover:text-orange-500"
         >
           <FaTimes size={20} />
         </button>

@@ -261,7 +261,7 @@ const ServiceTime = () => {
           {/* Close Button Outside the Top-Right of Heading */}
           <button
             onClick={handleClose}
-            className="absolute -top-4 -right-4 bg-white text-gray-600 rounded-full hover:text-red-500 z-10"
+            className="absolute -top-4 -right-4 bg-white text-gray-600 rounded-full hover:text-orange-500 z-10"
           >
             <FaTimes size={20} />
           </button>

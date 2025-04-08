@@ -167,7 +167,7 @@ const AddAddress = ({ onClose }) => {
           <h2 className="text-lg font-semibold">Add Address Info</h2>
           <button
             onClick={handleClose}
-            className="text-gray-600 hover:text-red-800 absolute top-4 right-4"
+            className="text-gray-600 hover:text-orange-500 absolute top-4 right-4"
           >
             <FaTimes size={20} />
           </button>

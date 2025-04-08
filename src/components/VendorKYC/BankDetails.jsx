@@ -97,7 +97,7 @@ const BankDetails = () => {
     <div className="relative flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
       <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
         <button
-          className="absolute top-2 right-3 text-gray-600 hover:text-gray-800"
+          className="absolute top-2 right-3 text-gray-600 hover:text-orange-500"
           onClick={() => navigate("/VendorDocument")}
         >
           <FaTimes size={20} />

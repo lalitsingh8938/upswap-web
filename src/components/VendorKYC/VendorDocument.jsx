@@ -128,7 +128,7 @@ const VendorDocument = () => {
         {/* Top-right Close Button */}
         <button
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
+          className="absolute top-2 right-2 text-gray-600 hover:text-orange-500"
         >
           <FaTimes size={20} />
         </button>
