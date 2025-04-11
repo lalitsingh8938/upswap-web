@@ -34,15 +34,15 @@ const PostDeal = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-orange-400 to-orange-500 p-4 rounded-lg">
+    <div className="min-h-screen flex items-center justify-center bg-[#FE7A3A] p-4 rounded-lg border-2">
       <div className="relative bg-white rounded-xl p-6 shadow-md max-w-md w-full">
         {/* Cross Button */}
-        <button className="absolute top-2 right-2 text-gray-500 hover:text-orange-500">
+        <button className="absolute top-2 right-2 text-gray-500 hover:text-[#FE7A3A]">
           <FaTimes size={20} />
         </button>
 
         {/* Header */}
-        <h2 className="text-xl font-semibold text-center text-white bg-orange-500 py-3 rounded-lg mb-4">
+        <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg mb-4">
           Become a Vendor
         </h2>
 
@@ -93,8 +93,8 @@ const PostDeal = () => {
         {/* Upload Images */}
         <div className="flex items-center justify-center gap-2 border-t pt-4">
           <label className="flex flex-col items-center border-2 border-dashed border-orange-400 p-4 w-full rounded-lg cursor-pointer">
-            <FaUpload className="text-orange-500 text-2xl" />
-            <span className="text-orange-500 mt-2 text-sm">Upload</span>
+            <FaUpload className="text-[#FE7A3A] text-2xl" />
+            <span className="text-[#FE7A3A] mt-2 text-sm">Upload</span>
             <input
               type="file"
               accept="image/*"
@@ -123,7 +123,7 @@ const PostDeal = () => {
         <div className="flex justify-end mt-6">
           <button
             onClick={handleNextClick}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-md shadow-md"
+            className="bg-[#FE7A3A] hover:bg-[#FE7A3A] text-white px-6 py-2 rounded-md shadow-md"
           >
             Next
           </button>

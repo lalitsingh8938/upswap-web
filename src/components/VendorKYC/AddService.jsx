@@ -53,12 +53,12 @@ const AddService = ({ onClose }) => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+    <div className="flex justify-center items-center border-2 min-h-screen bg-[#FE7A3A] to-white p-4 rounded-lg">
       <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
         {/* ❌ Cross Button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-orange-500"
+          className="absolute top-4 right-4 text-gray-600 hover:text-[#FE7A3A]"
         >
           <FaTimes size={20} />
         </button>
@@ -112,13 +112,13 @@ const AddService = ({ onClose }) => {
         <div className="flex justify-between mt-6">
           <button
             onClick={handleAddService}
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
           >
             Add Service
           </button>
           <button
             onClick={handleNext}
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
           >
             Next
           </button>

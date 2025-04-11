@@ -94,15 +94,15 @@ const BankDetails = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+    <div className="relative flex justify-center items-center min-h-screen bg-[#FE7A3A] border-2 to-white p-4 rounded-lg">
       <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
         <button
-          className="absolute top-2 right-3 text-gray-600 hover:text-orange-500"
+          className="absolute top-2 right-3 text-gray-600 hover:text-[#FE7A3A]"
           onClick={() => navigate("/VendorDocument")}
         >
           <FaTimes size={20} />
         </button>
-        <div className="relative bg-orange-500 text-white py-3 px-4 rounded-lg flex justify-center items-center">
+        <div className="relative bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex justify-center items-center">
           <h2 className="text-xl font-semibold">Become a Vendor</h2>
         </div>
         <h3 className="text-gray-700 mb-2 font-semibold mt-4">Bank details</h3>
@@ -153,7 +153,7 @@ const BankDetails = () => {
 
         {/* Submit Button */}
         <button
-          className="w-full bg-orange-500 text-white p-2 rounded-lg mb-4 hover:bg-orange-600"
+          className="w-full bg-[#FE7A3A] text-white p-2 rounded-lg mb-4 hover:bg-[#FE7A3A]"
           onClick={handleSubmit}
         >
           Submit
@@ -163,7 +163,7 @@ const BankDetails = () => {
           Add Services Section
         </label>
         <button
-          className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-3 rounded-lg mb-4"
+          className="flex items-center gap-2 w-full border-2 border-[#FE7A3A] text-[#FE7A3A] p-3 rounded-lg mb-4"
           onClick={() => navigate("/AddService")}
         >
           <FaPlus /> Add services provided by your business
@@ -172,13 +172,13 @@ const BankDetails = () => {
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-6">
           <button
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
             onClick={handleSaveService}
           >
             Save Service
           </button>
           <button
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
             onClick={handleNext}
           >
             Next

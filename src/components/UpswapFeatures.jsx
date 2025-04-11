@@ -6,8 +6,8 @@ const UpswapFeatures = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 text-center font-bold text-lg relative rounded-lg">
-        <span>New Feature</span>
+      <div className="bg-gradient-to-r bg-[#FE7A3A] border-2 text-white p-4 text-center font-bold text-lg relative rounded-lg">
+        <span>New Features</span>
       </div>
       
       {/* Feature Section */}

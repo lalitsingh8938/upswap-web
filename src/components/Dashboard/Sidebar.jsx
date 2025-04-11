@@ -68,11 +68,9 @@ export default function MainMenu() {
               onClick={() => item.route && navigate(item.route)}
             >
               <div className="flex items-center space-x-3">
-                <span className="text-orange-500 text-xl">{item.icon}</span>
+                <span className="text-[#FE7A3A] text-xl">{item.icon}</span>
                 <div>
-                  <h3 className="font-semibold text-orange-500">
-                    {item.title}
-                  </h3>
+                  <h3 className="font-semibold text-[#FE7A3A]">{item.title}</h3>
                   <p className="text-gray-500 text-sm">{item.subtitle}</p>
                 </div>
               </div>
@@ -86,10 +84,10 @@ export default function MainMenu() {
         </div>
 
         <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
-          <h3 className="text-orange-500 font-semibold">Settings</h3>
+          <h3 className="text-[#FE7A3A] font-semibold">Settings</h3>
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center space-x-2">
-              <FaSun className="text-orange-500" />
+              <FaSun className="text-[#FE7A3A]" />
               <span>Dark Mode</span>
             </div>
             <Switch
@@ -110,7 +108,7 @@ export default function MainMenu() {
 
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center space-x-2">
-              <FaBell className="text-orange-500" />
+              <FaBell className="text-[#FE7A3A]" />
               <span>Notifications</span>
             </div>
             <Switch

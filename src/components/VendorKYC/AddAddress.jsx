@@ -118,6 +118,7 @@ const AddAddress = ({ onClose }) => {
     }
 
     localStorage.setItem("address", JSON.stringify(formData));
+    console.log("Saving to localStorage:", formData);
     localStorage.setItem("country", country);
     toast.success("Address saved successfully!");
   };
@@ -158,7 +159,7 @@ const AddAddress = ({ onClose }) => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+    <div className="flex justify-center items-center min-h-screen border-2 bg-gradient-to-b bg-[#FE7A3A] to-white p-4 rounded-lg">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
         <ToastContainer position="top-center" autoClose={3000} />
 
@@ -167,7 +168,7 @@ const AddAddress = ({ onClose }) => {
           <h2 className="text-lg font-semibold">Add Address Info</h2>
           <button
             onClick={handleClose}
-            className="text-gray-600 hover:text-orange-500 absolute top-4 right-4"
+            className="text-gray-600 hover:text-[#FE7A3A] absolute top-4 right-4"
           >
             <FaTimes size={20} />
           </button>
@@ -230,13 +231,13 @@ const AddAddress = ({ onClose }) => {
         {/* Buttons */}
         <div className="flex justify-between mt-6">
           <button
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
             onClick={handleAddAddress}
           >
             Save Address
           </button>
           <button
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
             onClick={handleNext}
           >
             Next

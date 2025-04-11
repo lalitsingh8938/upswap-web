@@ -255,18 +255,18 @@ const ServiceTime = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-500 to-white p-4 rounded-lg">
+    <div className="flex justify-center items-center min-h-screen border-2 bg-[#FE7A3A] to-white p-4 rounded-lg">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
         <div className="bg-white p-1 rounded-xl w-full max-w-md relative">
           {/* Close Button Outside the Top-Right of Heading */}
           <button
             onClick={handleClose}
-            className="absolute -top-4 -right-4 bg-white text-gray-600 rounded-full hover:text-orange-500 z-10"
+            className="absolute -top-4 -right-4 bg-white text-gray-600 rounded-full hover:text-[#FE7A3A] z-10"
           >
             <FaTimes size={20} />
           </button>
 
-          <h2 className="text-xl font-semibold text-center text-white bg-orange-500 py-3 rounded-lg">
+          <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">
             Become a Vendor
           </h2>
         </div>
@@ -275,7 +275,7 @@ const ServiceTime = () => {
           Choose Business Hours <span className="cursor-pointer">▼</span>
         </div>
 
-        <div className="bg-white border rounded-lg border-orange-400 p-3 my-4">
+        <div className="bg-white border rounded-lg border-[#FE7A3A] p-3 my-4">
           {businessHours.map((item, index) => (
             <div
               key={index}
@@ -328,7 +328,7 @@ const ServiceTime = () => {
                   checked={item.active}
                   onChange={() => handleToggle(index)}
                 />
-                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-orange-500 peer-checked:after:translate-x-5 after:content-[''] after:absolute after:left-1 after:top-1 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all"></div>
+                <div className="w-10 h-5 bg-gray-300 rounded-full peer-checked:bg-[#FE7A3A] peer-checked:after:translate-x-5 after:content-[''] after:absolute after:left-1 after:top-1 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all"></div>
               </label>
             </div>
           ))}
@@ -337,7 +337,7 @@ const ServiceTime = () => {
         <div className="flex items-center gap-2 my-4">
           <input
             type="checkbox"
-            className="w-5 h-5 border border-orange-500 rounded-md"
+            className="w-5 h-5 border border[#FE7A3A] rounded-md"
           />
           <span className="text-gray-600">
             Share a few details to enhance your Upswap experience
@@ -347,14 +347,14 @@ const ServiceTime = () => {
         {/* ✅ Three Buttons */}
         <div className="flex justify-between mt-6 gap-2">
           <button
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
             onClick={handleSaveToLocal}
           >
             Save Data
           </button>
 
           <button
-            className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
             onClick={handleSubmit}
           >
             Submit

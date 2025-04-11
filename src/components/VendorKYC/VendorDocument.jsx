@@ -121,20 +121,20 @@ const VendorDocument = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+    <div className="relative flex justify-center items-center min-h-screen border-2 bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
       <div className="relative bg-white rounded-xl w-full max-w-md">
         <ToastContainer position="top-center" autoClose={3000} />
 
         {/* Top-right Close Button */}
         <button
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-600 hover:text-orange-500"
+          className="absolute top-2 right-2 text-gray-600 hover:text-[#FE7A3A]"
         >
           <FaTimes size={20} />
         </button>
 
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-          <h2 className="text-xl font-semibold text-center text-white bg-orange-500 py-3 rounded-lg">
+          <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">
             Become a Vendor
           </h2>
 
@@ -142,7 +142,7 @@ const VendorDocument = () => {
           <h3 className="text-gray-700 mb-2 font-semibold">
             Upload Business Documents
           </h3>
-          <label className="flex flex-col items-center border-2 border-dashed border-orange-400 p-4 w-full rounded-lg cursor-pointer">
+          <label className="flex flex-col items-center border-2 border-dashed border-[#FE7A3A] p-4 w-full rounded-lg cursor-pointer">
             <FaUpload className="text-orange-500 text-2xl" />
             <span className="text-orange-500 mt-2 text-sm">Upload</span>
             <input
@@ -161,7 +161,7 @@ const VendorDocument = () => {
               <span className="text-gray-600">Document {index + 1}</span>
               <button
                 onClick={() => removeDocument(index)}
-                className="text-red-500"
+                className="text-[#FE7A3A]"
               >
                 <FaTimes />
               </button>
@@ -173,8 +173,8 @@ const VendorDocument = () => {
             Upload Business Photos
           </h3>
           <label className="flex flex-col items-center border-2 border-dashed border-orange-400 p-4 w-full rounded-lg cursor-pointer">
-            <FaUpload className="text-orange-500 text-2xl" />
-            <span className="text-orange-500 mt-2 text-sm">Upload</span>
+            <FaUpload className="text-[#FE7A3A] text-2xl" />
+            <span className="text-[#FE7A3A] mt-2 text-sm">Upload</span>
             <input
               type="file"
               accept="image/*"
@@ -210,7 +210,7 @@ const VendorDocument = () => {
 
           {/* Add Address */}
           <button
-            className="flex items-center gap-2 w-full border-2 border-orange-400 text-orange-500 p-2 rounded-lg mt-4"
+            className="flex items-center gap-2 w-full border-2 border-[#FE7A3A] text-[#FE7A3A] p-2 rounded-lg mt-4"
             onClick={() => navigate("/AddAddress")}
           >
             <FaPlus /> Add Address
@@ -219,7 +219,7 @@ const VendorDocument = () => {
           {/* Footer Buttons */}
           <div className="flex justify-between mt-6">
             <button
-              className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+              className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
               onClick={() => {
                 if (businessDocs.length === 0) {
                   toast.warn(
@@ -242,7 +242,7 @@ const VendorDocument = () => {
             </button>
 
             <button
-              className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600"
+              className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
               onClick={handleNext}
             >
               Next

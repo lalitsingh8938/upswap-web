@@ -65,6 +65,21 @@ const DealForm = ({ onClose }) => {
     }
     formData.append("show_promotion", promotion);
 
+    const savedAddress = JSON.parse(localStorage.getItem("address")) || {};
+
+    formData.append(
+      "location_house_no",
+      savedAddress.house_no_building_name || ""
+    );
+    formData.append(
+      "location_road_name",
+      savedAddress.road_name_area_colony || ""
+    );
+    formData.append("location_country", savedAddress.country || "");
+    formData.append("location_state", savedAddress.state || "");
+    formData.append("location_city", savedAddress.city || "");
+    formData.append("location_pincode", savedAddress.pincode || "");
+
     try {
       const response = await fetch("https://api.upswap.app/api/deals/create/", {
         method: "POST",
@@ -94,14 +109,14 @@ const DealForm = ({ onClose }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-orange-400 to-orange-500 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#FE7A3A] p-4 border-2 rounded-lg">
       <form
         className="bg-white p-6 rounded-xl shadow-md w-full max-w-md space-y-4 relative"
         onSubmit={handleSubmit}
       >
         <button
           onClick={handleClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-orange-500"
+          className="absolute top-2 right-2 text-gray-500 hover:text-[#FE7A3A]"
           type="button"
         >
           <FaTimes size={20} />
@@ -116,7 +131,7 @@ const DealForm = ({ onClose }) => {
               type="checkbox"
               checked={startNow}
               onChange={() => setStartNow(!startNow)}
-              className="accent-orange-500 w-5 h-5"
+              className="accent-[#FE7A3A] w-5 h-5"
             />
             <span className="text-gray-700">Start now</span>
           </div>
@@ -192,7 +207,7 @@ const DealForm = ({ onClose }) => {
 
         <button
           type="submit"
-          className="bg-orange-500 hover:bg-orange-600 text-white w-full py-2 rounded-md shadow-md"
+          className="bg-[#FE7A3A] hover:bg-orange-600 text-white w-full py-2 rounded-md shadow-md"
         >
           Submit Deal
         </button>

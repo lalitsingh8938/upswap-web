@@ -51,7 +51,7 @@ const MyActivity = () => {
           />
         </div>
         <div className="flex justify-around mt-4">
-          <button className="px-4 py-2 bg-orange-500 text-white rounded-lg">
+          <button className="px-4 py-2 bg-[#FE7A3A] text-white rounded-lg">
             All 17
           </button>
           <button className="px-4 py-2 bg-gray-300 rounded-lg">
@@ -96,9 +96,9 @@ const MyActivity = () => {
               </p>
             )}
             <p className="flex items-center text-gray-600 text-sm">
-              <FaMapMarkerAlt className="text-red-500 mr-1" /> {activity.location} ({activity.distance})
+              <FaMapMarkerAlt className="text-[#FE7A3A] mr-1" /> {activity.location} ({activity.distance})
             </p>
-            <button className="mt-2 w-full py-2 bg-orange-500 text-white rounded-lg">
+            <button className="mt-2 w-full py-2 bg-[#FE7A3A] text-white rounded-lg">
               {activity.actionText}
             </button>
           </div>

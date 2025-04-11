@@ -93,9 +93,9 @@ const BasicInfo = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+    <div className="flex justify-center items-center min-h-screen border-2 bg-[#FE7A3A] to-white p-4 rounded-lg">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-semibold text-center text-white bg-orange-500 py-3 rounded-lg">
+        <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A]py-3 rounded-lg">
           Become a Vendor
         </h2>
 
@@ -105,9 +105,9 @@ const BasicInfo = () => {
             <img
               src={profileImage || previewImage || "/default-avatar.png"}
               alt="Profile"
-              className="w-24 h-24 rounded-full border-4 border-orange-400 object-cover"
+              className="w-24 h-24 rounded-full border-4 border-[#FE7A3A] object-cover"
             />
-            <label className="absolute bottom-0 right-0 bg-orange-500 text-white p-1 rounded-full cursor-pointer">
+            <label className="absolute bottom-0 right-0 bg-[#FE7A3A] text-white p-1 rounded-full cursor-pointer">
               <Pencil size={16} />
               <input
                 type="file"
@@ -204,7 +204,7 @@ const BasicInfo = () => {
 
         {/* Next Button */}
         <button
-          className="w-full bg-orange-500 text-white p-2 rounded-lg mt-4 hover:bg-orange-600"
+          className="w-full bg-[#FE7A3A] text-white p-2 rounded-lg mt-4 hover:bg-[#FE7A3A]"
           onClick={handleNext}
         >
           Next

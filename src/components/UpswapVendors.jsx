@@ -4,7 +4,7 @@ const UpswapVendors = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 rounded-lg">
+      <div className="flex items-center justify-between bg-gradient-to-r border-2 bg-[#FE7A3A] text-white p-4 rounded-lg">
         <button className="text-xl">&#8592;</button>
         <h1 className="text-lg font-semibold">Vendors</h1>
         <div className="flex gap-4">

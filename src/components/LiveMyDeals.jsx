@@ -10,15 +10,17 @@ const MyDeals = () => {
   const [activeTab, setActiveTab] = useState("Live");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredProducts = activeTab === "All" 
-  ? productData 
-  : productData.filter((product) => product.status.toLowerCase() === activeTab.toLowerCase());
-
+  const filteredProducts =
+    activeTab === "All"
+      ? productData
+      : productData.filter(
+          (product) => product.status.toLowerCase() === activeTab.toLowerCase()
+        );
 
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Header */}
-      <header className="bg-gradient-to-r from-orange-500 to-orange-700 text-white p-4 flex justify-between items-center">
+      <header className="bg-gradient-to-r bg-[#FE7A3A] text-white p-4 flex justify-between items-center">
         <button className="text-xl">&larr;</button>
         <h1 className="text-lg font-semibold">My Deals</h1>
         <FaBars className="text-xl" />
@@ -46,7 +48,7 @@ const MyDeals = () => {
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-full ${
               activeTab === tab
-                ? "bg-orange-500 text-white"
+                ? "bg-[#FE7A3A] text-white"
                 : "bg-gray-300 text-gray-700"
             }`}
           >
@@ -73,13 +75,19 @@ const MyDeals = () => {
               </span>
               <h2 className="font-semibold text-lg">{product.title}</h2>
               <p className="text-sm text-gray-600 flex items-center">
-                <FaMapMarkerAlt className="mr-1 text-red-500" /> {product.location}
+                <FaMapMarkerAlt className="mr-1 text-[#FE7A3A]" />{" "}
+                {product.location}
               </p>
               <p className="text-sm text-gray-500">
-                <span className="line-through text-gray-400">₹{product.originalPrice}</span>
-                <span className="text-orange-600 font-bold"> ₹{product.discountedPrice}</span>
+                <span className="line-through text-gray-400">
+                  ₹{product.originalPrice}
+                </span>
+                <span className="text-orange-600 font-bold">
+                  {" "}
+                  ₹{product.discountedPrice}
+                </span>
               </p>
-              <button className="mt-2 bg-orange-500 text-white px-4 py-1 rounded-lg">
+              <button className="mt-2 bg-[#FE7A3A] text-white px-4 py-1 rounded-lg">
                 Deactivate
               </button>
             </div>
@@ -88,14 +96,14 @@ const MyDeals = () => {
       </div>
 
       {/* Floating Action Button */}
-      <button className="fixed bottom-20 right-6 bg-orange-500 p-4 rounded-full shadow-lg text-white">
+      <button className="fixed bottom-20 right-6 bg-[#FE7A3A]p-4 rounded-full shadow-lg text-white">
         <FaTag className="text-2xl" />
       </button>
 
       {/* Bottom Navigation Bar */}
       <nav className="fixed bottom-0 w-full bg-white shadow-md flex justify-around py-2">
         <BiHomeAlt className="text-2xl text-gray-600" />
-        <MdOutlineLocalOffer className="text-2xl text-orange-500" />
+        <MdOutlineLocalOffer className="text-2xl text-[#FE7A3A]" />
         <RiExchangeDollarLine className="text-2xl text-gray-600" />
         <AiOutlineShoppingCart className="text-2xl text-gray-600" />
         <AiOutlineUser className="text-2xl text-gray-600" />

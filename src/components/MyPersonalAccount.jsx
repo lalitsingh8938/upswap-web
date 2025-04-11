@@ -17,7 +17,7 @@ export default function PersonalAccount() {
   };
 
   return (
-    <div className="bg-[#FE7A3A] h-screen p-4 rounded-lg">
+    <div className="bg-[#FE7A3A] h-screen p-4 rounded-lg border-2">
       <div className="flex items-center text-white text-lg font-semibold pb-4">
         <button className="mr-4">&#x276E;</button>
         My Personal Account
@@ -67,9 +67,9 @@ export default function PersonalAccount() {
       </div>
 
       <div className="bg-white rounded-xl shadow-lg p-4 mt-4 flex items-center gap-3">
-        <span className="text-orange-500 text-xl">🛒</span>
+        <span className="text-[#FE7A3A] text-xl">🛒</span>
         <div>
-          <p className="text-orange-500 font-semibold">My Orders</p>
+          <p className="text-[#FE7A3A] font-semibold">My Orders</p>
           <p className="text-gray-500 text-sm">See your last order details</p>
         </div>
       </div>
