@@ -32,9 +32,10 @@ const VendorDocument = () => {
         "uploaded_business_documents1",
         JSON.stringify(fileUrl)
       );
+      toast.success("Document uploaded successfully!");
       return fileUrl;
     } catch (error) {
-      alert("Failed to upload document");
+      toast.error("Failed to upload document");
       return null;
     }
   };
@@ -58,6 +59,7 @@ const VendorDocument = () => {
       const imageUrl = response.data?.data; // ✅ nested path .[0]?.compressed;
 
       localStorage.setItem("uploaded_images1", JSON.stringify(imageUrl));
+      toast.success("Photo uploaded successfully!");
       return imageUrl;
     } catch (error) {
       // console.error("Photo upload failed:", error);

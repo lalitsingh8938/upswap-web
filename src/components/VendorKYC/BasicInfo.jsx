@@ -48,9 +48,11 @@ const BasicInfo = () => {
       const uploadedProfilePic = response.data[0];
       setProfileImage(uploadedProfilePic);
       localStorage.setItem("profile_image_url", uploadedProfilePic);
+      toast.success("Profile image uploaded successfully!");
+    
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to upload image");
+      toast.warning("Failed to upload image");
     }
   };
 
@@ -95,7 +97,7 @@ const BasicInfo = () => {
   return (
     <div className="flex justify-center items-center min-h-screen border-2 bg-[#FE7A3A] to-white p-4 rounded-lg">
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A]py-3 rounded-lg">
+        <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">
           Become a Vendor
         </h2>
 

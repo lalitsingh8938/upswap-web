@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ServiceTime = () => {
@@ -130,7 +130,7 @@ const ServiceTime = () => {
 
       const profilePicUrl = localStorage.getItem("profile_image_url");
       if (profilePicUrl && !isValidUrl(profilePicUrl)) {
-        alert("Profile image URL is not valid.");
+        toast.warning("Profile image URL is not valid.");
         return;
       }
 
@@ -227,10 +227,16 @@ const ServiceTime = () => {
       const result = await response.json();
 
       if (response.ok) {
-        // console.log("✅ KYC Submitted Successfully:", result);
         toast.success("KYC Submitted Successfully!");
-        localStorage.clear();
+        // localStorage.clear();
+        // ✅ Save vendor_id from API response
+        if (result?.vendor_kyc) {
+          localStorage.setItem("vendor_id", result.vendor_kyc.vendor_id);
+        }
+        console.log("vendor_id", result.vendor_kyc.vendor_id);
+
         navigate("/DealsPage"); // Optional redirect
+      
       } else {
         console.error("❌ API Error:", result);
         toast.warn(
