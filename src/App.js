@@ -29,6 +29,7 @@ import AddAddress from "./components/VendorKYC/AddAddress";
 import AddService from "./components/VendorKYC/AddService";
 import PostDeal from "./components/Deals/PostDeal";
 import PostDealNext from "./components/Deals/PostDealNext";
+import CountDownTimer from "./components/CountDownTimer";
 
 function App() {
   return (

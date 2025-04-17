@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaPlus, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import CountdownTimer from "./CountDownTimer";
 
 const DealsList = () => {
   const [deals, setDeals] = useState([]);
   const navigate = useNavigate();
-
   useEffect(() => {
     axios
       .get("https://api.upswap.app/api/deals/lists/")
@@ -62,10 +62,17 @@ const DealsList = () => {
             />
             <h2 className="text-lg font-semibold mt-2">{deal.deal_title}</h2>
             <p className="text-sm text-gray-600">{deal.select_service}</p>
-            <p className="text-sm mt-1">
-              Location: {deal.location_city}, {deal.location_state}
+            {/* <p className="text-sm mt-1">
+              Location:{deal.location_city}, {deal.location_state}
+            </p> */}
+            <p className="text-sm mt-1 flex gap-2">
+              <span className="font-medium">Location:</span>
+              <span>
+                {deal.location_city}, {deal.location_state}
+              </span>
             </p>
-            <p className="mt-2">
+
+            <p className="mt-2 flex gap-2">
               <span className="line-through text-red-500">
                 ₹{deal.actual_price}
               </span>{" "}
@@ -73,9 +80,30 @@ const DealsList = () => {
                 ₹{deal.deal_price}
               </span>
             </p>
-            <p className="text-sm text-gray-500">
+            {/* <p className="text-sm text-gray-500 gap-2">
               Discount: {deal.discount_percentage}%
+            </p> */}
+            <p className="text-sm text-gray-500 flex gap-2">
+              <span className="font-semibold text-red-600">Discount:</span>
+              <span>{deal.discount_percentage}%</span>
             </p>
+
+            {/* <span className="text-lg font-semibold text-gray-800 mb-2">
+              Deal Available on
+            </span>
+            <CountdownTimer endDate={deal.end_date} endTime={deal.end_time} /> */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg font-semibold text-gray-800">
+                Deal Available on
+              </span>
+              <div className="px-3 py-1 bg-gray-100 border border-gray-300 rounded-md text-sm font-medium text-gray-700">
+                <CountdownTimer
+                  endDate={deal.end_date}
+                  endTime={deal.end_time}
+                />
+              </div>
+            </div>
+
             {deal.buy_now && (
               <button className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]">
                 Buy Now
