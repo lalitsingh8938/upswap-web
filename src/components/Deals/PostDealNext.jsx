@@ -4,6 +4,7 @@ import { Switch } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { LuLoader } from "react-icons/lu";
 
 const DealForm = ({ onClose }) => {
   const navigate = useNavigate();
@@ -16,19 +17,23 @@ const DealForm = ({ onClose }) => {
   const [actualPrice, setActualPrice] = useState("");
   const [dealPrice, setDealPrice] = useState("");
   const [availableDeals, setAvailableDeals] = useState("");
-  const [remainingTime, setRemainingTime] = useState("");
+  // const [remainingTime, setRemainingTime] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [buyNow, setBuyNow] = useState(false);
+  const [savedAddresses, setSavedAddresses] = useState([false]);
+  const [selectedAddress, setSelectedAddress] = useState("");
+  const [selectedAddressDetails, setSelectedAddressDetails] = useState(null);
+  const [loading, setLoading] = useState(false); // Loading state
 
-  const formatTime = (time) => {
-    const date = new Date(time);
-    return date.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  // const formatTime = (time) => {
+  //   const date = new Date(time);
+  //   return date.toLocaleTimeString("en-GB", {
+  //     hour: "2-digit",
+  //     minute: "2-digit",
+  //   });
+  // };
 
   useEffect(() => {
     const stored = localStorage.getItem("deal_data"); // ✅ updated key
@@ -38,25 +43,37 @@ const DealForm = ({ onClose }) => {
   }, []);
 
   const vendor_kyc = localStorage.getItem("vendor_id");
-  const Vendor_id  = localStorage.getItem("vendor_id")
-  const userId = localStorage.getItem("user_id");
+  const Vendor_id = localStorage.getItem("vendor_id");
+  // const userId = localStorage.getItem("user_id");
 
-  const handleLocationChange = (e) => {
-    const selected = e.target.value;
-    setLocation(selected);
+  useEffect(() => {
+    const savedAddress = localStorage.getItem("address");
+    if (savedAddress) {
+      const parsedAddress = JSON.parse(savedAddress);
+      setSavedAddresses([parsedAddress]);
 
-    if (selected === "live" && "geolocation" in navigator) {
+      // Auto-select the saved address if there's only one
+      if (parsedAddress.address_name) {
+        setSelectedAddress(parsedAddress.address_name);
+      }
+    }
+  }, []);
+
+  const handleLiveLocation = () => {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setCoordinates({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
+          const lat = parseFloat(position.coords.latitude.toFixed(6));
+          const lng = parseFloat(position.coords.longitude.toFixed(6));
+          setCoordinates({ lat, lng });
+          setSelectedAddress("");
+          setSelectedAddressDetails(null);
         },
         () => {
           toast.warning(
             "Unable to fetch location. Please allow location access."
           );
+          setLocation("");
         }
       );
     } else {
@@ -64,8 +81,43 @@ const DealForm = ({ onClose }) => {
     }
   };
 
+  const validateForm = () => {
+    if (
+      !dealData ||
+      !startDate ||
+      !endDate ||
+      !startTime ||
+      !endTime ||
+      !actualPrice ||
+      !dealPrice ||
+      !availableDeals ||
+      (!selectedAddress && location !== "live")
+    ) {
+      toast.warning("Please fill all the fields before posting the deal.");
+      return false;
+    }
+
+    const actual = parseFloat(actualPrice);
+    const deal = parseFloat(dealPrice);
+
+    if (isNaN(actual) || isNaN(deal)) {
+      toast.warning("Please enter valid numbers for prices.");
+      return false;
+    }
+
+    if (deal >= actual) {
+      toast.warning("Deal Price must be less than Actual Price.");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return; // Prevent submission if validation fails
+
+    setLoading(true); // Start loading
 
     const savedAddress = JSON.parse(localStorage.getItem("address")) || {};
     const uploadedImages =
@@ -92,17 +144,26 @@ const DealForm = ({ onClose }) => {
       .replace("T", " ")
       .slice(0, 19);
 
+    if (location === "live" && !coordinates) {
+      toast.warning("Please wait until your location is fetched.");
+      return;
+    }
+
     const payload = {
+      vendor_uuid: Vendor_id,
       vendor_name: vendorData?.full_name || "",
+      // vendor_email:
+      // vendor_phone_number
+      uploaded_images: uploadedImagesFormatted,
+      deal_post_time: deal_post_time,
+      deal_title: dealTitle || "",
+      deal_description: dealDescription || "",
+      select_service: selectedService || "",
       start_date: startDate,
       end_date: endDate,
       start_time: startTime,
       buy_now: buyNow,
       discount_percentage: parseFloat(discount_percentage),
-      deal_post_time: deal_post_time,
-      deal_title: dealTitle || "",
-      deal_description: dealDescription || "",
-      select_service: selectedService || "",
       start_now: startNow,
       end_time: endTime,
       actual_price: actualPrice,
@@ -110,9 +171,7 @@ const DealForm = ({ onClose }) => {
       available_deals: availableDeals,
       location: location,
       vendor_kyc: vendor_kyc,
-      vendor_uuid: Vendor_id,
       show_promotion: promotion,
-      uploaded_images: uploadedImagesFormatted,
       location_house_no: savedAddress.house_no_building_name || "",
       location_road_name: savedAddress.road_name_area_colony || "",
       location_country: savedAddress.country || "",
@@ -141,7 +200,7 @@ const DealForm = ({ onClose }) => {
 
       if (response.ok) {
         toast.success("Deal created successfully!");
-        localStorage.clear()
+        // localStorage.clear()
         navigate("/DealsPage");
       } else {
         toast.warning(
@@ -151,6 +210,8 @@ const DealForm = ({ onClose }) => {
     } catch (err) {
       console.error("Error:", err);
       toast.warning("Something went wrong while creating the deal.");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -264,7 +325,16 @@ const DealForm = ({ onClose }) => {
               <input
                 type="number"
                 value={dealPrice}
-                onChange={(e) => setDealPrice(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setDealPrice(value);
+                  if (
+                    actualPrice &&
+                    parseFloat(value) >= parseFloat(actualPrice)
+                  ) {
+                    toast.warning("Deal Price must be less than Actual Price.");
+                  }
+                }}
                 placeholder="Deal Price"
                 className="w-full border border-gray-300 rounded-md px-3 py-2"
               />
@@ -292,26 +362,114 @@ const DealForm = ({ onClose }) => {
           <h2 className="text-lg font-semibold text-gray-800 mb-2">
             Location & Promotion
           </h2>
-          <label className="text-gray-700 block mb-1">Location</label>
-          <select
-            value={location}
-            onChange={handleLocationChange}
-            className="w-full border border-gray-300 rounded-md px-3 py-2"
-          >
-            <option value="">Choose Location</option>
-            <option value="Mumbai">Mumbai</option>
-            <option value="Delhi">Delhi</option>
-            <option value="Bangalore">Bangalore</option>
-            <option value="live">📍 Use my live location</option>
-          </select>
-          {coordinates && (
-            <p className="text-sm text-green-600 mt-1">
-              Location: Lat {coordinates.lat.toFixed(4)}, Lng{" "}
-              {coordinates.lng.toFixed(4)}
-            </p>
-          )}
 
-          <div className="flex items-center justify-between mt-4">
+          {/* Saved Address Dropdown */}
+          <div className="mb-3">
+            <label className="text-gray-700 block mb-1">
+              Select Saved Address
+            </label>
+            {savedAddresses.length > 0 ? (
+              <select
+                value={selectedAddress} // Always show selected address if exists
+                onChange={(e) => {
+                  const selected = savedAddresses.find(
+                    (addr) => addr.address_name === e.target.value
+                  );
+                  setSelectedAddress(e.target.value);
+                  setSelectedAddressDetails(selected);
+                  setLocation("saved");
+                  setCoordinates(null);
+                }}
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+              >
+                <option value="">Select a saved address</option>
+                {savedAddresses.map((addr, index) => (
+                  <option key={index} value={addr.address_name}>
+                    {`${addr.house_no_building_name}, ${addr.city}`}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <p className="text-sm text-gray-500">No saved addresses found</p>
+            )}
+          </div>
+
+          {/* Live Location Option */}
+          <div className="mb-3">
+            <label className="text-gray-700 block mb-1">
+              Use Live Location
+            </label>
+            <select
+              value={location === "live" ? "live" : ""}
+              onChange={(e) => {
+                const loc = e.target.value;
+                setLocation(loc);
+                if (loc === "live") {
+                  handleLiveLocation();
+                  // Don't clear selectedAddress - just change location type
+                } else {
+                  setCoordinates(null);
+                }
+              }}
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
+              disabled={!navigator.geolocation}
+            >
+              <option value="">Select location option</option>
+              <option value="live">📍 Use my live location</option>
+            </select>
+          </div>
+
+          {/* Conditional Previews */}
+          {location === "saved" && selectedAddressDetails ? (
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+              <h3 className="font-medium text-gray-800 mb-2">
+                Selected Address:
+              </h3>
+              {location === "saved" && selectedAddressDetails && (
+                <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <h3 className="font-medium text-gray-800 mb-2">
+                    Selected Address:
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <p>
+                      <strong>House/Building:</strong>{" "}
+                      {selectedAddressDetails.house_no_building_name}
+                    </p>
+                    <p>
+                      <strong>Road/Area:</strong>{" "}
+                      {selectedAddressDetails.road_name_area_colony}
+                    </p>
+                    <p>
+                      <strong>City:</strong> {selectedAddressDetails.city}
+                    </p>
+                    <p>
+                      <strong>State:</strong> {selectedAddressDetails.state}
+                    </p>
+                    <p>
+                      <strong>Country:</strong> {selectedAddressDetails.country}
+                    </p>
+                    <p>
+                      <strong>Pincode:</strong> {selectedAddressDetails.pincode}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : location === "live" && coordinates ? (
+            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="font-medium text-gray-800 mb-2">Live Location:</h3>
+              <p className="text-sm">
+                <span className="font-medium">Latitude:</span>{" "}
+                {coordinates.lat.toFixed(6)}
+                <br />
+                <span className="font-medium">Longitude:</span>{" "}
+                {coordinates.lng.toFixed(6)}
+              </p>
+            </div>
+          ) : null}
+
+          {/* Promotion Switch */}
+          <div className="flex items-center justify-between mt-6">
             <label className="text-gray-700 font-medium">
               Show as promotion
             </label>
@@ -334,9 +492,21 @@ const DealForm = ({ onClose }) => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="bg-[#FE7A3A] hover:bg-orange-600 text-white w-full py-2 rounded-md shadow-md"
+          disabled={(location === "live" && !coordinates) || loading}
+          className={`${
+            (location === "live" && !coordinates) || loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-[#FE7A3A] hover:bg-orange-600"
+          } text-white w-full py-2 rounded-md shadow-md`}
         >
-          Submit Deal
+          {loading ? (
+            <span className="flex justify-center items-center gap-2">
+              <LuLoader className="animate-spin h-5 w-5" />
+              Please wait...
+            </span>
+          ) : (
+            "Post Deal"
+          )}
         </button>
       </form>
     </div>

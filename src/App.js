@@ -16,6 +16,7 @@ import DealsPage from "./components/DealsPage";
 import Header from "./components/Dashboard/Header";
 import { ToastContainer } from "react-toastify";
 import Login from "./components/Authentication/Login";
+import SocialLogin from "./components/Authentication/SocialLogin";
 import VerifyOtp from "./components/Authentication/VerifyOtp";
 import VerifyOtpForgotPassword from "./components/Authentication/VerifyOtpForgotPassword";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
@@ -29,7 +30,10 @@ import AddAddress from "./components/VendorKYC/AddAddress";
 import AddService from "./components/VendorKYC/AddService";
 import PostDeal from "./components/Deals/PostDeal";
 import PostDealNext from "./components/Deals/PostDealNext";
-import CountDownTimer from "./components/CountDownTimer";
+// import CountDownTimer from "./components/CountDownTimer";
+import DealDetails from "./components/DealDetails";
+import "./api/interceptors";
+import MyDeals from "./components/Deals/MyDeals";
 
 function App() {
   return (
@@ -51,6 +55,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/SocialLogin" element={<SocialLogin />} />{" "}
+            {/* SocialLogin Route */}
             <Route path="/VerifyOtp" element={<VerifyOtp />} />
             <Route
               path="/VerifyOtpForgotPassword"
@@ -58,7 +64,6 @@ function App() {
             />
             <Route path="/ForgotPassword" element={<ForgotPassword />} />
             <Route path="/ResetPassword" element={<ResetPassword />} />
-
             {/* Protected Routes */}
             <Route path="/*" element={<Layout />}>
               <Route element={<PrivateRoute />}>
@@ -83,6 +88,22 @@ function App() {
                 <Route path="AddService" element={<AddService />} />
                 <Route path="PostDeal" element={<PostDeal />} />
                 <Route path="PostDealNext" element={<PostDealNext />} />
+                <Route path="MyDeals" element={<MyDeals />} />
+                <Route path="MyDeals/live" element={<MyDeals type="live" />} />
+                <Route
+                  path="MyDeals/scheduled"
+                  element={<MyDeals type="scheduled" />}
+                />
+                <Route
+                  path="MyDeals/history"
+                  element={<MyDeals type="history" />}
+                />
+                <Route path="MyDeals/all" element={<MyDeals type="all" />} />
+
+                <Route
+                  path="DealDetails/:deal_uuid"
+                  element={<DealDetails />}
+                />
               </Route>
             </Route>
           </Routes>

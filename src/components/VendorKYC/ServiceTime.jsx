@@ -188,8 +188,10 @@ const ServiceTime = () => {
             state: address?.state || "",
             city: address?.city || "",
             pincode: address?.pincode || "",
-            latitude: "",
-            longitude: "",
+            // latitude: "-25.659948",
+            // longitude: "-49.309375",
+            latitude: address?.latitude,
+            longitude: address?.longitude,
           },
         ],
 
@@ -208,6 +210,8 @@ const ServiceTime = () => {
           },
         ],
         business_hours: formattedHours,
+        latitude: address?.latitude,
+        longitude: address?.longitude,
       };
 
       // console.log("🚀 Final Payload:", formData);
@@ -233,10 +237,9 @@ const ServiceTime = () => {
         if (result?.vendor_kyc) {
           localStorage.setItem("vendor_id", result.vendor_kyc.vendor_id);
         }
-        console.log("vendor_id", result.vendor_kyc.vendor_id);
+        // console.log("vendor_id", result.vendor_kyc.vendor_id);
 
         navigate("/DealsPage"); // Optional redirect
-      
       } else {
         console.error("❌ API Error:", result);
         toast.warn(

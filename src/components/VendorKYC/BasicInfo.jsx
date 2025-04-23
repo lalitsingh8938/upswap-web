@@ -49,7 +49,6 @@ const BasicInfo = () => {
       setProfileImage(uploadedProfilePic);
       localStorage.setItem("profile_image_url", uploadedProfilePic);
       toast.success("Profile image uploaded successfully!");
-    
     } catch (error) {
       console.error("Upload error:", error);
       toast.warning("Failed to upload image");
@@ -91,6 +90,7 @@ const BasicInfo = () => {
     }
 
     localStorage.setItem("vendorData", JSON.stringify(formData));
+    localStorage.setItem(phone_number, formData.phone_number);
     navigate("/VendorDocument");
   };
 

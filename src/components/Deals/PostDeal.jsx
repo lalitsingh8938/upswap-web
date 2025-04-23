@@ -9,7 +9,7 @@ const PostDeal = () => {
   const [dealTitle, setDealTitle] = useState("");
   const [dealDescription, setDealDescription] = useState("");
   const [selectedService, setSelectedService] = useState("");
-  const [imageUrls, setImageUrls] = useState([]); // Store both thumbnail and compressed URLs
+  const [imageUrls, setImageUrls] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
@@ -38,22 +38,10 @@ const PostDeal = () => {
         data?.data?.[0]?.compressed
       ) {
         toast.success("Image uploaded successfully!");
-
-        // Store both thumbnail and compressed URLs
-        const uploadedUrls = {
+        return {
           thumbnail: data.data[0].thumbnail,
           compressed: data.data[0].compressed,
         };
-
-        // Save these URLs in localStorage as an array
-        localStorage.setItem(
-          "uploaded_deal_images",
-          JSON.stringify([...imageUrls, uploadedUrls])
-        );
-
-        console.log("Uploaded Image URLs:", uploadedUrls);
-
-        return uploadedUrls;
       } else {
         toast.error("Image upload failed.");
         return null;
@@ -74,14 +62,18 @@ const PostDeal = () => {
     for (const file of files) {
       const urls = await uploadImage(file);
       if (urls) {
-        uploadedUrls.push(urls); // Store both URLs in an array
+        uploadedUrls.push(urls);
         previewArray.push(URL.createObjectURL(file));
       }
     }
 
-    // Update the state with both thumbnail and compressed URLs
-    setImageUrls((prevUrls) => [...prevUrls, ...uploadedUrls]);
-    setImagePreviews((prevPreviews) => [...prevPreviews, ...previewArray]);
+    const updatedUrls = [...imageUrls, ...uploadedUrls];
+    const updatedPreviews = [...imagePreviews, ...previewArray];
+
+    setImageUrls(updatedUrls);
+    setImagePreviews(updatedPreviews);
+
+    localStorage.setItem("uploaded_deal_images", JSON.stringify(updatedUrls));
 
     setIsUploading(false);
   };
@@ -93,27 +85,25 @@ const PostDeal = () => {
     setImageUrls(updatedUrls);
     setImagePreviews(updatedPreviews);
 
-    // Update localStorage with the new image list
     localStorage.setItem("uploaded_deal_images", JSON.stringify(updatedUrls));
   };
 
-  // const handleClose = () => {
-  //       navigate("/DealsPage"); // or call onClose() if you're using this component as a modal
-  //     };
-
-  // const handleClose = (e) => {
-  //   e.preventDefault(); // Stop default anchor-like behavior
-  //   e.stopPropagation(); // Stop event bubbling
-  //   navigate("/DealsPage", { replace: true });
-  // };
-
   const handleNext = () => {
+    if (!dealTitle.trim()) {
+      toast.error("Please enter a deal title.");
+      return;
+    }
+
+    if (!dealDescription.trim()) {
+      toast.error("Please enter a deal description.");
+      return;
+    }
+
     if (imageUrls.length === 0) {
       toast.error("Please upload at least one image before proceeding.");
       return;
     }
 
-    // Save dealTitle, dealDescription, etc., if needed
     localStorage.setItem("deal_title", dealTitle);
     localStorage.setItem("deal_description", dealDescription);
     localStorage.setItem("deal_service", selectedService);
@@ -124,6 +114,7 @@ const PostDeal = () => {
   const handleClose = () => {
     navigate("/DealsPage", { replace: true });
   };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FE7A3A] p-6 border-2 rounded-lg">
       <ToastContainer position="top-center" autoClose={3000} />
@@ -153,6 +144,28 @@ const PostDeal = () => {
             className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400"
           />
         </div>
+
+        <select
+          name="service_category"
+          value={selectedService}
+          onChange={(e) => setSelectedService(e.target.value)}
+          className="w-full border p-2 rounded-lg mb-4 bg-white"
+        >
+          <option value="">Choose Item Category</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Restaurants">Restaurants</option>
+          <option value="Consultants">Consultants</option>
+          <option value="Estate Agents">Estate Agents</option>
+          <option value="Rent & Hire">Rent & Hire</option>
+          <option value="Dentist">Dentist</option>
+          <option value="Personal Care">Personal Care</option>
+          <option value="Food">Food</option>
+          <option value="Bakery">Bakery</option>
+          <option value="Groceries">Groceries</option>
+          <option value="Others">Others</option>
+        </select>
 
         {/* Deal Description */}
         <div className="mb-4">

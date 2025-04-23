@@ -24,6 +24,8 @@ const AddAddress = ({ onClose }) => {
 
   const [stateOptions, setStateOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
+  const [coordinates, setCoordinates] = useState(null);
+  const [location, setLocation] = useState("");
 
   const countryOptions = Country.getAllCountries().map((country) => ({
     value: country.isoCode,
@@ -91,6 +93,37 @@ const AddAddress = ({ onClose }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleLocationChange = (e) => {
+    const selected = e.target.value;
+    setLocation(selected);
+
+    if (selected === "live" && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = parseFloat(position.coords.latitude.toFixed(6));
+          const lng = parseFloat(position.coords.longitude.toFixed(6));
+          setCoordinates({
+            lat: lat,
+            lng: lng,
+          });
+
+          // ✅ Save coordinates to localStorage
+          localStorage.setItem("latitude", lat);
+          localStorage.setItem("longitude", lng);
+
+          // console.log("Coordinates fetched:", { lat, lng }); // Debugging line
+        },
+        () => {
+          toast.warning(
+            "Unable to fetch location. Please allow location access."
+          );
+        }
+      );
+    } else {
+      setCoordinates(null);
+    }
+  };
+
   // const handleAddAddress = () => {
   //   localStorage.setItem("address", JSON.stringify(formData));
   // };
@@ -116,10 +149,19 @@ const AddAddress = ({ onClose }) => {
       toast.warn("Please fill all the fields before saving the address.");
       return;
     }
+    const fullAddress = {
+      ...formData,
+      latitude: coordinates?.lat || "",
+      longitude: coordinates?.lng || "",
+      address_name: `${house_no_building_name}, ${road_name_area_colony}, ${city}, ${state}, ${country}, ${pincode}`,
+    };
 
-    localStorage.setItem("address", JSON.stringify(formData));
-    console.log("Saving to localStorage:", formData);
+    // console.log("Saved address with coordinates:", fullAddress);
+
+    // ✅ Save full address with lat/lng and full address string
+    localStorage.setItem("address", JSON.stringify(fullAddress));
     localStorage.setItem("country", country);
+
     toast.success("Address saved successfully!");
   };
 
@@ -174,6 +216,15 @@ const AddAddress = ({ onClose }) => {
           </button>
         </div>
 
+        <select
+          className="w-full border p-2 rounded-lg mb-3"
+          value={location}
+          onChange={handleLocationChange}
+        >
+          <option value="">Select Location Type</option>
+          <option value="live">Use Current Location</option>
+        </select>
+
         {/* Input Fields */}
         <input
           type="text"
@@ -181,7 +232,7 @@ const AddAddress = ({ onClose }) => {
           value={formData.house_no_building_name}
           onChange={handleChange}
           className="w-full border p-2 rounded-lg mb-3"
-          placeholder="Enter house no., building name"
+          placeholder="Enter house no. , building name"
         />
 
         <input

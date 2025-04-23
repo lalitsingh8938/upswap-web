@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Switch } from "@headlessui/react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   FaUser,
   FaStore,
@@ -15,7 +16,32 @@ import LogOut from "../Authentication/LogOut";
 export default function MainMenu() {
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState(true);
+  const [isApproved, setIsApproved] = useState();
+  // localStorage.getItem("is_approved") === "true"
+
   const navigate = useNavigate();
+
+  const fetchKYCStatus = async () => {
+    const vendorId = localStorage.getItem("vendor_id");
+    if (!vendorId) return;
+
+    try {
+      const response = await axios.get(
+        `https://api.upswap.app/api/vendor/status/${vendorId}/`
+      );
+      const updatedStatus = response.data.is_approved;
+      setIsApproved(updatedStatus);
+      // localStorage.setItem("is_approved", updatedStatus); // Sync localStorage
+    } catch (error) {
+      console.error("Failed to fetch KYC status", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchKYCStatus(); // Initial fetch
+    const interval = setInterval(fetchKYCStatus, 5000); // Auto-poll
+    return () => clearInterval(interval); // Cleanup
+  }, []);
 
   const menuItems = [
     {
@@ -52,15 +78,22 @@ export default function MainMenu() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center bg-gray-100 ">
-      <div className="fixed left-0 top-0 w-1/5 h-screen bg-white overflow-y-auto">
+    <div className="min-h-screen flex items-center bg-gray-100">
+      <div className="fixed left-0 top-0 w-1/5 h-screen bg-slate-100 overflow-y-auto">
         <div className="bg-[#FE7A3A] text-white text-center p-1 rounded-md shadow-md">
           <h2 className="font-semibold items-center px-6 py-6 rounded-lg">
             Main Menu
           </h2>
         </div>
 
-        <div className="mt-14 space-y-3">
+        {/* ✅ Show warning at top ONLY when isApproved is false */}
+        {!isApproved && (
+          <div className="bg-yellow-100 text-yellow-800 p-2 text-center rounded-md mt-4 mx-4">
+            Your KYC Approval is revoked. Please waiting for Approval
+          </div>
+        )}
+
+        <div className="mt-6 space-y-3">
           {menuItems.map((item, index) => (
             <div
               key={index}
@@ -70,13 +103,15 @@ export default function MainMenu() {
               <div className="flex items-center space-x-3">
                 <span className="text-[#FE7A3A] text-xl">{item.icon}</span>
                 <div>
-                  <h3 className="font-semibold text-[#FE7A3A]">{item.title}</h3>
+                  <h3 className="font-semibold text-[#FE7A3A] flex items-center gap-2">
+                    {item.title}
+                  </h3>
                   <p className="text-gray-500 text-sm">{item.subtitle}</p>
                 </div>
               </div>
-              {item.approved && (
-                <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs">
-                  Approved
+              {item.title === "My Business Account" && isApproved && (
+                <span className="text-green-600 text-sm font-semibold bg-green-100 px-1 py-1 rounded">
+                  ✅Approved
                 </span>
               )}
             </div>
@@ -85,6 +120,7 @@ export default function MainMenu() {
 
         <div className="mt-6 bg-white p-4 rounded-lg shadow-md">
           <h3 className="text-[#FE7A3A] font-semibold">Settings</h3>
+
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center space-x-2">
               <FaSun className="text-[#FE7A3A]" />
@@ -128,7 +164,6 @@ export default function MainMenu() {
           </div>
         </div>
 
-        {/* Logout Button Integrated */}
         <LogOut />
       </div>
     </div>

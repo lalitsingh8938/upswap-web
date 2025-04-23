@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import PhoneInput from "react-phone-input-2";
@@ -23,8 +23,8 @@ function Register() {
     // social_id: "",
     // type: "",
     // fcm_token: "",
-    // latitude: null,
-    // longitude: null,
+    latitude: null,
+    longitude: null,
     // termsAccepted: false,
   });
 
@@ -41,35 +41,35 @@ function Register() {
     }));
   };
 
-  // 📍 Fetch User Location (Latitude & Longitude)
-  // const getLocation = () => {
-  // if (navigator.geolocation) {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       setFormData((prevData) => ({
-  //         ...prevData,
-  //         latitude: position.coords.latitude,
-  //         longitude: position.coords.longitude,
-  //       }));
-  //       console.log(
-  //         "Location set:",
-  //         position.coords.latitude,
-  //         position.coords.longitude
-  //       );
-  //     },
-  //     (error) => {
-  //       console.error("Error fetching location:", error);
-  //       toast.checked("Please allow location access!");
-  //     }
-  //   );
-  // } else {
-  //   toast.error("Geolocation is not supported by this browser.");
-  // }
-  // };
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latitude = Number(position.coords.latitude.toFixed(6));
+          const longitude = Number(position.coords.longitude.toFixed(6));
+
+          setFormData((prevData) => ({
+            ...prevData,
+            latitude,
+            longitude,
+          }));
+
+          // console.log("Lat/Lng set:", latitude, longitude);
+        },
+        (error) => {
+          console.error("Location error:", error);
+          toast.error("Please allow location access!");
+        }
+      );
+    } else {
+      toast.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
   // 📌 Handle Form Submission (Send Data to API)
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Start loading
 
     const formattedData = {
       name: formData.name,
@@ -83,6 +83,8 @@ function Register() {
       country_code: formData.country_code,
       dial_code: formData.dial_code,
       country: formData.country,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
     };
 
     try {
@@ -152,8 +154,19 @@ function Register() {
               <div className="flex items-center rounded p-2 w-full border">
                 {/* <PhoneInput
                   country={"in"}
-                  value={formData.phone}
-                  onChange={(phone) => setFormData({ ...formData, phone })}
+                  value={formData.phone_number}
+                  onChange={(fullNumber, countryData) => {
+                    const numberOnly = fullNumber.replace(/\D/g, ""); // Remove non-digits
+                    const last10Digits = numberOnly.slice(-10); // Extract last 10 digits
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      phone_number: last10Digits, // Send only 10-digit number
+                      country_code:
+                        countryData?.countryCode?.toUpperCase() || "",
+                      dial_code: `+${countryData?.dialCode || ""}`,
+                      country: countryData?.name || "",
+                    }));
+                  }}
                   inputProps={{
                     name: "phone_number",
                     required: true,
@@ -259,7 +272,7 @@ function Register() {
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
               </span>
             </div>
-            {/* <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
                 name="termsAccepted"
@@ -269,7 +282,7 @@ function Register() {
               <label className="text-sm">
                 I accept Terms and Conditions & Privacy Policy
               </label>
-            </div> */}
+            </div>
 
             <button
               type="submit"

@@ -82,12 +82,22 @@ const AddService = ({ onClose }) => {
           name="service_category"
           value={formData.service_category}
           onChange={handleChange}
-          className="w-full border p-2 rounded-lg mb-3 bg-white"
+          className="w-full border p-2 rounded-lg mb-4 bg-white"
         >
           <option value="">Choose Item Category</option>
           <option value="Electronics">Electronics</option>
           <option value="Clothing">Clothing</option>
           <option value="Furniture">Furniture</option>
+          <option value="Restaurants">Restaurants</option>
+          <option value="Consultants">Consultants</option>
+          <option value="Estate Agents">Estate Agents</option>
+          <option value="Rent & Hire">Rent & Hire</option>
+          <option value="Dentist">Dentist</option>
+          <option value="Personal Care">Personal Care</option>
+          <option value="Food">Food</option>
+          <option value="Bakery">Bakery</option>
+          <option value="Groceries">Groceries</option>
+          <option value="Others">Others</option>
         </select>
 
         <textarea

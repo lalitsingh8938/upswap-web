@@ -57,6 +57,7 @@ const VendorDocument = () => {
       );
 
       const imageUrl = response.data?.data; // ✅ nested path .[0]?.compressed;
+      // console.log("Uploaded Photo URL:", imageUrl);
 
       localStorage.setItem("uploaded_images1", JSON.stringify(imageUrl));
       toast.success("Photo uploaded successfully!");
@@ -81,7 +82,10 @@ const VendorDocument = () => {
     const uploadedPhotos = await Promise.all(files.map(uploadPhoto));
     const newPhotos = [
       ...businessPhotos,
-      ...uploadedPhotos.flat().filter(Boolean),
+      ...uploadedPhotos
+        .flat()
+        .filter(Boolean)
+        .map((photo) => photo.compressed),
     ];
 
     setBusinessPhotos(newPhotos);
@@ -142,7 +146,7 @@ const VendorDocument = () => {
 
           {/* Document Upload */}
           <h3 className="text-gray-700 mb-2 font-semibold">
-            Upload Business Documents
+            Upload Business Documents (PDF, JPEG, PNG)
           </h3>
           <label className="flex flex-col items-center border-2 border-dashed border-[#FE7A3A] p-4 w-full rounded-lg cursor-pointer">
             <FaUpload className="text-orange-500 text-2xl" />
@@ -172,7 +176,7 @@ const VendorDocument = () => {
 
           {/* Photo Upload */}
           <h3 className="text-gray-700 mb-2 font-semibold">
-            Upload Business Photos
+            Upload Business Photos (JPEG, PNG)
           </h3>
           <label className="flex flex-col items-center border-2 border-dashed border-orange-400 p-4 w-full rounded-lg cursor-pointer">
             <FaUpload className="text-[#FE7A3A] text-2xl" />
@@ -188,7 +192,7 @@ const VendorDocument = () => {
 
           {/* Photo Preview */}
           {businessPhotos.length > 0 && (
-            <div className="grid grid-cols-3 gap-2 mb-4">
+            <div className="grid grid-cols-3 gap-2 mb-4 mt-4">
               {businessPhotos.map((photo, index) => (
                 <div
                   key={index}
