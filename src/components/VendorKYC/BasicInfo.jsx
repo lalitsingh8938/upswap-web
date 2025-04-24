@@ -68,6 +68,11 @@ const BasicInfo = () => {
       business_establishment_year,
     } = formData;
 
+    if (!profileImage && !previewImage) {
+      toast.warning("Please upload your profile picture");
+      return;
+    }
+
     if (!full_name) {
       toast.warning("Please enter your full name");
       return;
