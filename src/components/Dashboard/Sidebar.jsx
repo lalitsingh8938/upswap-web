@@ -110,7 +110,7 @@ export default function MainMenu() {
                 </div>
               </div>
               {item.title === "My Business Account" && isApproved && (
-                <span className="text-green-600 text-sm font-semibold bg-green-100 px-1 py-1 rounded">
+                <span className="text-green-600 text-sm font-semibold px-1 py-1 rounded">
                   ✅Approved
                 </span>
               )}
