@@ -155,17 +155,18 @@ const ActivitiesList = () => {
                           }`}
                     </span>
                   </div>
+                  <span className="text-sm text-gray-500 gap-2 flex items-center">
+                    <span className="text-black mr-2">⏰ Date</span>
+                    {activity.start_date
+                      ? new Date(activity.start_date).toLocaleDateString()
+                      : "Date not available"}
+                  </span>
                 </div>
 
                 <div className="mt-4 flex justify-between items-center">
                   <button className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]">
                     View Details
                   </button>
-                  <span className="text-xs text-gray-500">
-                    {activity.start_date
-                      ? new Date(activity.start_date).toLocaleDateString()
-                      : "Date not available"}
-                  </span>
                 </div>
               </div>
             </div>
