@@ -402,10 +402,8 @@
 
 // export default PostActivity;
 
-
-
 import React, { useState } from "react";
-import { FaLocationArrow } from "react-icons/fa";
+import { FaLocationArrow, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -457,7 +455,9 @@ const PostActivity = () => {
       (position) => {
         const { latitude, longitude } = position.coords;
         setCoordinates({ lat: latitude, lng: longitude });
-        setLocation(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`);
+        setLocation(
+          `Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}`
+        );
         toast.success("Location fetched successfully!");
       },
       (error) => {
@@ -483,7 +483,12 @@ const PostActivity = () => {
   };
 
   const handleNext = () => {
-    if (!activityTitle || !activityDescription || !activityType || (!location && !useCurrentLocation)) {
+    if (
+      !activityTitle ||
+      !activityDescription ||
+      !activityType ||
+      (!location && !useCurrentLocation)
+    ) {
       toast.warn("Please fill in all required fields.");
       return;
     }
@@ -504,12 +509,25 @@ const PostActivity = () => {
     localStorage.setItem("formData", JSON.stringify(formData));
     navigate("/PostActivitiesnext");
   };
+  const handleClose = () => {
+    navigate("/DealsPage", { replace: true });
+  };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FE7A3A] p-6 border-2 rounded-lg">
       <div className="relative bg-gradient-to-b from-orange-100 to-white rounded-xl p-6 shadow-md max-w-md w-full">
-        <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg mb-4">
-          Post a Activity
-        </h2>
+        <div className="relative mb-4">
+          <button
+            onClick={handleClose}
+            className="absolute -top-6 -right-5 bg-white text-[#FE7A3A] p-1 shadow hover:bg-gray-100 rounded-full"
+            type="button"
+          >
+            <FaTimes size={16} />
+          </button>
+
+          <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">
+            Post an Activity
+          </h2>
+        </div>
 
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-gray-700 mb-2">

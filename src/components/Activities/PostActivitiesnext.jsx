@@ -67,7 +67,11 @@ const PostActivitiesnext = () => {
       );
 
       const data = response.data;
-      if (response.status === 201 && data?.data?.[0]?.thumbnail && data?.data?.[0]?.compressed) {
+      if (
+        response.status === 201 &&
+        data?.data?.[0]?.thumbnail &&
+        data?.data?.[0]?.compressed
+      ) {
         toast.success("Image uploaded successfully!");
         return {
           thumbnail: data.data[0].thumbnail,
@@ -94,21 +98,21 @@ const PostActivitiesnext = () => {
     for (const file of files) {
       const preview = URL.createObjectURL(file);
       newPreviewImages.push(preview);
-      
+
       const uploadedImage = await uploadImage(file);
       if (uploadedImage) {
         newUploadedImages.push(uploadedImage);
       }
     }
 
-    setUploadedImages(prev => [...prev, ...newUploadedImages]);
-    setPreviewImages(prev => [...prev, ...newPreviewImages]);
+    setUploadedImages((prev) => [...prev, ...newUploadedImages]);
+    setPreviewImages((prev) => [...prev, ...newPreviewImages]);
     setUploading(false);
   };
 
   const handleRemoveImage = (index) => {
-    setPreviewImages(prev => prev.filter((_, i) => i !== index));
-    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e) => {
@@ -158,13 +162,29 @@ const PostActivitiesnext = () => {
     }
   };
 
+  const handleClose = () => {
+    navigate("/PostActivities");
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="flex items-center justify-center min-h-screen bg-[#FE7A3A] rounded-lg">
         <div className="bg-gradient-to-b from-orange-100 to-white rounded-xl p-6 shadow-md max-w-md w-full">
-          <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg mb-4">
-            Post an Activity
-          </h2>
+          <div className="relative">
+            <div className="relative mb-4">
+              <button
+                onClick={handleClose}
+                className="absolute -top-6 -right-5 bg-white text-[#FE7A3A] p-1 shadow hover:bg-gray-100 rounded-full"
+                type="button"
+              >
+                <FaTimes size={16} />
+              </button>
+
+              <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">
+                Post an Activity
+              </h2>
+            </div>
+          </div>
 
           <h3 className="text-gray-700 mb-2 font-semibold">
             Upload Business Photos (JPEG, PNG, Webp, etc)
