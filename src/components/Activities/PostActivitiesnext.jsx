@@ -27,16 +27,16 @@ const PostActivitiesnext = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const savedData = JSON.parse(localStorage.getItem("postActivityForm"));
+    const savedData = JSON.parse(localStorage.getItem("formData"));
     if (savedData) {
       setFormData((prev) => ({
         ...prev,
-        title: savedData.activityTitle || "",
-        description: savedData.activityDescription || "",
-        category: savedData.activityType || "",
+        title: savedData.title || "",
+        description: savedData.description || "",
+        category: savedData.category || "",
         location: savedData.location || "",
-        latitude: savedData.coordinates?.lat || "",
-        longitude: savedData.coordinates?.lng || "",
+        latitude: savedData.latitude || "",
+        longitude: savedData.longitude || "",
       }));
     }
   }, []);
@@ -152,7 +152,7 @@ const PostActivitiesnext = () => {
       );
 
       toast.success("Activity created successfully!");
-      navigate("/DealsPage");
+      navigate("/ActivitiesPage");
       console.log("Activity created:", res.data);
     } catch (error) {
       console.error("Error posting activity:", error);
@@ -168,7 +168,7 @@ const PostActivitiesnext = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex items-center justify-center min-h-screen bg-[#FE7A3A] rounded-lg">
+      <div className="flex items-center justify-center min-h-screen bg-[#FE7A3A] rounded-lg border-2">
         <div className="bg-gradient-to-b from-orange-100 to-white rounded-xl p-6 shadow-md max-w-md w-full">
           <div className="relative">
             <div className="relative mb-4">

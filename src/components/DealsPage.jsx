@@ -83,7 +83,7 @@ const DealsList = () => {
         </button>
         <button
           className="text-gray-400 px-4 py-2"
-          onClick={() => navigate("/Activities")}
+          onClick={() => navigate("/ActivitiesPage")}
         >
           Activities
         </button>
@@ -121,7 +121,7 @@ const DealsList = () => {
                 <img
                   src={deal.uploaded_images?.[0]}
                   alt={deal.deal_title}
-                  className="w-full h-48 object-cover rounded-md"
+                  className="w-full h-full object-cover rounded-md"
                 />
 
                 <div className="absolute top-0 left-0 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-md">

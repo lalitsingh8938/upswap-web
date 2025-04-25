@@ -169,6 +169,7 @@ import DealDetails from "./components/DealDetails";
 // Activities Components
 import PostActivities from "./components/Activities/PostActivities";
 import PostActivitiesnext from "./components/Activities/PostActivitiesnext";
+import ActivitiesPage from "./components/Activities/ActivitiesPage";
 
 function App() {
   return (
@@ -232,6 +233,7 @@ function App() {
                 {/* Activities Routes */}
                 <Route path="PostActivities" element={<PostActivities />} />
                 <Route path="PostActivitiesnext" element={<PostActivitiesnext />} />
+                <Route path="ActivitiesPage" element={<ActivitiesPage />} />
               </Route>
             </Route>
           </Routes>
