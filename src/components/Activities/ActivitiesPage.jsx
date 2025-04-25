@@ -99,7 +99,7 @@ const ActivitiesList = () => {
 
       {/* Activities List */}
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {activities.map((activity) => (
             <div
               key={activity.activity_id}
@@ -111,12 +111,12 @@ const ActivitiesList = () => {
                   src={
                     activity.uploaded_images?.length > 0
                       ? activity.uploaded_images[0]
-                      : "duplicate.png"
+                      : "duplicate (1).png"
                   }
                   alt={activity.activity_title || "Activity image"}
-                  className="w-full h-full object-cover"
+                  className="w-full h-48 object-cover"
                   onError={(e) => {
-                    e.target.src = "upswapfeatures.png";
+                    e.target.src = "duplicate (1).png";
                   }}
                 />
               </div>

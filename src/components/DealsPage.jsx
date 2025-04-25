@@ -110,7 +110,7 @@ const DealsList = () => {
           <div className="w-12 h-12 border-4 border-orange-400 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 cursor-pointer">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 p-4 cursor-pointer">
           {deals.map((deal) => (
             <div
               key={deal.deal_uuid}
@@ -121,7 +121,7 @@ const DealsList = () => {
                 <img
                   src={deal.uploaded_images?.[0]}
                   alt={deal.deal_title}
-                  className="w-full h-full object-cover rounded-md"
+                  className="w-full h-48 object-cover rounded-md"
                 />
 
                 <div className="absolute top-0 left-0 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-md">

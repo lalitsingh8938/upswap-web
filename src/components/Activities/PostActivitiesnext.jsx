@@ -150,7 +150,7 @@ const PostActivitiesnext = () => {
           },
         }
       );
-
+      localStorage.removeItem("formData");
       toast.success("Activity created successfully!");
       navigate("/ActivitiesPage");
       console.log("Activity created:", res.data);
