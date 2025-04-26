@@ -218,23 +218,6 @@ const ActivitiesList = () => {
                   >
                     View Details
                   </button>
-
-                  {/* <button
-                    style={{
-                      background: "orange",
-                      color: "white",
-                      padding: "8px 12px",
-                      border: "none",
-                      borderRadius: 5,
-                    }}
-                    onClick={() => handleViewDetails(activity.id)}
-                  >
-                    View Details
-                  </button> */}
-
-                  {/* <button className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]">
-                    View Details
-                  </button> */}
                 </div>
               </div>
             </div>
