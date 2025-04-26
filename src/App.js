@@ -170,6 +170,7 @@ import DealDetails from "./components/DealDetails";
 import PostActivities from "./components/Activities/PostActivities";
 import PostActivitiesnext from "./components/Activities/PostActivitiesnext";
 import ActivitiesPage from "./components/Activities/ActivitiesPage";
+import ActivitiesDetails from "./components/Activities/ActivitiesDetails";
 
 function App() {
   return (
@@ -234,6 +235,8 @@ function App() {
                 <Route path="PostActivities" element={<PostActivities />} />
                 <Route path="PostActivitiesnext" element={<PostActivitiesnext />} />
                 <Route path="ActivitiesPage" element={<ActivitiesPage />} />
+                {/* <Route path="ActivitiesDetails/:activity_uuid" element={<ActivitiesDetails />} /> */}
+                <Route path="/ActivitiesDetails/:activityId" element={<ActivitiesDetails />} />
               </Route>
             </Route>
           </Routes>

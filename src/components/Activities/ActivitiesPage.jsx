@@ -10,6 +10,44 @@ const ActivitiesList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [timers, setTimers] = useState({});
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const updatedTimers = {};
+
+      activities.forEach((activity) => {
+        if (!activity.infinite_time && activity.end_date) {
+          const now = new Date();
+          const endTime = new Date(activity.end_date);
+          const diff = endTime - now;
+
+          if (diff > 0) {
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            updatedTimers[activity.activity_id] = `${days}d ${hours
+              .toString()
+              .padStart(2, "0")}h ${minutes
+              .toString()
+              .padStart(2, "0")}m ${seconds.toString().padStart(2, "0")}s`;
+          } else {
+            updatedTimers[activity.activity_id] = "Expired";
+          }
+        }
+      });
+
+      setTimers(updatedTimers);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [activities]);
+
+  const handleViewDetails = (activityId) => {
+    navigate(`/ActivitiesDetails/${activityId}`);
+  };
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -161,12 +199,42 @@ const ActivitiesList = () => {
                       ? new Date(activity.start_date).toLocaleDateString()
                       : "Date not available"}
                   </span>
+                  {!activity.infinite_time && activity.end_date && (
+                    <div className="flex items-center text-sm text-red-500 font-semibold bg-gray-100 border border-gray-300 rounded-lg w-52 px-2 py-1 mt-2">
+                      ⏳ Ends in:{" "}
+                      {timers[activity.activity_id] || "Calculating..."}
+                    </div>
+                  )}
                 </div>
 
-                <div className="mt-4 flex justify-between items-center">
-                  <button className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]">
+                <div
+                  className="mt-4 flex justify-between items-center
+                "
+                >
+                  <h2>For Testing</h2>
+                  <button
+                    className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
+                    onClick={() => handleViewDetails(activity.activity_id)}
+                  >
                     View Details
                   </button>
+
+                  {/* <button
+                    style={{
+                      background: "orange",
+                      color: "white",
+                      padding: "8px 12px",
+                      border: "none",
+                      borderRadius: 5,
+                    }}
+                    onClick={() => handleViewDetails(activity.id)}
+                  >
+                    View Details
+                  </button> */}
+
+                  {/* <button className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]">
+                    View Details
+                  </button> */}
                 </div>
               </div>
             </div>

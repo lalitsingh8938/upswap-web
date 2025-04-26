@@ -150,6 +150,11 @@ const PostActivitiesnext = () => {
           },
         }
       );
+      const activityId = res.data?.activity_id;
+      if (activityId) {
+        localStorage.setItem("posted_activity_id", activityId);
+        console.log("Activity ID saved in localStorage:", activityId);
+      }
       localStorage.removeItem("formData");
       toast.success("Activity created successfully!");
       navigate("/ActivitiesPage");

@@ -24,7 +24,7 @@ const PostActivity = () => {
     "Social Gatherings",
     "Educational Workshops",
     "Music and Entertainment",
-    "Other",
+    "Others",
   ];
 
   const handleLocationToggle = () => {
