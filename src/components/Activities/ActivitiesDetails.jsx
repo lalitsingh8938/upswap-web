@@ -257,7 +257,7 @@ function ActivityDetailsPage() {
       {/* Activity Info */}
       <h2 className="text-xl p-1 font-semibold ">{activity.activity_title}</h2>
 
-      {activity.uploaded_images.length > 0 && (
+      {/* {activity.uploaded_images.length > 0 && (
         <div className="flex justify-center mb-8">
           <img
             src={activity.uploaded_images[0]}
@@ -269,7 +269,24 @@ function ActivityDetailsPage() {
             }}
           />
         </div>
-      )}
+      )} */}
+      {activity.uploaded_images.length > 0 && (
+  <div className="flex flex-wrap justify-center gap-4 mb-8">
+    {activity.uploaded_images.map((imgUrl, index) => (
+      <img
+        key={index}
+        src={imgUrl}
+        alt={`Activity image ${index + 1}`}
+        className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
+        onClick={() => handleImageClick(imgUrl)}
+        onError={(e) => {
+          e.target.src = "duplicate (1).png";
+        }}
+      />
+    ))}
+  </div>
+)}
+
 
       <div className="bg-gray-800 text-white p-2 mt-2 rounded text-sm">
         {timeLeft}
