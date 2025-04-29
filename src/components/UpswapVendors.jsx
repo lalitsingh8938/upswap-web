@@ -1,18 +1,22 @@
 import { FaSearch, FaMapMarkerAlt, FaHeart, FaBars } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
 
 const UpswapVendors = () => {
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="flex items-center justify-between bg-gradient-to-r border-2 bg-[#FE7A3A] text-white p-4 rounded-lg">
-        <button className="text-xl">&#8592;</button>
+        <button className="text-xl"
+         onClick={() => navigate("/DealsPage")}>&#8592;</button>
         <h1 className="text-lg font-semibold">Vendors</h1>
         <div className="flex gap-4">
           <FaHeart className="text-xl" />
           <FaBars className="text-xl" />
         </div>
       </div>
-      
+
       {/* Search Bar */}
       <div className="p-4">
         <div className="flex items-center bg-gray-100 p-2 rounded-md shadow-md">
@@ -25,13 +29,13 @@ const UpswapVendors = () => {
           <FaMapMarkerAlt className="text-gray-500 mr-2" />
         </div>
       </div>
-      
+
       {/* Vendor Card */}
       <div className="p-4">
         <div className="flex bg-white rounded-lg shadow-md p-4 items-center">
           <div className="w-20 h-20 bg-gray-200 flex items-center justify-center rounded-lg">
             <img
-              src="/deoration-pieces_1282251-4973 1.png"
+              src="/bhagwan.jpg"
               alt="Vendor Logo"
               className="w-16 h-16 object-cover"
             />
@@ -39,7 +43,8 @@ const UpswapVendors = () => {
           <div className="flex-grow px-4">
             <h2 className="font-bold text-lg">FOOD HUB</h2>
             <p className="text-sm text-gray-600">
-              Special Thali, Afghani Momos, Luxury Sofa set, Football, Polyester Shirt
+              Special Thali, Afghani Momos, Luxury Sofa set, Football, Polyester
+              Shirt
             </p>
             <p className="text-xs text-gray-500">
               Shop no.32 Omaxe Eternity Vrindavan, Mathura
@@ -48,9 +53,8 @@ const UpswapVendors = () => {
           <FaHeart className="text-gray-400 text-xl" />
         </div>
       </div>
-      
+
       {/* Bottom Navigation */}
-      
     </div>
   );
 };

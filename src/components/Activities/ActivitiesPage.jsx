@@ -15,19 +15,19 @@ const ActivitiesList = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const updatedTimers = {};
-
+  
       activities.forEach((activity) => {
         if (!activity.infinite_time && activity.end_date) {
-          const now = new Date();
-          const endTime = new Date(activity.end_date);
-          const diff = endTime - now;
-
+          const now = new Date(); // abhi ka exact time
+          const endTime = new Date(activity.end_date); // activity ka exact end time
+          const diff = endTime.getTime() - now.getTime(); // milliseconds ka difference
+  
           if (diff > 0) {
             const days = Math.floor(diff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const seconds = Math.floor((diff / 1000) % 60);
-
+  
             updatedTimers[activity.activity_id] = `${days}d ${hours
               .toString()
               .padStart(2, "0")}h ${minutes
@@ -38,13 +38,14 @@ const ActivitiesList = () => {
           }
         }
       });
-
+  
       setTimers(updatedTimers);
     }, 1000);
-
+  
     return () => clearInterval(interval);
   }, [activities]);
-
+  
+  
   const handleViewDetails = (activityId) => {
     navigate(`/ActivitiesDetails/${activityId}`);
   };
@@ -193,14 +194,14 @@ const ActivitiesList = () => {
                           }`}
                     </span>
                   </div>
-                  <span className="text-sm text-gray-500 gap-2 flex items-center">
+                  {/* <span className="text-sm text-gray-500 gap-2 flex items-center">
                     <span className="text-black mr-2">⏰ Date</span>
                     {activity.start_date
                       ? new Date(activity.start_date).toLocaleDateString()
                       : "Date not available"}
-                  </span>
+                  </span> */}
                   {!activity.infinite_time && activity.end_date && (
-                    <div className="flex items-center text-sm text-red-500 font-semibold bg-gray-100 border border-gray-300 rounded-lg w-52 px-2 py-1 mt-2">
+                    <div className="flex items-center text-sm text-red-500 font-semibold mt-2 bg-gray-100 border border-gray-300 rounded-lg w-52 px-2 py-1">
                       ⏳ Ends in:{" "}
                       {timers[activity.activity_id] || "Calculating..."}
                     </div>
@@ -211,7 +212,6 @@ const ActivitiesList = () => {
                   className="mt-4 flex justify-between items-center
                 "
                 >
-                  <h2>For Testing</h2>
                   <button
                     className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
                     onClick={() => handleViewDetails(activity.activity_id)}

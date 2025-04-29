@@ -216,7 +216,7 @@ const Login = () => {
         </div>
 
         <div className="flex justify-center my-6">
-          <img src="/UPswap svg 1 1.png" alt="Logo" className="h-12 w-32" />
+          <img src="/upswap.png" alt="Logo" className="h-12 w-32" />
         </div>
 
         {/* 👇 Email/Password Login */}

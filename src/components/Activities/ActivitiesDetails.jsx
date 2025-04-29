@@ -1,3 +1,139 @@
+// import { useParams } from "react-router-dom";
+// import { useEffect, useState } from "react";
+// import axios from "axios";
+// import { useNavigate } from "react-router-dom";
+// import { FaLeftLong } from "react-icons/fa6";
+
+// function ActivityDetailsPage() {
+//   const { activityId } = useParams();
+//   const [activity, setActivity] = useState(null);
+//   const [timeLeft, setTimeLeft] = useState("");
+//   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+//   const [selectedImage, setSelectedImage] = useState(null);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchActivityDetails = async () => {
+//       try {
+//         const res = await axios.get(
+//           `https://api.upswap.app/api/activities/details/${activityId}/`
+//         );
+//         setActivity(res.data);
+//       } catch (error) {
+//         console.error("Failed to fetch activity details:", error);
+//       }
+//     };
+
+//     fetchActivityDetails();
+//   }, [activityId]);
+
+//   const handleImageClick = (imgUrl) => {
+//     setSelectedImage(imgUrl);
+//     setIsImageModalOpen(true);
+//   };
+
+//   useEffect(() => {
+//     if (activity?.end_date && activity?.end_time) {
+//       const interval = setInterval(() => {
+//         const now = new Date();
+//         const end = new Date(`${activity.end_date}T${activity.end_time}`);
+//         const diff = end - now;
+
+//         if (diff > 0) {
+//           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+//           const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+//           const minutes = Math.floor((diff / (1000 * 60)) % 60);
+//           const seconds = Math.floor((diff / 1000) % 60);
+//           setTimeLeft(
+//             `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`
+//           );
+//         } else {
+//           setTimeLeft("Expired");
+//           clearInterval(interval);
+//         }
+//       }, 1000);
+
+//       return () => clearInterval(interval);
+//     }
+//   }, [activity]);
+
+//   if (!activity) return <div className="p-4 text-center">Loading...</div>;
+
+//   return (
+//     <div className="p-4">
+//       <div className="bg-gradient-to-r bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex items-center justify-between">
+//         <button
+//           onClick={() => navigate(-1)}
+//           className="text-white text-sm px-1 py-1 rounded-md hover:bg-red-500"
+//         >
+//           <FaLeftLong className="w-5 h-5" />
+//         </button>
+//         <h2 className="text-lg font-semibold text-center flex-1">
+//           Activity Description
+//         </h2>
+//         <div className="w-14" />
+//       </div>
+
+//       <h2 className="text-xl p-1 font-semibold ">{activity.activity_title}</h2>
+
+//       {activity.uploaded_images.length > 0 && (
+//         <div className="flex justify-center mb-8">
+//           <img
+//             src={
+//               activity.uploaded_images && activity.uploaded_images.length > 0
+//                 ? activity.uploaded_images[0]
+//                 : "duplicate (1).png"
+//             }
+//             alt={activity.activity_title || "Activity image"}
+//             className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
+//             onClick={() => handleImageClick(activity.uploaded_images[0])}
+//             onError={(e) => {
+//               e.target.src = "duplicate (1).png";
+//             }}
+//           />
+//         </div>
+//       )}
+
+//       <div className="bg-gray-800 text-white p-2 mt-2 rounded text-sm">
+//         {timeLeft}
+//       </div>
+
+//       <div className="mt-4 space-y-1 text-sm">
+//         <p>
+//           <b>Posted by:</b> {activity.created_by}
+//         </p>
+//         <p>
+//           📍 Lat: {activity.latitude}, Lng: {activity.longitude}
+//         </p>
+//       </div>
+
+//       <div className="mt-4 text-sm">
+//         <b>About This Activity</b>
+//         <p>{activity.activity_description}</p>
+//       </div>
+
+//       <button className="mt-6 bg-[#FE7A3A] text-white py-3 px-4 rounded-lg w-full text-base font-medium hover:brightness-110 transition">
+//         I am interested
+//       </button>
+
+//       {isImageModalOpen && (
+//         <div
+//           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+//           onClick={() => setIsImageModalOpen(false)}
+//         >
+//           <img
+//             src={selectedImage}
+//             alt="Preview"
+//             className="w-1/2 h-1/2 object-contain rounded-lg shadow-lg"
+//           />
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default ActivityDetailsPage;
+
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -10,6 +146,9 @@ function ActivityDetailsPage() {
   const [timeLeft, setTimeLeft] = useState("");
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isChatBoxOpen, setIsChatBoxOpen] = useState(false); // 👈 new state
+  const [chatMessage, setChatMessage] = useState(""); // 👈 chat ke text ke liye
+  const [chatHistory, setChatHistory] = useState([]); // 👈 previous chat ke liye
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +162,6 @@ function ActivityDetailsPage() {
         console.error("Failed to fetch activity details:", error);
       }
     };
-
     fetchActivityDetails();
   }, [activityId]);
 
@@ -32,20 +170,54 @@ function ActivityDetailsPage() {
     setIsImageModalOpen(true);
   };
 
+  // useEffect(() => {
+  //   if (activity?.end_date && activity?.end_time) {
+  //     const interval = setInterval(() => {
+  //       const now = new Date();
+  //       const end = new Date(`${activity.end_date}T${activity.end_time}`);
+  //       const diff = end - now;
+
+  //       if (diff > 0) {
+  //         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  //         const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  //         const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  //         const seconds = Math.floor((diff / 1000) % 60);
+  //         setTimeLeft(
+  //           `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`
+  //         );
+  //       } else {
+  //         setTimeLeft("Expired");
+  //         clearInterval(interval);
+  //       }
+  //     }, 1000);
+
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [activity]);
   useEffect(() => {
     if (activity?.end_date && activity?.end_time) {
       const interval = setInterval(() => {
         const now = new Date();
-        const end = new Date(`${activity.end_date}T${activity.end_time}`);
+
+        // Correctly parse end date and time separately
+        const [hours, minutes, seconds] = activity.end_time
+          .split(":")
+          .map(Number);
+        const end = new Date(activity.end_date);
+        end.setHours(hours);
+        end.setMinutes(minutes);
+        end.setSeconds(seconds);
+
         const diff = end - now;
 
         if (diff > 0) {
           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-          const minutes = Math.floor((diff / (1000 * 60)) % 60);
-          const seconds = Math.floor((diff / 1000) % 60);
+          const hoursLeft = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          const minutesLeft = Math.floor((diff / (1000 * 60)) % 60);
+          const secondsLeft = Math.floor((diff / 1000) % 60);
+
           setTimeLeft(
-            `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`
+            `${days} days ${hoursLeft} hours ${minutesLeft} minutes ${secondsLeft} seconds`
           );
         } else {
           setTimeLeft("Expired");
@@ -57,10 +229,18 @@ function ActivityDetailsPage() {
     }
   }, [activity]);
 
+  const handleSendMessage = () => {
+    if (chatMessage.trim() !== "") {
+      setChatHistory([...chatHistory, { sender: "You", message: chatMessage }]);
+      setChatMessage("");
+    }
+  };
+
   if (!activity) return <div className="p-4 text-center">Loading...</div>;
 
   return (
     <div className="p-4">
+      {/* Top bar */}
       <div className="bg-gradient-to-r bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex items-center justify-between">
         <button
           onClick={() => navigate(-1)}
@@ -74,16 +254,13 @@ function ActivityDetailsPage() {
         <div className="w-14" />
       </div>
 
+      {/* Activity Info */}
       <h2 className="text-xl p-1 font-semibold ">{activity.activity_title}</h2>
 
       {activity.uploaded_images.length > 0 && (
         <div className="flex justify-center mb-8">
           <img
-            src={
-              activity.uploaded_images && activity.uploaded_images.length > 0
-                ? activity.uploaded_images[0]
-                : "duplicate (1).png"
-            }
+            src={activity.uploaded_images[0]}
             alt={activity.activity_title || "Activity image"}
             className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
             onClick={() => handleImageClick(activity.uploaded_images[0])}
@@ -112,10 +289,15 @@ function ActivityDetailsPage() {
         <p>{activity.activity_description}</p>
       </div>
 
-      <button className="mt-6 bg-[#FE7A3A] text-white py-3 px-4 rounded-lg w-full text-base font-medium hover:brightness-110 transition">
+      {/* Interested Button */}
+      <button
+        onClick={() => setIsChatBoxOpen(true)} // 👈 chat box open karne ke liye
+        className="mt-6 bg-[#FE7A3A] text-white py-3 px-4 rounded-lg w-full text-base font-medium hover:brightness-110 transition"
+      >
         I am interested
       </button>
 
+      {/* Image Modal */}
       {isImageModalOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
@@ -126,6 +308,49 @@ function ActivityDetailsPage() {
             alt="Preview"
             className="w-1/2 h-1/2 object-contain rounded-lg shadow-lg"
           />
+        </div>
+      )}
+
+      {/* Chat Box Modal */}
+      {isChatBoxOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-96 p-4 flex flex-col">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-semibold">
+                Chat with {activity.created_by}
+              </h2>
+              <button
+                onClick={() => setIsChatBoxOpen(false)}
+                className="text-red-500 font-bold"
+              >
+                X
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto mb-2 border p-2 rounded h-64">
+              {chatHistory.map((chat, index) => (
+                <div key={index} className="mb-1">
+                  <span className="font-semibold">{chat.sender}: </span>
+                  <span>{chat.message}</span>
+                </div>
+              ))}
+            </div>
+            <div className="flex">
+              <input
+                type="text"
+                className="border rounded-l px-2 py-1 w-full"
+                placeholder="Type your message..."
+                value={chatMessage}
+                onChange={(e) => setChatMessage(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+              />
+              <button
+                onClick={handleSendMessage}
+                className="bg-[#FE7A3A] text-white px-4 py-1 rounded-r"
+              >
+                Send
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
