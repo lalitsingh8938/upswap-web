@@ -149,9 +149,17 @@ function ChatRoomPage() {
   const sendMessage = () => {
     // Message send karne se pehle bhi check kar lo connection OPEN hai ya nahi
     // isConnected state UI disable/enable ke liye hai, yeh double check safety ke liye acha hai
-if (websocket.current && websocket.current.readyState === WebSocketReadyState.OPEN && newMessage.trim()) {
-      const messageToSend =  newMessage.trim()
-        
+    if (websocket.current && websocket.current.readyState === WebSocketReadyState.OPEN && newMessage.trim()) {
+      const messageToSend = {
+        type: 'chat_message',
+        message: {
+//           user: loggedInUserId,
+//           username: localStorage.getItem("username"),
+          text: newMessage.trim(),
+//           chatroom_id: chatroomId,
+//           session_id: sessionId,
+        }
+      };
       websocket.current.send(JSON.stringify(messageToSend));
       setNewMessage('');
     } else {
