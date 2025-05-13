@@ -185,7 +185,7 @@
 
 // export default DealsList;
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaPlus, FaSearch, FaMapMarkerAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -292,18 +292,18 @@ const DealsList = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4 p-4 cursor-pointer">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 p-4 cursor-pointer">
           {deals.map((deal) => (
             <div
               key={deal.deal_uuid}
-              className="border rounded-lg p-4 shadow-md bg-white cursor"
+              className="border rounded-lg p-2 shadow-md bg-white cursor"
               onClick={() => handleDealClick(deal.deal_uuid)}
             >
               <div className="relative">
                 <img
                   src={deal.uploaded_images?.[0]}
                   alt={deal.deal_title}
-                  className="w-full h-48 object-cover rounded-md"
+                  className="w-full h-36 object-cover rounded-md"
                 />
 
                 <div className="absolute top-0 left-0 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-md shadow-md">
@@ -331,7 +331,7 @@ const DealsList = () => {
                 <span className="font-semibold text-red-600">Discount:</span>
                 <span>{deal.discount_percentage}%</span>
               </p>
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2">
                 <span className="text-lg font-semibold text-gray-800">
                   Deal Available on
                 </span>
@@ -348,7 +348,7 @@ const DealsList = () => {
                     e.stopPropagation();
                     handleBuyNow(deal);
                   }}
-                  className="mt-3 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
+                  className="mt-1 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
                 >
                   Buy Now
                 </button>

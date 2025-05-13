@@ -5,6 +5,7 @@ import PrivateRoute from "./components/Authentication/PrivateRoute";
 import Layout from "./components/Common/Layout";
 import { ToastContainer } from "react-toastify";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+// import GoogleMapComponent from "./components/GoogleMapComponent";
 import "./api/interceptors";
 
 // Authentication Components
@@ -21,6 +22,7 @@ import MainMenu from "./components/MainMenu";
 import UpswapFeatures from "./components/UpswapFeatures";
 import MyActivities from "./components/Activities/MyActivities";
 import MyPersonalAccount from "./components/MyPersonalAccount";
+import UserProfile from "./components/UserProfile";
 import UpswapVendors from "./components/UpswapVendors";
 // import Activities from "./components/Activities";
 import DealsPage from "./components/DealsPage";
@@ -40,17 +42,24 @@ import PostDealNext from "./components/Deals/PostDealNext";
 import MyDeals from "./components/Deals/MyDeals";
 import DealDetails from "./components/DealDetails";
 
+import Favorite from "./components/Favorite";
+import Unfavorite from"./components/Unfavorite";
+
 // Activities Components
 import PostActivities from "./components/Activities/PostActivities";
 import PostActivitiesnext from "./components/Activities/PostActivitiesnext";
 import ActivitiesPage from "./components/Activities/ActivitiesPage";
 import ActivitiesDetails from "./components/Activities/ActivitiesDetails";
-
+import ChatRequest from "./components/Activities/ChatRequest";
+import ChatRoom from "./components/Activities/ChatRoom";
+// import PendingChatRequestsForAuthorPage from "./components/Activities/PendingChatRequestsForAuthorPage";
+// import ChatRequestCardForAuthor from "./components/Activities/ChatRequestCardForAuthor";
 function App() {
   return (
     <AuthProvider>
       <GoogleOAuthProvider clientId="241793290888-p8ba5p5ucgn1f5mj8un3h71u6a52chkg.apps.googleusercontent.com">
-        <Router>
+      {/* <GoogleMapComponent /> */}
+      <Router>
           <ToastContainer
             position="top-center"
             autoClose={3000}
@@ -87,6 +96,7 @@ function App() {
                   path="MyPersonalAccount"
                   element={<MyPersonalAccount />}
                 />
+                <Route path="UserProfile" element={<UserProfile />} />
                 <Route path="UpswapVendors" element={<UpswapVendors />} />
                 {/* <Route path="Activities" element={<Activities />} /> */}
                 <Route path="DealsPage" element={<DealsPage />} />
@@ -103,12 +113,12 @@ function App() {
                 {/* Deals Routes */}
                 <Route path="PostDeal" element={<PostDeal />} />
                 <Route path="PostDealNext" element={<PostDealNext />} />
-                <Route path="MyDeals" element={<MyDeals />}></Route>
                 <Route
                   path="DealDetails/:deal_uuid"
                   element={<DealDetails />}
                 />
                 <Route path="/DealsPage" element={<DealsPage />} />
+                <Route path="MyDeals" element={<MyDeals />}></Route>
                 <Route path="/MyDeals/live" element={<MyDeals type="live" />} />
                 <Route
                   path="/MyDeals/scheduled"
@@ -134,17 +144,39 @@ function App() {
                 /> */}
                 {/* MyActivities Routes */}
                 <Route path="/MyActivities/All" element={<MyActivities />} />
-<Route path="/MyActivities/Live" element={<MyActivities />} />
-<Route path="/MyActivities/Participation" element={<MyActivities />} />
-<Route path="/MyActivities/History" element={<MyActivities />} />
-<Route path="/MyActivities/:type" element={<MyActivities />} />
-
-
+                <Route path="/MyActivities/Live" element={<MyActivities />} />
+                <Route
+                  path="/MyActivities/Participation"
+                  element={<MyActivities />}
+                />
+                <Route
+                  path="/MyActivities/History"
+                  element={<MyActivities />}
+                />
+                <Route path="/MyActivities/:type" element={<MyActivities />} />
 
                 <Route
                   path="/ActivitiesDetails/:activityId"
                   element={<ActivitiesDetails />}
+                  
                 />
+                 <Route path="ChatRequest" element={<ChatRequest />} />
+                 <Route path="ChatRoom" element={<ChatRoom />} />
+                 <Route path="/chat/:activityId/:chatroomId" element={<ChatRoom />} />
+                 {/* <Route path="/chatroom/:activityId/:chatroomId" element={<ChatRoom />} /> */}
+                {/* <Route
+                  path="/PendingChatRequestsForAuthorPage"
+                  element={<PendingChatRequestsForAuthorPage />}
+                />
+                path="/ChatRequestCardForAuthor"
+<Route
+                  
+
+                  element={<ChatRequestCardForAuthor />}
+                /> */}
+                    <Route path="Favorite" element={<Favorite />} />
+                    <Route path="Unfavorite" element={<Unfavorite />} />
+                
               </Route>
             </Route>
           </Routes>

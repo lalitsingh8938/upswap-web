@@ -93,6 +93,10 @@ const PostDeal = () => {
       toast.error("Please enter a deal title.");
       return;
     }
+    if (!selectedService.trim()) {
+      toast.error("Please enter a deal Services.");
+      return;
+    }
 
     if (!dealDescription.trim()) {
       toast.error("Please enter a deal description.");

@@ -1,30 +1,67 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const AddService = ({ onClose }) => {
   const navigate = useNavigate();
-
+  const [vendorData, setVendorData] = useState(null);
+ 
   const [formData, setFormData] = useState({
     item_name: "",
     service_category: "",
     item_description: "",
     item_price: "",
   });
+  const vendorId = localStorage.getItem("vendor_id");
+  useEffect(() => {
+    const fetchVendorDetails = async () => {
+      try {
+        const token = localStorage.getItem("access");
+        const response = await axios.get(
+          `https://api.upswap.app/api/vendor/details/${vendorId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        const data = response.data;
+        console.log("Fetched vendor details:", data);
+        setVendorData(data);
+  
+        if (data.services && data.services.length > 0) {
+          const service = data.services[0]; // 👈 pick the first service
+  
+          setFormData({
+            item_description: service.item_description || "",
+            item_name: service.item_name || "",
+            item_price: service.item_price || "",
+            service_category: service.service_category || "",
+          });
+        }
+      } catch (error) {
+        console.error("Vendor details fetch error:", error);
+        toast.error("Failed to fetch vendor details");
+      }
+    };
+  
+    fetchVendorDetails();
+  }, [vendorId]);
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Save to localStorage
   const handleAddService = () => {
     localStorage.setItem("serviceData", JSON.stringify(formData));
     toast.success("Service saved successfully!");
   };
 
-  // Validation before navigating
   const handleNext = () => {
     const { item_name, service_category, item_description, item_price } =
       formData;
@@ -39,7 +76,6 @@ const AddService = ({ onClose }) => {
       return;
     }
 
-    // All fields filled: save and navigate
     localStorage.setItem("serviceData", JSON.stringify(formData));
     navigate("/ServiceTime");
   };
@@ -51,7 +87,6 @@ const AddService = ({ onClose }) => {
       navigate("/BankDetails");
     }
   };
-
   return (
     <div className="flex justify-center items-center border-2 min-h-screen bg-[#FE7A3A] to-white p-4 rounded-lg">
       <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">

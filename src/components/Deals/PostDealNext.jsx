@@ -58,6 +58,9 @@ const DealForm = ({ onClose }) => {
       }
     }
   }, []);
+  const handleAddressDropdownClick = () => {
+    fetchSavedAddresses();
+  };
 
   const handleLiveLocation = () => {
     if ("geolocation" in navigator) {
@@ -111,6 +114,32 @@ const DealForm = ({ onClose }) => {
     }
 
     return true;
+  };
+
+  const fetchSavedAddresses = async () => {
+    try {
+      const response = await fetch(
+        "https://api.upswap.app/api/vendor/addresses/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("access")}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Fetched Addresses:", data); // Log the fetched addresses
+        setSavedAddresses(data); // assuming API returns array of addresses
+      } else {
+        toast.warning("Failed to fetch addresses");
+      }
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+      toast.error("Something went wrong while fetching addresses.");
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -416,6 +445,27 @@ const DealForm = ({ onClose }) => {
             >
               <option value="">Select location option</option>
               <option value="live">📍 Use my live location</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-gray-700 block mb-1">
+              Select Saved Address
+            </label>
+            <select
+              value={selectedAddress}
+              onClick={handleAddressDropdownClick} // <-- important
+              onChange={(e) => setSelectedAddress(e.target.value)}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 max-w-[400px]"
+            >
+              <option value="">-- Select an address --</option>
+              {savedAddresses.map((address, index) => (
+                <option key={index} value={address.country}>
+                  {address.house_no_building_name},
+                  {address.road_name_area_colony}         
+                  - {address.city},
+                  {address.country}
+                </option>
+              ))}
             </select>
           </div>
 

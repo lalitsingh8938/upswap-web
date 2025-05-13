@@ -1,9 +1,10 @@
 import { FaPlus } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const BankDetails = () => {
   const navigate = useNavigate();
@@ -12,6 +13,29 @@ const BankDetails = () => {
   const [reAccountNumber, setReAccountNumber] = useState("");
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
+  const vendorId = localStorage.getItem("vendor_id");
+  useEffect(() => {
+    const fetchVendorDetails = async () => {
+      try {
+        const response = await axios.get( `https://api.upswap.app/api/vendor/details/${vendorId}`,);
+        const data = response.data;
+        console.log("Vendor Details:", data);
+
+        if (data) {
+          setAccountNumber(data.bank_account_number || "");
+          setReAccountNumber(data.retype_bank_account_number || "");
+          setBankName(data.bank_name || "");
+          setIfscCode(data.ifsc_code || "");
+        }
+      } catch (error) {
+        console.error("Failed to fetch vendor details:", error);
+        toast.error("Error fetching vendor details.");
+      }
+    };
+
+    fetchVendorDetails();
+  }, []);
+
 
   // Save bank details to localStorage
   const handleSubmit = () => {

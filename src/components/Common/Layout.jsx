@@ -42,7 +42,7 @@ const Layout = () => {
       {isSidebarOpen && <Sidebar />}
       <div
         className={`flex-grow transition-all duration-300 ${
-          isSidebarOpen ? "ml-[283px]" : "ml-0"
+          isSidebarOpen ? "ml-[265px]" : "ml-0"
         }`}
       >
         <Header />

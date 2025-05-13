@@ -758,11 +758,14 @@ const MyDeals = () => {
       setLoading(true);
       setHasNoDeals(false);
       try {
-        const response = await axios.get("https://api.upswap.app/api/my-deals/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access")}`,
-          },
-        });
+        const response = await axios.get(
+          "https://api.upswap.app/api/my-deals/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access")}`,
+            },
+          }
+        );
 
         const allData = response.data;
 
@@ -780,7 +783,6 @@ const MyDeals = () => {
 
         setDeals(filtered);
 
-        
         if (
           (!allData.live || allData.live.length === 0) &&
           (!allData.scheduled || allData.scheduled.length === 0) &&
@@ -834,12 +836,19 @@ const MyDeals = () => {
             className="flex items-center gap-2 px-4 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
           >
             <FaPlus className="text-xl" />
-            <span>Create Your First Deal</span>
+            <span an>Create Your First Deal</span>
           </button>
         </div>
       ) : deals.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-96">
           <p className="text-gray-500 text-lg">No {type} deals found</p>
+          <button
+            onClick={() => navigate("/PostDeal")}
+            className="flex items-center gap-2 px-4 mt-2 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
+          >
+            <FaPlus className="text-xl" />
+            <span data-an>Create Your First Deal</span>
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4 cursor-pointer">
