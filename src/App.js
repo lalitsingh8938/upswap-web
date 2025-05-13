@@ -43,23 +43,24 @@ import MyDeals from "./components/Deals/MyDeals";
 import DealDetails from "./components/DealDetails";
 
 import Favorite from "./components/Favorite";
-import Unfavorite from"./components/Unfavorite";
+import Unfavorite from "./components/Unfavorite";
 
 // Activities Components
 import PostActivities from "./components/Activities/PostActivities";
 import PostActivitiesnext from "./components/Activities/PostActivitiesnext";
 import ActivitiesPage from "./components/Activities/ActivitiesPage";
 import ActivitiesDetails from "./components/Activities/ActivitiesDetails";
+
+// Chatting Components
 import ChatRequest from "./components/Activities/ChatRequest";
 import ChatRoom from "./components/Activities/ChatRoom";
-// import PendingChatRequestsForAuthorPage from "./components/Activities/PendingChatRequestsForAuthorPage";
-// import ChatRequestCardForAuthor from "./components/Activities/ChatRequestCardForAuthor";
+
 function App() {
   return (
     <AuthProvider>
       <GoogleOAuthProvider clientId="241793290888-p8ba5p5ucgn1f5mj8un3h71u6a52chkg.apps.googleusercontent.com">
-      {/* <GoogleMapComponent /> */}
-      <Router>
+        {/* <GoogleMapComponent /> */}
+        <Router>
           <ToastContainer
             position="top-center"
             autoClose={3000}
@@ -158,25 +159,16 @@ function App() {
                 <Route
                   path="/ActivitiesDetails/:activityId"
                   element={<ActivitiesDetails />}
-                  
                 />
-                 <Route path="ChatRequest" element={<ChatRequest />} />
-                 <Route path="ChatRoom" element={<ChatRoom />} />
-                 <Route path="/chat/:activityId/:chatroomId" element={<ChatRoom />} />
-                 {/* <Route path="/chatroom/:activityId/:chatroomId" element={<ChatRoom />} /> */}
-                {/* <Route
-                  path="/PendingChatRequestsForAuthorPage"
-                  element={<PendingChatRequestsForAuthorPage />}
+                <Route path="ChatRequest" element={<ChatRequest />} />
+                <Route path="ChatRoom" element={<ChatRoom />} />
+                <Route
+                  path="/chat/:activityId/:chatroomId"
+                  element={<ChatRoom />}
                 />
-                path="/ChatRequestCardForAuthor"
-<Route
-                  
 
-                  element={<ChatRequestCardForAuthor />}
-                /> */}
-                    <Route path="Favorite" element={<Favorite />} />
-                    <Route path="Unfavorite" element={<Unfavorite />} />
-                
+                <Route path="Favorite" element={<Favorite />} />
+                <Route path="Unfavorite" element={<Unfavorite />} />
               </Route>
             </Route>
           </Routes>
