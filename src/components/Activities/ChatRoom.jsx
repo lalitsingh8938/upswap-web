@@ -147,17 +147,33 @@ function ChatRoomPage() {
   // }, [chatroomId, loggedInUserId, sessionId]);
 
   const sendMessage = () => {
-  if (websocket.current && websocket.current.readyState === WebSocketReadyState.OPEN && newMessage.trim()) {
-    const messageToSend = newMessage.trim(); // Seedha message string bhej rahe hain
-    websocket.current.send(JSON.stringify(messageToSend));
-    setNewMessage('');
-  } else {
-    console.warn("Cannot send message: WebSocket not connected or message empty.");
-    if (!isConnected) {
-      alert("Chat connection is not ready. Please wait or try refreshing.");
-    }
-  }
-};
+    // Message send karne se pehle bhi check kar lo connection OPEN hai ya nahi
+    // isConnected state UI disable/enable ke liye hai, yeh double check safety ke liye acha hai
+    if (websocket.current && websocket.current.readyState === WebSocketReadyState.OPEN && newMessage.trim()) {
+      const messageToSend = {
+        type: 'chat_message',
+        message: {
+//           user: loggedInUserId,
+//           username: localStorage.getItem("username"),
+          text: newMessage.trim(),
+//           chatroom_id: chatroomId,
+//           session_id: sessionId,
+        }
+      };
+      websocket.current.send(JSON.stringify(messageToSend));
+      setNewMessage('');
+    } else {
+      console.warn("Cannot send message: WebSocket not connected, message empty, or missing required IDs.");
+      // Agar connected state false hai toh alert dikhao
+      if (!isConnected) {
+        alert("Chat connection is not ready. Please wait or try refreshing.");
+      } else if (!newMessage.trim()) {
+        // Do nothing for empty message
+      } else {
+        alert("Missing user or session information. Please log in again.");
+      }
+    }
+  };
 
   const handleKeyDown = (event) => {
     if (event.key === 'Enter') {
