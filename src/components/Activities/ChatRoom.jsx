@@ -884,11 +884,11 @@ function ChatRoomPage() {
       const messageToSend = {
         type: 'chat_message',
         message: {
-          user: loggedInUserId,
-          username: localStorage.getItem("username"),
+//           user: loggedInUserId,
+//           username: localStorage.getItem("username"),
           text: newMessage.trim(),
-          chatroom_id: chatroomId,
-          session_id: sessionId,
+//           chatroom_id: chatroomId,
+//           session_id: sessionId,
         }
       };
       websocket.current.send(JSON.stringify(messageToSend));
