@@ -75,7 +75,8 @@ function App() {
 
           <Routes>
             {/* Public Routes */}
-            <Route path="/" element={<Register />} />
+            <Route path="/" element={<Login />} />
+              <Route path="/Register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/SocialLogin" element={<SocialLogin />} />
             <Route path="/VerifyOtp" element={<VerifyOtp />} />

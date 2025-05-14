@@ -235,7 +235,7 @@ const Login = () => {
         <div className="text-center mt-4 mb-6">
           <p
             className="text-orange-500 font-semibold cursor-pointer"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/Register")}
           >
             Sign Up
           </p>
