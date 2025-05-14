@@ -27,8 +27,6 @@
 //   const [error, setError] = useState(null);
 //   const navigate = useNavigate();
 
-  
-
 //   const handleFileChange = async (event) => {
 //     if (event.target.files.length === 0) return;
 
@@ -207,7 +205,7 @@
 //         <div className="flex justify-center mb-4 gap-2">
 //           {[
 //             { label: "M", icon: <FaMars /> },
-//             { label: "F", icon: <FaVenus /> }, 
+//             { label: "F", icon: <FaVenus /> },
 //             { label: "N", icon: <FaGenderless /> },
 //             { label: "O", icon: <FaTransgenderAlt /> },
 //           ].map(({ label, icon }) => (
@@ -274,8 +272,6 @@
 // };
 
 // export default UserProfile;
-
-
 
 // import React, { useState, useEffect } from "react";
 // import {
@@ -787,7 +783,7 @@ const UserProfile = () => {
             <img
               src={profileImage || previewImage || "/default-avatar.png"}
               alt="Profile"
-              className="w-24 h-24 rounded-full object-cover"
+              className="w-24 h-24 rounded-full object-cover border-2 border-[#FE7A3A]"
             />
 
             <label
@@ -929,4 +925,3 @@ const UserProfile = () => {
 };
 
 export default UserProfile;
-

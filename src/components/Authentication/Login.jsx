@@ -206,10 +206,10 @@ const Login = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 border">
       <div className="w-full max-w-md px-6 shadow-lg rounded-md">
         <div className="flex items-center justify-between bg-gradient-to-r from-orange-500 to-red-500 text-white p-4 rounded-t-lg">
-          <button className="text-lg" onClick={() => navigate("/")}>
+          <button className="text-lg" onClick={() => navigate("/Register")}>
             ←
           </button>
-          <h2 className="text-lg font-semibold" onClick={() => navigate("/")}>
+          <h2 className="text-lg font-semibold" onClick={() => navigate("/Register")}>
             Login
           </h2>
           <button className="text-lg">🏠</button>

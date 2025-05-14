@@ -873,38 +873,40 @@ function Register() {
             <div className="relative">
               <label className="block text-sm font-medium">Password</label>
               <input
-                type={showPassword ? "text" : "password"}
+                type="password"
+                id="password"
                 name="password"
                 placeholder="Enter Password"
-                className="w-full p-2 border rounded pr-10"
+                className="w-full p-2 border rounded pr-2"
                 onChange={handleChange}
                 required // Added required attribute
               />
-              <span
+              {/* <span
                 className="absolute right-3 top-9 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              </span> */}
             </div>
             <div className="relative">
               <label className="block text-sm font-medium">
                 Confirm Password
               </label>
               <input
-                type={showConfirmPassword ? "text" : "password"}
+                type="password"
                 name="confirm_password"
+                id="confirm_password"
                 placeholder="Confirm Password"
-                className="w-full p-2 border rounded pr-10"
+                className="w-full p-2 border rounded pr-2"
                 onChange={handleChange}
                 required // Added required attribute
               />
-              <span
+              {/* <span
                 className="absolute right-3 top-9 cursor-pointer"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               >
                 {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
+              </span> */}
             </div>
             <div className="flex items-center space-x-2">
               <input

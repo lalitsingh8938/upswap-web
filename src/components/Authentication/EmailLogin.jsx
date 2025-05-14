@@ -184,13 +184,16 @@ const EmailLogin = () => {
 
       <div className="relative w-full mt-4">
         <input
-          type={showPassword ? "text" : "password"}
+        type="password"
+        id="password"
+        name="password"
+          // type={showPassword ? "text" : "password"}
           placeholder="Enter Password"
           className="w-full p-3 border rounded-md focus:ring-orange-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button
+        {/* <button
           className="absolute right-3 top-4 text-gray-500"
           onClick={() => setShowPassword(!showPassword)}
         >
@@ -199,7 +202,7 @@ const EmailLogin = () => {
           ) : (
             <EyeIcon className="w-5 h-5" />
           )}
-        </button>
+        </button> */}
       </div>
 
       <div className="flex justify-end mt-2 cursor-pointer">

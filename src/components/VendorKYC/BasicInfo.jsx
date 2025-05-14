@@ -24,7 +24,7 @@
 //   useEffect(() => {
 //     const vendorId = localStorage.getItem("vendor_id");
 //     if (!vendorId) return;
-  
+
 //     const fetchVendorDetails = async () => {
 //       try {
 //         const response = await axios.get(
@@ -35,11 +35,10 @@
 //             },
 //           }
 //         );
-  
+
 //         const data = response.data;
 //        console.log("Vendor data:", data);
 
-  
 //         setFormData({
 //           user: userId,
 //           profile_pic: data.profile_pic || "",
@@ -49,7 +48,7 @@
 //           business_email_id: data.business_email_id || "",
 //           business_establishment_year: data.business_establishment_year || "",
 //         });
-  
+
 //         if (data.profile_image) {
 //           setProfileImage(data.profile_image);
 //         }
@@ -57,10 +56,9 @@
 //         console.error("Failed to fetch vendor data", error);
 //       }
 //     };
-  
+
 //     fetchVendorDetails();
 //   }, []);
-  
 
 //   const handleFileChange = async (event) => {
 //     if (event.target.files.length === 0) return;
@@ -142,7 +140,6 @@
 //   const handleClose = () => {
 //     navigate("/PostDeal"); // Directly navigate to the PostDeal page
 //   };
-  
 
 //   return (
 //     <div className="flex justify-center items-center min-h-screen border-2 bg-[#FE7A3A] to-white p-4 rounded-lg">
@@ -158,7 +155,6 @@
 //         <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">
 //           Become a Vendor
 //         </h2>
-       
 
 //         {/* Profile Image Upload */}
 //         <div className="flex justify-center mt-4">
@@ -280,7 +276,6 @@
 
 // export default BasicInfo;
 
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil } from "lucide-react";
@@ -288,6 +283,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaTimes } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 
 const BasicInfo = () => {
   const navigate = useNavigate();
@@ -450,20 +446,24 @@ const BasicInfo = () => {
               <img
                 src={previewImage || profileImage || formData.profile_pic}
                 alt="Profile Preview"
-                className="w-24 h-24 rounded-full object-cover"
+                className="w-24 h-24 rounded-full object-cover border-2 border-[#FE7A3A]"
               />
             ) : (
               <p>No image</p>
             )}
-            <label className="absolute bottom-0 right-0 bg-[#FE7A3A] text-white p-1 rounded-full cursor-pointer">
-              <Pencil size={16} />
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleFileChange}
-              />
+            <label
+              htmlFor="profileImageInput"
+              className="absolute bottom-1 right-1 bg-[#FE7A3A] p-1.5 rounded-full cursor-pointer shadow-md"
+            >
+              <FaEdit className="text-white text-sm" />
             </label>
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            {/* </label> */}
           </div>
         </div>
 
