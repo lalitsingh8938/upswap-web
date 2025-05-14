@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaLeftLong } from 'react-icons/fa6';
-// import './ChatRoomPage.css'; // Remove or create this file if needed
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Define WebSocket ready states for clarity
 const WebSocketReadyState = {
@@ -30,10 +31,10 @@ function ChatRoomPage() {
     if (!activityId || !chatroomId || !loggedInUserId || !sessionId) {
       console.error("Required IDs (Activity, Chatroom, User, or Session) are missing. Cannot establish WebSocket connection.");
       if (!loggedInUserId || !sessionId) {
-        alert("Session information is missing. Please log in again.");
+        toast.warn("Session information is missing. Please log in again.");
         // Example: navigate('/login');
       } else if (!activityId || !chatroomId) {
-        alert("Chatroom or activity information is missing. Cannot load chat.");
+        toast.warn("Chatroom or activity information is missing. Cannot load chat.");
         // Example: navigate('/');
       }
       // Ensure connected state is false if connection cannot be attempted
@@ -166,11 +167,11 @@ function ChatRoomPage() {
       console.warn("Cannot send message: WebSocket not connected, message empty, or missing required IDs.");
       // Agar connected state false hai toh alert dikhao
       if (!isConnected) {
-        alert("Chat connection is not ready. Please wait or try refreshing.");
+        toast.warn("Chat connection is not ready. Please wait or try refreshing.");
       } else if (!newMessage.trim()) {
         // Do nothing for empty message
       } else {
-        alert("Missing user or session information. Please log in again.");
+       toast.warn("Missing user or session information. Please log in again.");
       }
     }
   };

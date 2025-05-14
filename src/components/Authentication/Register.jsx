@@ -300,7 +300,6 @@
 
 // export default Register;
 
-
 // import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 // import axios from "axios";
@@ -717,7 +716,11 @@ function Register() {
       }
     } catch (error) {
       setIsLoading(false);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         toast.error(error.response.data.message);
       } else if (error.message) {
         toast.error(`Registration failed: ${error.message}`);
@@ -770,7 +773,7 @@ function Register() {
                 required // Added required attribute
               />
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium">Phone Number</label>
               <div className="flex items-center rounded p-2 w-full border">
                 <PhoneInput
@@ -800,6 +803,41 @@ function Register() {
                   buttonClass="px-2"
                 />
               </div>
+            </div> */}
+            <div>
+              <label className="block text-sm font-medium">Phone Number</label>
+              <div className="flex items-center rounded p-2 w-full border">
+                <PhoneInput
+                  country={"in"}
+                  value={formData.dial_code + formData.phone_number}
+                  onChange={(value, countryData) => {
+                    // Extract just the digits (remove all non-digit characters)
+                    const digitsOnly = value.replace(/\D/g, "");
+
+                    // Get the dial code length (number of digits)
+                    const dialCodeLength = countryData.dialCode.length;
+
+                    // Extract phone number (everything after dial code)
+                    const phoneNumber = digitsOnly.slice(dialCodeLength);
+
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      phone_number: phoneNumber,
+                      country_code: countryData.countryCode.toUpperCase(),
+                      dial_code: `+${countryData.dialCode}`,
+                      country: countryData.name,
+                    }));
+                  }}
+                  inputProps={{
+                    name: "phone_number",
+                    required: true,
+                  }}
+                  containerClass="w-full flex items-center"
+                  inputClass="flex-grow p-2 border-l border-gray-300 outline-none py-4"
+                  buttonClass="px-2"
+                  countryCodeEditable={false}
+                />
+              </div>
             </div>
 
             <div className="flex space-x-2">
@@ -821,8 +859,7 @@ function Register() {
                   name="gender"
                   className="w-full p-2 border rounded"
                   onChange={(e) => {
-                    const genderValue =
-                      e.target.value === "Male" ? "M" : "F";
+                    const genderValue = e.target.value === "Male" ? "M" : "F";
                     setFormData({ ...formData, gender: genderValue });
                   }}
                   required // Added required attribute

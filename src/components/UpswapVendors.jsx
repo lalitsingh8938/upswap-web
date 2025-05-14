@@ -441,7 +441,7 @@ const UpswapVendors = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        toast.error(result.message || "Something went wrong.");
+        toast.error(result.message || "You cannot favorite yourself.");
         return;
       }
 
