@@ -2117,6 +2117,435 @@
 
 // export default ActivityDetailsPage;
 
+// import React, { useState, useEffect, useRef, useCallback } from "react"; // Added useCallback
+// import { useParams, useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import { FaLeftLong } from "react-icons/fa6";
+// import { toast } from "react-toastify";
+
+// function ActivityDetailsPage() {
+//   const { activityId } = useParams();
+//   const [activity, setActivity] = useState(null);
+//   const [timeLeft, setTimeLeft] = useState("");
+//   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+//   const [selectedImage, setSelectedImage] = useState(null);
+//   const [isChatBoxOpen, setIsChatBoxOpen] = useState(false);
+//   const [chatMessage, setChatMessage] = useState("");
+//   const websocket = useRef(null);
+//   const navigate = useNavigate();
+//   // Ensure loggedInUserId is correctly fetched and is a string for comparison
+//   const loggedInUserId = String(localStorage.getItem("user_id"));
+
+//   // State to store all chat requests related to this activity
+//   const [allActivityChatRequests, setAllActivityChatRequests] = useState([]);
+
+//   // Define the fetch function outside useEffect
+//   // Using useCallback to memoize the function and prevent unnecessary re-creations
+//   const fetchAllChatRequestsForActivity = useCallback(async () => {
+//     // Ensure activityId and loggedInUserId are available before fetching
+//     if (activityId && loggedInUserId) {
+//       try {
+//         const res = await axios.get(
+//           `https://api.upswap.app/api/chat/get-chat-requests/${activityId}/`
+//         );
+//         // Assuming your API response has a 'data' field containing the list of requests
+//         if (res.data && res.data.data) {
+//           setAllActivityChatRequests(res.data.data);
+//         } else {
+//           // Handle cases where data is not in expected format or is empty
+//           console.warn("API response data is not in expected format or is empty:", res.data);
+//           setAllActivityChatRequests([]);
+//         }
+//       } catch (error) {
+//         console.error("Failed to fetch all chat requests for activity:", error);
+//         setAllActivityChatRequests([]); // Handle error by clearing state
+//       }
+//     } else {
+//        // Clear requests if activityId or userId is missing (shouldn't happen if component loads correctly)
+//        setAllActivityChatRequests([]);
+//     }
+//   }, [activityId, loggedInUserId]); // Dependencies for useCallback
+
+//   // Effect to fetch initial activity details
+//   useEffect(() => {
+//     const fetchActivityDetails = async () => {
+//       try {
+//         const res = await axios.get(
+//           `https://api.upswap.app/api/activities/details/${activityId}/`
+//         );
+//         setActivity(res.data);
+//       } catch (error) {
+//         console.error("Failed to fetch activity details:", error);
+//         // Optionally navigate away or show error message if activity not found
+//       }
+//     };
+
+//     fetchActivityDetails();
+//   }, [activityId]); // Dependency on activityId
+
+//   // Effect to fetch all chat requests for this activity when activity/user data is ready
+//   // This will run after the activity state is updated or loggedInUserId changes
+//   useEffect(() => {
+//     if (activity) {
+//       // Fetch requests after activity details are loaded
+//       fetchAllChatRequestsForActivity();
+//     }
+//     // Include activity and fetchAllChatRequestsForActivity in dependencies
+//     // fetchAllChatRequestsForActivity is a useCallback dependency, so it's stable
+//   }, [activity, fetchAllChatRequestsForActivity]);
+
+//   const handleImageClick = (imgUrl) => {
+//     setSelectedImage(imgUrl);
+//     setIsImageModalOpen(true);
+//   };
+
+//   // Countdown timer effect
+//   useEffect(() => {
+//     if (activity?.end_date && activity?.end_time) {
+//       const interval = setInterval(() => {
+//         const now = new Date();
+//         const [hours, minutes, seconds] = activity.end_time
+//           .split(":")
+//           .map(Number);
+//         const end = new Date(activity.end_date);
+//         end.setHours(hours);
+//         end.setMinutes(minutes);
+//         end.setSeconds(seconds);
+
+//         const diff = end - now;
+
+//         if (diff > 0) {
+//           const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+//           const hoursLeft = Math.floor((diff / (1000 * 60 * 60)) % 24);
+//           const minutesLeft = Math.floor((diff / (1000 * 60)) % 60);
+//           const secondsLeft = Math.floor((diff / 1000) % 60);
+
+//           setTimeLeft(
+//             `${days} days ${hoursLeft} hours ${minutesLeft} minutes ${secondsLeft} seconds`
+//           );
+//         } else {
+//           setTimeLeft("Expired");
+//           clearInterval(interval);
+//         }
+//       }, 1000);
+
+//       return () => clearInterval(interval);
+//     }
+//   }, [activity]); // Dependency on activity (specifically end_date and end_time)
+
+//   const handleInterestedClick = async () => {
+//     if (!loggedInUserId) {
+//       console.error("User ID not found.");
+//       toast.error("Please log in to express interest."); // User feedback
+//       return;
+//     }
+
+//     // Prevent sending request if one is already pending or accepted
+//     const userSentRequest = allActivityChatRequests.find(
+//         (request) => String(request.from_user) === String(loggedInUserId)
+//     );
+//     if(userSentRequest) {
+//         if(userSentRequest.is_accepted) {
+//              toast.info("You already have an active chat for this activity.");
+//              // Optional: navigate them to the chat
+//              navigate(`/chat/${activityId}/${userSentRequest.chatroom_id}`);
+//         } else {
+//              toast.info("You have already sent an interest request for this activity. Please wait for the creator to respond.");
+//         }
+//         setIsChatBoxOpen(false); // Close modal if a request exists
+//         return;
+//     }
+
+//     try {
+//       const response = await axios.post(
+//         "https://api.upswap.app/api/chat/create-chat-request/",
+//         {
+//           activity: activityId,
+//           from_user: loggedInUserId,
+//           initial_message: chatMessage || "I am interested in this activity.", // Send message or default
+//           is_accepted: false, // Ensure this is false by default
+//         }
+//       );
+
+//       console.log("Chat request sent:", response.data);
+//       toast.success(
+//         "Your interest request has been sent. Waiting for the activity creator to accept."
+//       );
+//       setIsChatBoxOpen(false);
+//       setChatMessage("");
+//       // After sending a request, refetch all chat requests for the activity to update UI
+//       await fetchAllChatRequestsForActivity();
+//     } catch (error) {
+//       console.error("Failed to send chat request:", error);
+//       // Provide more specific error feedback if possible (e.g., based on error.response)
+//       if (error.response && error.response.data && error.response.data.message) {
+//            toast.error(`Failed to send interest request: ${error.response.data.message}`);
+//       } else {
+//            toast.error("Failed to send interest request. Please try again.");
+//       }
+//     }
+//   };
+
+//   const handleAcceptChatRequest = async (requestId) => {
+//     try {
+//       const response = await axios.post(
+//         `https://api.upswap.app/api/chat/accept-chat-request/`,
+//         {}
+//       );
+//       console.log("Chat request accepted:", response.data);
+
+//       // Assuming the response for acceptance includes the chatroom_id
+//       if (response.data && response.data.chatroom_id) {
+//         // Check for chatroom_id and navigate
+//         // Navigate using both activityId and chatroom_id
+//         navigate(`/chat/${activityId}/${response.data.chatroom_id}`); // Corrected navigation path
+//       } else {
+//         console.error(
+//           "Acceptance response did not contain chatroom_id or was not in expected format",
+//           response.data
+//         );
+//         toast.warn(
+//           "Chat request accepted, but failed to get chatroom details. You may need to find the chat via your chat list."
+//         );
+//         // Still refetch requests even if navigation fails, to update UI
+//         await fetchAllChatRequestsForActivity();
+//       }
+
+//     } catch (error) {
+//       console.error("Failed to accept chat request:", error);
+//        if (error.response && error.response.data && error.response.data.message) {
+//            toast.error(`Failed to accept chat request: ${error.response.data.message}`);
+//        } else {
+//            toast.error("Failed to accept chat request.");
+//        }
+//     }
+//   };
+
+//   const handleRejectChatRequest = async (requestId) => {
+//     try {
+//       const response = await axios.post(
+//         // Assuming reject also returns a response
+//         `https://api.upswap.app/api/chat/reject-chat-request/${requestId}/`,
+//         {}
+//       );
+//       console.log("Chat request rejected:", requestId, response.data);
+
+//       // Refetch all chat requests to update the UI for the creator (to remove rejected requests)
+//       await fetchAllChatRequestsForActivity();
+//       toast.success("Chat request rejected."); // User feedback
+//     } catch (error) {
+//       console.error("Failed to reject chat request:", error);
+//        if (error.response && error.response.data && error.response.data.message) {
+//            toast.warn(`Failed to reject chat request: ${error.response.data.message}`);
+//        } else {
+//            toast.warn("Failed to reject chat request.");
+//        }
+//     }
+//   };
+
+//   if (!activity) return <div className="p-4 text-center">Loading...</div>;
+
+//   // Logic for the interested user (not the activity creator)
+//   // Find if the logged-in user has already sent a request for THIS activity
+//    const userSentRequest = allActivityChatRequests.find(
+//        (request) => String(request.from_user) === loggedInUserId
+//    );
+
+//   const isUserRequestAccepted =
+//     userSentRequest && userSentRequest.is_accepted === true;
+
+//   // Logic for the activity creator
+//   // Filter requests for THIS activity that are not yet accepted.
+//   // This filter runs ONLY if the loggedInUser is the activity creator (checked in the render block).
+//   const pendingChatRequestsForCreator = allActivityChatRequests.filter(
+//     // **CORRECTED FILTER LOGIC:**
+//     // We know from the API response that the `activity_admin` field doesn't contain the ID.
+//     // The API endpoint `/get-chat-requests/${activityId}/` should filter by activity already.
+//     // The outer render block checks if the loggedInUser IS the activity creator.
+//     // So, we just need to find requests for this activity that are not accepted.
+//      (request) => request.is_accepted === false
+//   );
+
+//   return (
+//     <div className="p-4">
+//       {/* Top bar */}
+//       <div className="bg-gradient-to-r bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex items-center justify-between">
+//         <button
+//           onClick={() => navigate(-1)}
+//           className="text-white text-sm px-1 py-1 rounded-md hover:bg-red-500"
+//         >
+//           <FaLeftLong className="w-5 h-5" />
+//         </button>
+//         <h2 className="text-lg font-semibold text-center flex-1">
+//           Activity Description
+//         </h2>
+//         <div className="w-14" /> {/* Spacer */}
+//       </div>
+
+//       {/* Activity Info */}
+//       <h2 className="text-xl p-1 font-semibold ">{activity.activity_title}</h2>
+
+//       <div className="flex flex-wrap justify-center gap-4 mb-8">
+//         {activity.uploaded_images.map((imgUrl, index) => (
+//           <img
+//             key={index}
+//             src={imgUrl}
+//             alt={`Activity image ${index + 1}`}
+//             className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
+//             onClick={() => handleImageClick(imgUrl)}
+//             onError={(e) => {
+//                // Optional: Handle image load errors more gracefully
+//                // e.target.src = "duplicate (1).png"; // Make sure this path is correct
+//                console.error("Failed to load image:", imgUrl);
+//                e.target.style.display = 'none'; // Hide broken image icon
+//             }}
+//           />
+//         ))}
+//          {activity.uploaded_images.length === 0 && (
+//             <div className="w-52 h-52 flex items-center justify-center text-gray-500 border-2 border-gray-200 rounded-md">
+//                 No Images Available
+//             </div>
+//          )}
+//       </div>
+
+//       <div className="bg-gray-800 text-white p-2 mt-2 rounded text-sm">
+//         {timeLeft}
+//       </div>
+
+//       <div className="mt-4 space-y-1 text-sm">
+//         <p>
+//           <b>Posted by:</b> {activity.created_by}
+//         </p>
+//         <p>📍 Address: {activity.location}</p>
+//       </div>
+
+//       <div className="mt-4 text-sm">
+//         <b>About This Activity</b>
+//         <p>{activity.activity_description}</p>
+//       </div>
+
+//       {/* Interested Button / Go to Chat Button / Pending Message for the interested user */}
+//       {/* Check if the logged-in user is NOT the activity creator */}
+//       {String(loggedInUserId) !== String(activity?.user_id) && (
+//         <>
+//           {isUserRequestAccepted ? (
+//             // Show Go to Chat button if the user's request is accepted
+//             <button
+//               onClick={() =>
+//                 navigate(`/chat/${activityId}/${userSentRequest.chatroom_id}`)
+//               } // Use userSentRequest's chatroom_id
+//               className="mt-6 bg-blue-500 text-white py-3 px-4 rounded-lg w-full text-base font-medium hover:brightness-110 transition"
+//             >
+//               Go to Chat
+//             </button>
+//           ) : userSentRequest ? ( // If userSentRequest exists but is not accepted
+//             // Show pending message if user has sent a request but it's not accepted
+//             <p className="mt-4 text-center text-gray-600">
+//               Your chat request is pending review.
+//             </p>
+//           ) : (
+//             // Show "I am interested" button if user has not sent any request
+//             <button
+//               onClick={() => setIsChatBoxOpen(true)}
+//               className="mt-6 bg-[#FE7A3A] text-white py-3 px-4 rounded-lg w-full text-base font-medium hover:brightness-110 transition"
+//             >
+//               I am interested
+//             </button>
+//           )}
+//         </>
+//       )}
+
+//       {/* Accept/Reject Buttons for Activity Creator */}
+//       {/* Check if the logged-in user IS the activity creator */}
+//       {String(loggedInUserId) === String(activity?.user_id) &&
+//         pendingChatRequestsForCreator.length > 0 && (
+//           <div className="mt-6 border-t pt-4">
+//             <h3 className="text-lg font-semibold mb-2">
+//               Pending Chat Requests
+//             </h3>
+//             {pendingChatRequestsForCreator.map((request) => (
+//               <div
+//                 key={request.id} // Using request.id as key
+//                 className="flex items-center justify-between py-2 border-b last:border-b-0" // Added border for separation
+//               >
+//                 {/* Display user information */}
+//                 <span>
+//                   User: {request.from_user_name || `ID: ${request.from_user}`}
+//                 </span>
+//                 <div>
+//                   <button
+//                     onClick={() => handleAcceptChatRequest(request.id)}
+//                     className="bg-green-500 text-white py-2 px-4 rounded-md mr-2 hover:brightness-110 transition text-sm"
+//                   >
+//                     Accept
+//                   </button>
+//                   <button
+//                     onClick={() => handleRejectChatRequest(request.id)}
+//                     className="bg-red-500 text-white py-2 px-4 rounded-md hover:brightness-110 transition text-sm"
+//                   >
+//                     Reject
+//                   </button>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+
+//       {/* Image Modal */}
+//       {isImageModalOpen && (
+//         <div
+//           className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+//           onClick={() => setIsImageModalOpen(false)}
+//         >
+//           <img
+//             src={selectedImage}
+//             alt="Preview"
+//             className="max-w-full max-h-full object-contain rounded-lg shadow-lg" // Adjusted sizing for better display
+//           />
+//         </div>
+//       )}
+
+//       {/* Chat Box Modal for sending initial interest message */}
+//       {isChatBoxOpen && (
+//         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4"> {/* Added padding */}
+//           <div className="bg-white rounded-lg w-full max-w-sm p-4 flex flex-col"> {/* Added max-w */}
+//             <div className="flex justify-between items-center mb-2">
+//               <h2 className="text-lg font-semibold">
+//                 Chat with {activity.created_by}
+//               </h2>
+//               <button
+//                 onClick={() => setIsChatBoxOpen(false)}
+//                 className="text-gray-500 hover:text-gray-700 font-bold" // Styled close button
+//               >
+//                 &times; {/* Use times symbol for X */}
+//               </button>
+//             </div>
+//             {/* Removed the empty chat display area as this modal is only for sending the *initial* request */}
+//             <p className="text-sm text-gray-700 mb-3">Send an initial message to the activity creator.</p>
+//             <div className="flex">
+//               <input
+//                 type="text"
+//                 className="border rounded-l px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#FE7A3A]" // Added focus styles
+//                 placeholder="Type your message..."
+//                 value={chatMessage}
+//                 onChange={(e) => setChatMessage(e.target.value)}
+//                 onKeyDown={(e) => e.key === "Enter" && handleInterestedClick()}
+//               />
+//               <button
+//                 onClick={handleInterestedClick}
+//                 className="bg-[#FE7A3A] text-white px-4 py-2 rounded-r font-medium hover:brightness-110 transition"
+//               >
+//                 Send
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+// export default ActivityDetailsPage;
 
 import React, { useState, useEffect, useRef, useCallback } from "react"; // Added useCallback
 import { useParams, useNavigate } from "react-router-dom";
@@ -2132,10 +2561,11 @@ function ActivityDetailsPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isChatBoxOpen, setIsChatBoxOpen] = useState(false);
   const [chatMessage, setChatMessage] = useState("");
+  const [messages, setMessages] = useState([]);
   const websocket = useRef(null);
   const navigate = useNavigate();
   // Ensure loggedInUserId is correctly fetched and is a string for comparison
-  const loggedInUserId = String(localStorage.getItem("user_id")); 
+  const loggedInUserId = String(localStorage.getItem("user_id"));
 
   // State to store all chat requests related to this activity
   const [allActivityChatRequests, setAllActivityChatRequests] = useState([]);
@@ -2144,7 +2574,7 @@ function ActivityDetailsPage() {
   // Using useCallback to memoize the function and prevent unnecessary re-creations
   const fetchAllChatRequestsForActivity = useCallback(async () => {
     // Ensure activityId and loggedInUserId are available before fetching
-    if (activityId && loggedInUserId) { 
+    if (activityId && loggedInUserId) {
       try {
         const res = await axios.get(
           `https://api.upswap.app/api/chat/get-chat-requests/${activityId}/`
@@ -2154,16 +2584,19 @@ function ActivityDetailsPage() {
           setAllActivityChatRequests(res.data.data);
         } else {
           // Handle cases where data is not in expected format or is empty
-          console.warn("API response data is not in expected format or is empty:", res.data);
-          setAllActivityChatRequests([]); 
+          console.warn(
+            "API response data is not in expected format or is empty:",
+            res.data
+          );
+          setAllActivityChatRequests([]);
         }
       } catch (error) {
         console.error("Failed to fetch all chat requests for activity:", error);
         setAllActivityChatRequests([]); // Handle error by clearing state
       }
     } else {
-       // Clear requests if activityId or userId is missing (shouldn't happen if component loads correctly)
-       setAllActivityChatRequests([]); 
+      // Clear requests if activityId or userId is missing (shouldn't happen if component loads correctly)
+      setAllActivityChatRequests([]);
     }
   }, [activityId, loggedInUserId]); // Dependencies for useCallback
 
@@ -2193,7 +2626,7 @@ function ActivityDetailsPage() {
     }
     // Include activity and fetchAllChatRequestsForActivity in dependencies
     // fetchAllChatRequestsForActivity is a useCallback dependency, so it's stable
-  }, [activity, fetchAllChatRequestsForActivity]); 
+  }, [activity, fetchAllChatRequestsForActivity]);
 
   const handleImageClick = (imgUrl) => {
     setSelectedImage(imgUrl);
@@ -2243,20 +2676,21 @@ function ActivityDetailsPage() {
 
     // Prevent sending request if one is already pending or accepted
     const userSentRequest = allActivityChatRequests.find(
-        (request) => String(request.from_user) === String(loggedInUserId)
+      (request) => String(request.from_user) === String(loggedInUserId)
     );
-    if(userSentRequest) {
-        if(userSentRequest.is_accepted) {
-             toast.info("You already have an active chat for this activity.");
-             // Optional: navigate them to the chat
-             navigate(`/chat/${activityId}/${userSentRequest.chatroom_id}`);
-        } else {
-             toast.info("You have already sent an interest request for this activity. Please wait for the creator to respond.");
-        }
-        setIsChatBoxOpen(false); // Close modal if a request exists
-        return; 
+    if (userSentRequest) {
+      if (userSentRequest.is_accepted) {
+        toast.info("You already have an active chat for this activity.");
+        // Optional: navigate them to the chat
+        navigate(`/chat/${activityId}/${userSentRequest.chatroom_id}`);
+      } else {
+        toast.info(
+          "You have already sent an interest request for this activity. Please wait for the creator to respond."
+        );
+      }
+      setIsChatBoxOpen(false); // Close modal if a request exists
+      return;
     }
-
 
     try {
       const response = await axios.post(
@@ -2270,56 +2704,168 @@ function ActivityDetailsPage() {
       );
 
       console.log("Chat request sent:", response.data);
+      console.log("Activity ID:", activityId);
+
       toast.success(
-        "Your interest request has been sent. Waiting for the activity creator to accept."
+        "Your interest request has been sent. Waiting for the Activity Admin to accept."
       );
       setIsChatBoxOpen(false);
       setChatMessage("");
       // After sending a request, refetch all chat requests for the activity to update UI
-      await fetchAllChatRequestsForActivity(); 
+      await fetchAllChatRequestsForActivity();
     } catch (error) {
       console.error("Failed to send chat request:", error);
       // Provide more specific error feedback if possible (e.g., based on error.response)
-      if (error.response && error.response.data && error.response.data.message) {
-           toast.error(`Failed to send interest request: ${error.response.data.message}`);
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.error(
+          `Failed to send interest request: ${error.response.data.message}`
+        );
       } else {
-           toast.error("Failed to send interest request. Please try again.");
+        toast.error("Failed to send interest request. Please try again.");
       }
     }
   };
 
-  const handleAcceptChatRequest = async (requestId) => {
-    try {
-      const response = await axios.post(
-        `https://api.upswap.app/api/chat/accept-chat-request/`,
-        {}
-      );
-      console.log("Chat request accepted:", response.data);
+  // Modified function to accept the request object
+  // const handleAcceptChatRequest = async (request) => {
+  //   try {
+  //     // const response = await axios.patch(
+  //     //   "https://api.upswap.app/api/chat/accept-chat-request/",
+  //     //   {
+  //     //     id: request.id,
+  //     //     is_accepted: true,
+  //     //   }
+  //     // );
+  //     const response = await axios.patch(
+  //       "https://api.upswap.app/api/chat/accept-chat-request/",
+  //       [
+  //         {
+  //           id: request.id, // dynamically use the request ID
+  //           is_accepted: true,
+  //         },
+  //       ]
+  //     );
 
-      // Assuming the response for acceptance includes the chatroom_id
-      if (response.data && response.data.chatroom_id) {
-        // Check for chatroom_id and navigate
-        // Navigate using both activityId and chatroom_id
-        navigate(`/chat/${activityId}/${response.data.chatroom_id}`); // Corrected navigation path
-      } else {
-        console.error(
-          "Acceptance response did not contain chatroom_id or was not in expected format",
-          response.data
-        );
-        toast.warn(
-          "Chat request accepted, but failed to get chatroom details. You may need to find the chat via your chat list."
-        );
-        // Still refetch requests even if navigation fails, to update UI
-        await fetchAllChatRequestsForActivity(); 
+  //     const { chatroom_id } = response.data;
+
+  //     if (chatroom_id) {
+  //       // 🔌 Establish WebSocket connection
+  //       websocket.current = new WebSocket(
+  //         `wss://api.upswap.app/ws/chat/${chatroom_id}/`
+
+  //       );
+
+  //       websocket.current.onopen = () => {
+  //         console.log("WebSocket connected to chatroom:", chatroom_id);
+  //       };
+
+  //       websocket.current.onmessage = (event) => {
+  //         const data = JSON.parse(event.data);
+  //         console.log("New message:", data);
+  //         // Optionally show in chat UI or store in state
+  //       };
+
+  //       websocket.current.onclose = () => {
+  //         console.log("WebSocket disconnected");
+  //       };
+
+  //       websocket.current.onerror = (error) => {
+  //         console.error("WebSocket error:", error);
+  //       };
+
+  //       // Navigate to chat room
+  //       navigate(`/chat/${activityId}/${chatroom_id}`);
+  //     } else {
+  //       toast.warn("Chat accepted but chatroom ID is missing.");
+  //     }
+
+  //     await fetchAllChatRequestsForActivity();
+  //   } catch (error) {
+  //     console.error("Failed to accept chat request:", error);
+  //     toast.error("Failed to accept chat request.");
+  //   }
+  // };
+  const handleAcceptChatRequest = async (request) => {
+    try {
+      const response = await axios.patch(
+        "https://api.upswap.app/api/chat/accept-chat-request/",
+        [
+          {
+            id: request.id, // dynamically use the request ID
+            is_accepted: true,
+          },
+        ]
+      );
+
+      const accepted = response.data.accepted?.[0];
+      const chatroomId = accepted?.chat_room?.id;
+      const sessionId = localStorage.getItem("sessionid");
+      const loggedInUserId = localStorage.getItem("user_id");
+      const username = localStorage.getItem("username");
+      toast.success("Chat Request Accepted");
+
+      console.log(
+        "chatroomid",
+        chatroomId,
+        "sessionid",
+        sessionId,
+        "user_id",
+        loggedInUserId,
+        "username",
+        username
+      );
+
+      if (!chatroomId || !sessionId) {
+        console.error("Missing chatroomId or sessionId");
+        return;
       }
-      
-    } catch (error) {
-      console.error("Failed to accept chat request:", error);
-       if (error.response && error.response.data && error.response.data.message) {
-           toast.error(`Failed to accept chat request: ${error.response.data.message}`);
-       } else {
-           toast.error("Failed to accept chat request.");
-       }
+
+      const wsUrl = `wss://api.upswap.app/ws/ws/uchat/${chatroomId}/${sessionId}/`;
+
+      const socket = new WebSocket(wsUrl);
+
+      // socket.onopen = () => {
+      //   console.log("✅ WebSocket connected");
+      //   // You can now show the chat UI or navigate to chatroom
+      //   navigate(`/chat/${activityId}/${chatroomId}`);
+      // };
+      socket.onopen = () => {
+        console.log("✅ WebSocket connected");
+        websocket.current = socket;
+         navigate(`/chat/${activityId}/${chatroomId}`);
+      };
+
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("📨 Message received:",  data);
+      };
+//       websocket.current.onmessage = (event) => {
+//       try {
+//         const data = JSON.parse(event.data);
+//         console.log("Message received:", data);
+//         if (data.type === 'chat_message' && data.message) {
+//           setMessages((prevMessages) => [...prevMessages, data.message]);
+//         } else {
+//           console.warn("Received unexpected message format:", data);
+//         }
+//       } catch (error) {
+//         console.error("Error parsing or handling received message:", error, event.data);
+//       }
+//     };
+
+      socket.onclose = () => {
+        console.log("🔌 WebSocket closed");
+      };
+
+      socket.onerror = (error) => {
+        console.error("❌ WebSocket error:", error);
+      };
+    } catch (err) {
+      console.error("❗ Error accepting request:", err);
     }
   };
 
@@ -2328,7 +2874,7 @@ function ActivityDetailsPage() {
       const response = await axios.post(
         // Assuming reject also returns a response
         `https://api.upswap.app/api/chat/reject-chat-request/${requestId}/`,
-        {}
+        {} // Reject might not need a body, or a different body
       );
       console.log("Chat request rejected:", requestId, response.data);
 
@@ -2337,11 +2883,17 @@ function ActivityDetailsPage() {
       toast.success("Chat request rejected."); // User feedback
     } catch (error) {
       console.error("Failed to reject chat request:", error);
-       if (error.response && error.response.data && error.response.data.message) {
-           toast.warn(`Failed to reject chat request: ${error.response.data.message}`);
-       } else {
-           toast.warn("Failed to reject chat request.");
-       }
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        toast.warn(
+          `Failed to reject chat request: ${error.response.data.message}`
+        );
+      } else {
+        toast.warn("Failed to reject chat request.");
+      }
     }
   };
 
@@ -2349,25 +2901,24 @@ function ActivityDetailsPage() {
 
   // Logic for the interested user (not the activity creator)
   // Find if the logged-in user has already sent a request for THIS activity
-   const userSentRequest = allActivityChatRequests.find(
-       (request) => String(request.from_user) === loggedInUserId
-   );
+  const userSentRequest = allActivityChatRequests.find(
+    (request) => String(request.from_user) === loggedInUserId
+  );
 
   const isUserRequestAccepted =
     userSentRequest && userSentRequest.is_accepted === true;
 
   // Logic for the activity creator
   // Filter requests for THIS activity that are not yet accepted.
-  // This filter runs ONLY if the loggedInUser is the activity creator (checked in the render block).
+  // This filter runs ONLY if the loggedInUser IS the activity creator (checked in the render block).
   const pendingChatRequestsForCreator = allActivityChatRequests.filter(
     // **CORRECTED FILTER LOGIC:**
     // We know from the API response that the `activity_admin` field doesn't contain the ID.
     // The API endpoint `/get-chat-requests/${activityId}/` should filter by activity already.
     // The outer render block checks if the loggedInUser IS the activity creator.
     // So, we just need to find requests for this activity that are not accepted.
-     (request) => request.is_accepted === false
+    (request) => request.is_accepted === false
   );
-
 
   return (
     <div className="p-4">
@@ -2397,18 +2948,18 @@ function ActivityDetailsPage() {
             className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
             onClick={() => handleImageClick(imgUrl)}
             onError={(e) => {
-               // Optional: Handle image load errors more gracefully
-               // e.target.src = "duplicate (1).png"; // Make sure this path is correct
-               console.error("Failed to load image:", imgUrl);
-               e.target.style.display = 'none'; // Hide broken image icon
+              // Optional: Handle image load errors more gracefully
+              // e.target.src = "duplicate (1).png"; // Make sure this path is correct
+              console.error("Failed to load image:", imgUrl);
+              e.target.style.display = "none"; // Hide broken image icon
             }}
           />
         ))}
-         {activity.uploaded_images.length === 0 && (
-            <div className="w-52 h-52 flex items-center justify-center text-gray-500 border-2 border-gray-200 rounded-md">
-                No Images Available
-            </div>
-         )}
+        {activity.uploaded_images.length === 0 && (
+          <div className="w-52 h-52 flex items-center justify-center text-gray-500 border-2 border-gray-200 rounded-md">
+            No Images Available
+          </div>
+        )}
       </div>
 
       <div className="bg-gray-800 text-white p-2 mt-2 rounded text-sm">
@@ -2441,7 +2992,8 @@ function ActivityDetailsPage() {
             >
               Go to Chat
             </button>
-          ) : userSentRequest ? ( // If userSentRequest exists but is not accepted
+          ) : userSentRequest ? (
+            // If userSentRequest exists but is not accepted
             // Show pending message if user has sent a request but it's not accepted
             <p className="mt-4 text-center text-gray-600">
               Your chat request is pending review.
@@ -2476,9 +3028,11 @@ function ActivityDetailsPage() {
                   User: {request.from_user_name || `ID: ${request.from_user}`}
                 </span>
                 <div>
+                  {/* Pass the full request object to handleAcceptChatRequest */}
                   <button
-                    onClick={() => handleAcceptChatRequest(request.id)}
+                    onClick={() => handleAcceptChatRequest(request)}
                     className="bg-green-500 text-white py-2 px-4 rounded-md mr-2 hover:brightness-110 transition text-sm"
+                    // onClick={() => navigate("/ChatRoom")}
                   >
                     Accept
                   </button>
@@ -2510,8 +3064,12 @@ function ActivityDetailsPage() {
 
       {/* Chat Box Modal for sending initial interest message */}
       {isChatBoxOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4"> {/* Added padding */}
-          <div className="bg-white rounded-lg w-full max-w-sm p-4 flex flex-col"> {/* Added max-w */}
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          {" "}
+          {/* Added padding */}
+          <div className="bg-white rounded-lg w-full max-w-sm p-4 flex flex-col">
+            {" "}
+            {/* Added max-w */}
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold">
                 Chat with {activity.created_by}
@@ -2524,7 +3082,9 @@ function ActivityDetailsPage() {
               </button>
             </div>
             {/* Removed the empty chat display area as this modal is only for sending the *initial* request */}
-            <p className="text-sm text-gray-700 mb-3">Send an initial message to the activity creator.</p>
+            <p className="text-sm text-gray-700 mb-3">
+              Send an initial message to the activity creator.
+            </p>
             <div className="flex">
               <input
                 type="text"
@@ -2568,7 +3128,7 @@ export default ActivityDetailsPage;
 //   const websocket = useRef(null); // Note: WebSocket logic is present but not fully implemented/used in the provided handlers
 //   const navigate = useNavigate();
 //   // Ensure loggedInUserId is correctly fetched and is a string for comparison
-//   const loggedInUserId = String(localStorage.getItem("user_id")); 
+//   const loggedInUserId = String(localStorage.getItem("user_id"));
 
 //   // State to store all chat requests related to this activity
 //   const [allActivityChatRequests, setAllActivityChatRequests] = useState([]);
@@ -2577,7 +3137,7 @@ export default ActivityDetailsPage;
 //   // Using useCallback to memoize the function and prevent unnecessary re-creations
 //   const fetchAllChatRequestsForActivity = useCallback(async () => {
 //     // Ensure activityId and loggedInUserId are available before fetching
-//     if (activityId && loggedInUserId) { 
+//     if (activityId && loggedInUserId) {
 //       try {
 //         const res = await axios.get(
 //           `https://api.upswap.app/api/chat/get-chat-requests/${activityId}/`
@@ -2588,7 +3148,7 @@ export default ActivityDetailsPage;
 //         } else {
 //           // Handle cases where data is not in expected format or is empty
 //           console.warn("API response data is not in expected format or is empty:", res.data);
-//           setAllActivityChatRequests([]); 
+//           setAllActivityChatRequests([]);
 //         }
 //       } catch (error) {
 //         console.error("Failed to fetch all chat requests for activity:", error);
@@ -2596,7 +3156,7 @@ export default ActivityDetailsPage;
 //       }
 //     } else {
 //        // Clear if activityId or userId is missing (shouldn't happen if component loads correctly)
-//        setAllActivityChatRequests([]); 
+//        setAllActivityChatRequests([]);
 //     }
 //   }, [activityId, loggedInUserId]); // Dependencies for useCallback
 
@@ -2626,7 +3186,7 @@ export default ActivityDetailsPage;
 //     }
 //     // Include activity and fetchAllChatRequestsForActivity in dependencies
 //     // fetchAllChatRequestsForActivity is a useCallback dependency, so it's stable
-//   }, [activity, fetchAllChatRequestsForActivity]); 
+//   }, [activity, fetchAllChatRequestsForActivity]);
 
 //   // Countdown timer effect
 //   useEffect(() => {
@@ -2690,7 +3250,7 @@ export default ActivityDetailsPage;
 //              toast.warn("Your request status is unclear. Please check your chat list.");
 //         }
 //         setIsChatBoxOpen(false); // Close modal if a request exists
-//         return; 
+//         return;
 //     }
 
 //     try {
@@ -2711,13 +3271,13 @@ export default ActivityDetailsPage;
 //       setIsChatBoxOpen(false);
 //       setChatMessage("");
 //       // After sending a request, refetch all chat requests for the activity to update UI
-//       await fetchAllChatRequestsForActivity(); 
+//       await fetchAllChatRequestsForActivity();
 //     } catch (error) {
 //       console.error("Failed to send chat request:", error);
 //       // Provide more specific error feedback if possible (e.g., based on error.response)
 //       if (error.response && error.response.data && error.response.data.message) {
 //            // Display backend validation errors etc.
-//            const errorMsg = typeof error.response.data.message === 'string' 
+//            const errorMsg = typeof error.response.data.message === 'string'
 //                             ? error.response.data.message
 //                             : (error.response.data.error ? JSON.stringify(error.response.data.error) : 'Unknown error');
 //            toast.error(`Failed to send interest request: ${errorMsg}`);
@@ -2745,14 +3305,14 @@ export default ActivityDetailsPage;
 //          // Send an empty body {} or include data if your specific API requires it.
 //          // Based on the previous error, if your API truly needs activity and from_user in the body,
 //          // you would send: { activity: activityId, from_user: request.from_user }
-//         {} 
+//         {}
 //       );
 //       console.log("Chat request accepted:", response.data);
 //       toast.success("Chat request accepted!"); // Success feedback
 
 //       if (response.data && response.data.chatroom_id) {
 //         // Navigate to the chatroom using the ID from the response
-//         navigate(`/chat/${activityId}/${response.data.chatroom_id}`); 
+//         navigate(`/chat/${activityId}/${response.data.chatroom_id}`);
 //       } else {
 //         console.error(
 //           "Acceptance response did not contain chatroom_id or was not in expected format",
@@ -2762,13 +3322,13 @@ export default ActivityDetailsPage;
 //           "Chat request accepted, but failed to get chatroom details. Please check your chat list."
 //         );
 //         // Refetch requests even if navigation info is missing, to update the list
-//         await fetchAllChatRequestsForActivity(); 
+//         await fetchAllChatRequestsForActivity();
 //       }
-      
+
 //     } catch (error) {
 //       console.error("Failed to accept chat request:", error);
 //        if (error.response && error.response.data) {
-//            const errorMsg = typeof error.response.data.message === 'string' 
+//            const errorMsg = typeof error.response.data.message === 'string'
 //                             ? error.response.data.message
 //                             : (error.response.data.error ? JSON.stringify(error.response.data.error) : 'Unknown error');
 //            toast.error(`Failed to accept chat request: ${errorMsg}`);
@@ -2782,7 +3342,7 @@ export default ActivityDetailsPage;
 
 //   // --- CORRECTED HANDLER FUNCTIONS ---
 //   // Function now accepts the full request object
-//   const handleRejectChatRequest = async (request) => { 
+//   const handleRejectChatRequest = async (request) => {
 //     const requestId = request.id; // Get the ID from the object
 
 //     if (!loggedInUserId) {
@@ -2802,11 +3362,11 @@ export default ActivityDetailsPage;
 //       toast.success("Chat request rejected."); // Success feedback
 
 //       // Refetch all chat requests to update the UI for the creator (to remove rejected requests)
-//       await fetchAllChatRequestsForActivity(); 
+//       await fetchAllChatRequestsForActivity();
 //     } catch (error) {
 //       console.error("Failed to reject chat request:", error);
 //        if (error.response && error.response.data) {
-//            const errorMsg = typeof error.response.data.message === 'string' 
+//            const errorMsg = typeof error.response.data.message === 'string'
 //                             ? error.response.data.message
 //                             : (error.response.data.error ? JSON.stringify(error.response.data.error) : 'Unknown error');
 //            toast.warn(`Failed to reject chat request: ${errorMsg}`);
@@ -2818,7 +3378,6 @@ export default ActivityDetailsPage;
 //     }
 //   };
 //   // --- END CORRECTED HANDLER FUNCTIONS ---
-
 
 //   if (!activity) return <div className="p-4 text-center">Loading...</div>;
 
@@ -2840,7 +3399,6 @@ export default ActivityDetailsPage;
 //     // The API endpoint should filter by activity already.
 //      (request) => request.is_accepted === false
 //   );
-
 
 //   return (
 //     <div className="p-4">
@@ -2951,7 +3509,7 @@ export default ActivityDetailsPage;
 //                 <div>
 //                   <button
 //                     // --- CORRECTED CALL ---
-//                     onClick={() => handleAcceptChatRequest(request)} 
+//                     onClick={() => handleAcceptChatRequest(request)}
 //                     className="bg-green-500 text-white py-2 px-4 rounded-md mr-2 hover:brightness-110 transition text-sm"
 //                   >
 //                     Accept

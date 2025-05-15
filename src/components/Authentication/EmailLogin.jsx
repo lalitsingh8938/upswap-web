@@ -42,7 +42,7 @@
 //           localStorage.setItem("country_code", response.data.user.country_code);
 //           localStorage.setItem("dial_code", response.data.user.dial_code);
 //         }
-        
+
 //         navigate("/DealsPage");
 //       } else {
 //         toast.error("Login successful but token missing.");
@@ -106,7 +106,6 @@
 
 // export default EmailLogin;
 
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
@@ -162,7 +161,11 @@ const EmailLogin = () => {
       }
     } catch (error) {
       setLoading(false);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         toast.error(error.response.data.message); // Display message from backend
       } else if (error.message) {
         toast.error(`Login failed: ${error.message}`);
@@ -193,6 +196,15 @@ const EmailLogin = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+        {/* <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Enter Password"
+          className="w-full p-3 border rounded-md focus:ring-orange-500"
+          onChange={(e) => setPassword(e.target.value)}
+          required // Added required attribute
+        /> */}
         {/* <button
           className="absolute right-3 top-4 text-gray-500"
           onClick={() => setShowPassword(!showPassword)}
