@@ -789,7 +789,7 @@ function ChatRoomPage() {
       <div className="p-3 bg-gray-100 border-b border-gray-300 flex items-center">
         <button
           onClick={() =>
-            activityId ? navigate(`/activity/${activityId}`) : navigate(-1)
+            activityId ? navigate(`/ActivitiesDetails/${activityId}`) : navigate(-1)
           }
           className="mr-2"
         >
