@@ -301,16 +301,18 @@
 
 // export default FavoritesList;
 
-
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MdLocationOn } from "react-icons/md";
 import Unfavorite from "./Unfavorite"; // 👈 import karo
+import { useNavigate } from "react-router-dom";
+import { FaHeart, FaBars } from "react-icons/fa";
 
 const FavoritesList = () => {
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -351,6 +353,22 @@ const FavoritesList = () => {
 
   return (
     <div className="p-6">
+      <div className="flex items-center justify-between bg-gradient-to-r border-2 bg-[#FE7A3A] text-white p-4 rounded-lg">
+        <button className="text-xl" onClick={() => navigate("/UpswapVendors")}>
+          &#8592;
+        </button>
+        <h1 className="text-lg font-semibold">Favorite Vendors</h1>
+        <div className="flex gap-4">
+          {/* <FaHeart className="text-xl" /> */}
+          {/* <FaHeart */}
+          <FaHeart
+            className="text-xl cursor-pointer text-red-500"
+            onClick={() => navigate("/Favorite")}
+          />
+
+          <FaBars className="text-xl" />
+        </div>
+      </div>
       <ToastContainer />
       {favorites.length === 0 ? (
         <p>No favorite vendors found.</p>
@@ -361,7 +379,10 @@ const FavoritesList = () => {
             className="relative grid grid-cols-1 md:grid-cols-3 gap-4 border p-4 rounded shadow-md mb-6"
           >
             {/* UnfavoriteButton component use kiya */}
-            <Unfavorite vendorId={vendor.id} onUnfavorite={removeVendorFromList} />
+            <Unfavorite
+              vendorId={vendor.id}
+              onUnfavorite={removeVendorFromList}
+            />
 
             {/* Vendor Info */}
             <div className="flex flex-col items-center text-center">
@@ -372,8 +393,14 @@ const FavoritesList = () => {
               />
               <h2 className="text-xl font-semibold">{vendor.full_name}</h2>
               <div className="text-sm text-gray-600 mt-2">
-                <p><span className="font-semibold">Email:</span> {vendor.business_email_id}</p>
-                <p><span className="font-semibold">Phone:</span> {vendor.phone_number}</p>
+                <p>
+                  <span className="font-semibold">Email:</span>{" "}
+                  {vendor.business_email_id}
+                </p>
+                <p>
+                  <span className="font-semibold">Phone:</span>{" "}
+                  {vendor.phone_number}
+                </p>
               </div>
             </div>
 
@@ -382,8 +409,11 @@ const FavoritesList = () => {
               <ul className="space-y-2">
                 {vendor.services.map((service) => (
                   <li key={service.uuid}>
-                    <strong>{service.item_name}</strong> ({service.service_category}) - ₹{service.item_price}
-                    <p className="text-sm text-gray-500">{service.item_description}</p>
+                    <strong>{service.item_name}</strong> (
+                    {service.service_category}) - ₹{service.item_price}
+                    <p className="text-sm text-gray-500">
+                      {service.item_description}
+                    </p>
                   </li>
                 ))}
               </ul>
@@ -397,7 +427,8 @@ const FavoritesList = () => {
                     <p className="flex items-start gap-1 text-gray-700">
                       <MdLocationOn className="text-red-500 mt-1" />
                       <span>
-                        {address.house_no_building_name}, {address.road_name_area_colony},<br />
+                        {address.house_no_building_name},{" "}
+                        {address.road_name_area_colony},<br />
                         {address.city}, {address.state} - {address.pincode}
                       </span>
                     </p>

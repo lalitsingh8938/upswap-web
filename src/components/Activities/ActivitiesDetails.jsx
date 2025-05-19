@@ -2836,26 +2836,26 @@ function ActivityDetailsPage() {
       socket.onopen = () => {
         console.log("✅ WebSocket connected");
         websocket.current = socket;
-         navigate(`/chat/${activityId}/${chatroomId}`);
+        navigate(`/chat/${activityId}/${chatroomId}`);
       };
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("📨 Message received:",  data);
+        console.log("📨 Message received:", data);
       };
-//       websocket.current.onmessage = (event) => {
-//       try {
-//         const data = JSON.parse(event.data);
-//         console.log("Message received:", data);
-//         if (data.type === 'chat_message' && data.message) {
-//           setMessages((prevMessages) => [...prevMessages, data.message]);
-//         } else {
-//           console.warn("Received unexpected message format:", data);
-//         }
-//       } catch (error) {
-//         console.error("Error parsing or handling received message:", error, event.data);
-//       }
-//     };
+      //       websocket.current.onmessage = (event) => {
+      //       try {
+      //         const data = JSON.parse(event.data);
+      //         console.log("Message received:", data);
+      //         if (data.type === 'chat_message' && data.message) {
+      //           setMessages((prevMessages) => [...prevMessages, data.message]);
+      //         } else {
+      //           console.warn("Received unexpected message format:", data);
+      //         }
+      //       } catch (error) {
+      //         console.error("Error parsing or handling received message:", error, event.data);
+      //       }
+      //     };
 
       socket.onclose = () => {
         console.log("🔌 WebSocket closed");
@@ -2995,10 +2995,16 @@ function ActivityDetailsPage() {
           ) : userSentRequest ? (
             // If userSentRequest exists but is not accepted
             // Show pending message if user has sent a request but it's not accepted
-            <p className="mt-4 text-center text-gray-600">
+            // <p className="mt-4 text-center text-gray-600">
+            //   Your chat request is pending review.
+            // </p>
+            <h2 className="mt-4 text-center text-gray-600">
               Your chat request is pending review.
-            </p>
+            </h2>
           ) : (
+            // <h2 className="text-lg font-semibold text-center flex-1">
+            //   Activity Description
+            // </h2>
             // Show "I am interested" button if user has not sent any request
             <button
               onClick={() => setIsChatBoxOpen(true)}
@@ -3109,7 +3115,6 @@ function ActivityDetailsPage() {
 }
 
 export default ActivityDetailsPage;
-
 
 // import React, { useState, useEffect, useRef, useCallback } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
