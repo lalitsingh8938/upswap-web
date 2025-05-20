@@ -2552,6 +2552,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaLeftLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import { FaTimes } from "react-icons/fa";
 
 function ActivityDetailsPage() {
   const { activityId } = useParams();
@@ -2998,9 +2999,11 @@ function ActivityDetailsPage() {
             // <p className="mt-4 text-center text-gray-600">
             //   Your chat request is pending review.
             // </p>
-            <h2 className="mt-4 text-center text-gray-600">
+            
+            <h2 className="mt-10 text-center text-[#FE7A3A] font-semibold">
               Your chat request is pending review.
             </h2>
+          
           ) : (
             // <h2 className="text-lg font-semibold text-center flex-1">
             //   Activity Description
@@ -3082,9 +3085,10 @@ function ActivityDetailsPage() {
               </h2>
               <button
                 onClick={() => setIsChatBoxOpen(false)}
-                className="text-gray-500 hover:text-gray-700 font-bold" // Styled close button
+                className="text-[#FE7A3A] hover:text-gray-700 font-bold " // Styled close button
               >
-                &times; {/* Use times symbol for X */}
+                {/* &times; Use times symbol for X */}
+                 <FaTimes size={20} />
               </button>
             </div>
             {/* Removed the empty chat display area as this modal is only for sending the *initial* request */}
@@ -3094,7 +3098,7 @@ function ActivityDetailsPage() {
             <div className="flex">
               <input
                 type="text"
-                className="border rounded-l px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#FE7A3A]" // Added focus styles
+                className="border rounded-md px-2 py-2 w-full focus:outline-none focus:ring-2 focus:ring-[#FE7A3A]" // Added focus styles
                 placeholder="Type your message..."
                 value={chatMessage}
                 onChange={(e) => setChatMessage(e.target.value)}
@@ -3102,7 +3106,7 @@ function ActivityDetailsPage() {
               />
               <button
                 onClick={handleInterestedClick}
-                className="bg-[#FE7A3A] text-white px-4 py-2 rounded-r font-medium hover:brightness-110 transition"
+                className="bg-[#FE7A3A] text-white px-4 py-2  ml-2 rounded-md font-medium hover:brightness-110 transition"
               >
                 Send
               </button>

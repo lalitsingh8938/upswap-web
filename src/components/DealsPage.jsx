@@ -292,7 +292,7 @@ const DealsList = () => {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 p-4 cursor-pointer">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 p-4 cursor-pointer">
           {deals.map((deal) => (
             <div
               key={deal.deal_uuid}
