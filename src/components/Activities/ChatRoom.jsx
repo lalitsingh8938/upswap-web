@@ -233,7 +233,8 @@ function ChatRoomPage() {
           <FaLeftLong className="w-5 h-5" />
         </button>
         <h2 className="flex-grow m-0 text-lg font-semibold">
-          Chat Room: {chatroomId}
+          {/* Chat Room: {chatroomId} */}
+           Chat Room: {username}
         </h2>
         <span
           className={`ml-2 text-sm ${
