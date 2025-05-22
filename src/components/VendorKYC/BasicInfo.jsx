@@ -442,9 +442,15 @@ const BasicInfo = () => {
         {/* Profile Image Upload */}
         <div className="flex justify-center mt-4">
           <div className="relative">
-            {previewImage || profileImageUrl || localStorage.getItem("local_profile_image_url") ? (
+            {previewImage ||
+            profileImageUrl ||
+            localStorage.getItem("local_profile_image_url") ? (
               <img
-                src={previewImage || profileImageUrl || localStorage.getItem("local_profile_image_url")}
+                src={
+                  previewImage ||
+                  profileImageUrl ||
+                  localStorage.getItem("local_profile_image_url")
+                }
                 alt="Profile Preview"
                 className="w-24 h-24 rounded-full object-cover border-2 border-[#FE7A3A]"
               />
@@ -488,7 +494,9 @@ const BasicInfo = () => {
         <div className="flex items-center border p-2 rounded-lg mb-3">
           <span className="mr-2">🇮🇳 +91</span>
           <input
-            type="number"
+            // type="number"
+            inputMode="numeric"
+            pattern="\d*"
             name="phone_number"
             className="flex-1 outline-none"
             placeholder="Business Phone number"
@@ -749,7 +757,7 @@ export default BasicInfo;
 //             >
 //               <FaEdit className="text-white text-sm" />
 //             </label>
-            
+
 //             <input
 //               type="file"
 //               accept="image/*"

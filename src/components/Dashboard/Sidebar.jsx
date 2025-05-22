@@ -229,7 +229,7 @@ export default function MainMenu() {
 
   useEffect(() => {
     fetchKYCStatus(); // Initial fetch
-    const interval = setInterval(fetchKYCStatus, 5000); // Auto-poll
+    const interval = setInterval(fetchKYCStatus, 20000); // Auto-poll
     return () => clearInterval(interval); // Cleanup
   }, []);
 

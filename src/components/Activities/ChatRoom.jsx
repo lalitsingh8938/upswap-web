@@ -234,7 +234,8 @@ function ChatRoomPage() {
         </button>
         <h2 className="flex-grow m-0 text-lg font-semibold">
           {/* Chat Room: {chatroomId} */}
-           Chat Room: {username}
+           {/* Chat Room: {username} */}
+           Chat with: {username}
         </h2>
         <span
           className={`ml-2 text-sm ${
