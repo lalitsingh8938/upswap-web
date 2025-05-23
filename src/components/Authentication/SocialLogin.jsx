@@ -34,6 +34,8 @@ const SocialLogin = () => {
         localStorage.setItem("access", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
         localStorage.setItem("user_id", response.data.user.id);
+        localStorage.setItem("sessionid", response.data.sessionid);
+        localStorage.setItem("username", response.data.user.username);
 
         login();
         toast.success("Google Login Successful!");
