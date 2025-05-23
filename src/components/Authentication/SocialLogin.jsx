@@ -33,6 +33,8 @@ const SocialLogin = () => {
       if (response.data.access && response.data.refresh) {
         localStorage.setItem("access", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
+        localStorage.setItem("user_id", response.data.user.id);
+
         login();
         toast.success("Google Login Successful!");
         navigate("/DealsPage");

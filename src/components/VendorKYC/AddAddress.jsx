@@ -439,7 +439,7 @@
 //               label: s.name,
 //             }));
 //             setStateOptions(stateOptionsMapped);
-          
+
 //             const selectedStateObj = stateOptionsMapped.find(
 //               (s) => s.label.toLowerCase() === addressData.state.toLowerCase()
 //             );
@@ -454,7 +454,7 @@
 //                 label: c.name,
 //               }));
 //               setCityOptions(cityOptionsMapped);
-          
+
 //               const selectedCityObj = cityOptionsMapped.find(
 //                 (c) => c.label.toLowerCase() === addressData.city.toLowerCase()
 //               );
@@ -463,8 +463,7 @@
 //               }
 //             }
 //           }
-          
-          
+
 //         }
 //       } catch (error) {
 //         console.error("Error fetching vendor details", error);
@@ -748,7 +747,15 @@ const AddAddress = ({ onClose }) => {
   }, []);
 
   // Function to check if all required fields are filled
-  const checkFormValidity = (data, country, state, city, isLiveLocationUsed, locationFetched, currentCoordinates) => {
+  const checkFormValidity = (
+    data,
+    country,
+    state,
+    city,
+    isLiveLocationUsed,
+    locationFetched,
+    currentCoordinates
+  ) => {
     const baseValidity =
       data.house_no_building_name.trim() !== "" &&
       data.road_name_area_colony.trim() !== "" &&
@@ -797,7 +804,10 @@ const AddAddress = ({ onClose }) => {
           });
 
           if (addressData.latitude && addressData.longitude) {
-            setCoordinates({ lat: parseFloat(addressData.latitude), lng: parseFloat(addressData.longitude) });
+            setCoordinates({
+              lat: parseFloat(addressData.latitude),
+              lng: parseFloat(addressData.longitude),
+            });
           }
 
           const selectedCountryObj = countryOptions.find(
@@ -892,9 +902,25 @@ const AddAddress = ({ onClose }) => {
   useEffect(() => {
     const usingLiveLocation = location === "live";
     setIsFormValid(
-      checkFormValidity(formData, selectedCountry, selectedState, selectedCity, usingLiveLocation, isLocationFetched, coordinates)
+      checkFormValidity(
+        formData,
+        selectedCountry,
+        selectedState,
+        selectedCity,
+        usingLiveLocation,
+        isLocationFetched,
+        coordinates
+      )
     );
-  }, [formData, selectedCountry, selectedState, selectedCity, location, isLocationFetched, coordinates]);
+  }, [
+    formData,
+    selectedCountry,
+    selectedState,
+    selectedCity,
+    location,
+    isLocationFetched,
+    coordinates,
+  ]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -956,13 +982,13 @@ const AddAddress = ({ onClose }) => {
     };
 
     localStorage.setItem("address", JSON.stringify(fullAddress));
-    localStorage.setItem("country", formData.country);
+    // localStorage.setItem("country", formData.country);
     localStorage.setItem("country_code", selectedCountry?.value || ""); // Save country code
-    localStorage.setItem("state", formData.state);
-    localStorage.setItem("city", formData.city);
-    localStorage.setItem("pincode", formData.pincode);
-    localStorage.setItem("latitude", fullAddress.latitude);
-    localStorage.setItem("longitude", fullAddress.longitude);
+    // localStorage.setItem("state", formData.state);
+    // localStorage.setItem("city", formData.city);
+    // localStorage.setItem("pincode", formData.pincode);
+    // localStorage.setItem("latitude", fullAddress.latitude);
+    // localStorage.setItem("longitude", fullAddress.longitude);
 
     toast.success("Address saved locally!");
 
@@ -989,14 +1015,14 @@ const AddAddress = ({ onClose }) => {
           </button>
         </div>
 
-        {/* <select
+        <select
           className="w-full border p-2 rounded-lg mb-3"
           value={location}
           onChange={handleLocationChange}
         >
           <option value="">Select Location Type</option>
           <option value="live">Use Current Location</option>
-        </select> */}
+        </select>
 
         <input
           type="text"
@@ -1049,7 +1075,7 @@ const AddAddress = ({ onClose }) => {
         />
 
         <div className="flex justify-end mt-6">
-          <button
+          {/* <button
             className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#e76a2f]"
             onClick={handleNext}
             disabled={!isFormValid}
@@ -1057,6 +1083,17 @@ const AddAddress = ({ onClose }) => {
               opacity: !isFormValid ? 0.5 : 1,
               cursor: !isFormValid ? 'not-allowed' : 'pointer',
             }}
+          >
+            Next
+          </button> */}
+          <button
+            onClick={handleNext}
+            disabled={!location || !isFormValid}
+            className={`bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#e76a2f] ${
+              !location || !isFormValid
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-[#FE7A3A] text-white"
+            }`}
           >
             Next
           </button>

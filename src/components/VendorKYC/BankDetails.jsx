@@ -36,7 +36,6 @@
 //     fetchVendorDetails();
 //   }, []);
 
-
 //   // Save bank details to localStorage
 //   const handleSubmit = () => {
 //     if (!accountNumber.trim()) {
@@ -309,10 +308,25 @@ const BankDetails = () => {
         <label className="block text-gray-600 mb-1 font-semibold">
           Account Number
         </label>
-        <input
-          type="number"
+        {/* <input
+          // type="number"
+           inputMode="numeric"
+            pattern="\d*"
+            name="accountNumber"
           value={accountNumber}
           onChange={(e) => setAccountNumber(e.target.value)}
+          className="w-full border p-2 rounded-lg mb-2 text-gray-600"
+          placeholder="Enter bank account number"
+        /> */}
+        <input
+          inputMode="numeric"
+          pattern="\d*"
+          name="accountNumber"
+          value={accountNumber}
+          onChange={(e) => {
+            const onlyNumbers = e.target.value.replace(/\D/g, ""); // Remove all non-digits
+            setAccountNumber(onlyNumbers);
+          }}
           className="w-full border p-2 rounded-lg mb-2 text-gray-600"
           placeholder="Enter bank account number"
         />
@@ -357,7 +371,7 @@ const BankDetails = () => {
           disabled={!isBankDetailsValid}
           style={{
             opacity: !isBankDetailsValid ? 0.5 : 1,
-            cursor: !isBankDetailsValid ? 'not-allowed' : 'pointer',
+            cursor: !isBankDetailsValid ? "not-allowed" : "pointer",
           }}
         >
           Submit
@@ -381,7 +395,7 @@ const BankDetails = () => {
             disabled={!hasSubmittedBankDetails} // Disable based on submission status
             style={{
               opacity: !hasSubmittedBankDetails ? 0.5 : 1,
-              cursor: !hasSubmittedBankDetails ? 'not-allowed' : 'pointer',
+              cursor: !hasSubmittedBankDetails ? "not-allowed" : "pointer",
             }}
           >
             Next

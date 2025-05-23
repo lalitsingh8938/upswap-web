@@ -1,4 +1,3 @@
-
 // import React, { useState } from "react";
 // import { FaPen, FaCheck, FaTimes } from "react-icons/fa";
 // import { useNavigate } from "react-router-dom";
@@ -514,7 +513,8 @@ const ServiceTime = () => {
 
     try {
       const vendorData = JSON.parse(localStorage.getItem("vendorData"));
-      const address = JSON.parse(localStorage.getItem("address"));
+      const fulladdress = JSON.parse(localStorage.getItem("address"));
+      console.log("Address:", fulladdress);
       const serviceData = JSON.parse(localStorage.getItem("serviceData"));
       const rawBusinessDocs = JSON.parse(
         localStorage.getItem("uploaded_business_documents1") || "[]"
@@ -543,7 +543,7 @@ const ServiceTime = () => {
         bank_name: localStorage.getItem("bank_name"),
         ifsc_code: localStorage.getItem("ifsc_code"),
       };
-      const country = localStorage.getItem("country") || "";
+      // const country = localStorage.getItem("country") || "";
       const country_code = localStorage.getItem("country_code") || "";
       const dial_code = localStorage.getItem("dial_code") || "";
       const rawBusinessHours = JSON.parse(
@@ -558,7 +558,7 @@ const ServiceTime = () => {
       const formData = {
         profile_pic: vendorData?.profile_pic || "",
         user: userId,
-        country: country,
+        // country: country,
         country_code,
         dial_code,
         full_name: vendorData?.full_name || "",
@@ -578,16 +578,15 @@ const ServiceTime = () => {
         same_as_personal_email_id: true,
         addresses: [
           {
-            house_no_building_name: address?.house_no_building_name || "",
-            road_name_area_colony: address?.road_name_area_colony || "",
-            country: address?.country || "",
-            country_code,
-            dial_code,
-            state: address?.state || "",
-            city: address?.city || "",
-            pincode: address?.pincode || "",
-            latitude: address?.latitude,
-            longitude: address?.longitude,
+            house_no_building_name: fulladdress?.house_no_building_name || "",
+            road_name_area_colony: fulladdress?.road_name_area_colony || "",
+            country: fulladdress?.country || "",
+            
+            state: fulladdress?.state || "",
+            city: fulladdress?.city || "",
+            pincode: fulladdress?.pincode || "",
+            latitude: fulladdress?.latitude,
+            longitude: fulladdress?.longitude,
           },
         ],
         bank_account_number: bankDetails?.bank_account_number || "",
@@ -604,8 +603,8 @@ const ServiceTime = () => {
           },
         ],
         business_hours: formattedHours,
-        latitude: address?.latitude,
-        longitude: address?.longitude,
+        latitude: fulladdress?.latitude,
+        longitude: fulladdress?.longitude,
       };
 
       const response = await fetch(
@@ -780,7 +779,7 @@ const ServiceTime = () => {
             disabled={!isBusinessHoursValid}
             style={{
               opacity: !isBusinessHoursValid ? 0.5 : 1,
-              cursor: !isBusinessHoursValid ? 'not-allowed' : 'pointer',
+              cursor: !isBusinessHoursValid ? "not-allowed" : "pointer",
             }}
           >
             Submit

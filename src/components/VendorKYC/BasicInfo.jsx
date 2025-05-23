@@ -275,6 +275,7 @@
 // };
 
 // export default BasicInfo;
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil } from "lucide-react";
@@ -383,6 +384,7 @@ const BasicInfo = () => {
 
   const handleNext = () => {
     const {
+      
       full_name,
       phone_number,
       business_description,
@@ -575,6 +577,291 @@ const BasicInfo = () => {
 };
 
 export default BasicInfo;
+
+
+// import React, { useState, useEffect } from "react";
+// import { useNavigate } from "react-router-dom";
+// import { FaTimes, FaEdit } from "react-icons/fa";
+// import axios from "axios";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// const BasicInfo = () => {
+//   const navigate = useNavigate();
+//   const [previewImage, setPreviewImage] = useState();
+//   const [profileImageFile, setProfileImageFile] = useState(null);
+//   const [profileImageUrl, setProfileImageUrl] = useState("");
+//   const userId = localStorage.getItem("user_id");
+
+//   const [formData, setFormData] = useState({
+//     user: userId,
+//     profile_pic: "",
+//     full_name: "",
+//     phone_number: "",
+//     business_description: "",
+//     business_email_id: "",
+//     business_establishment_year: "",
+//   });
+
+//   const [isFormValid, setIsFormValid] = useState(false);
+
+//   useEffect(() => {
+//     const vendorId = localStorage.getItem("vendor_id");
+//     if (!vendorId) return;
+
+//     const fetchVendorDetails = async () => {
+//       try {
+//         const response = await axios.get(
+//           `https://api.upswap.app/api/vendor/details/${vendorId}`,
+//           {
+//             headers: {
+//               Authorization: `Bearer ${localStorage.getItem("access")}`,
+//             },
+//           }
+//         );
+
+//         const data = response.data;
+
+//         setFormData({
+//           user: userId,
+//           profile_pic: data.profile_pic || "",
+//           full_name: data.full_name || "",
+//           phone_number: data.phone_number || "",
+//           business_description: data.business_description || "",
+//           business_email_id: data.business_email_id || "",
+//           business_establishment_year: data.business_establishment_year || "",
+//         });
+
+//         if (data.profile_pic) {
+//           setProfileImageUrl(data.profile_pic);
+//           localStorage.setItem("profile_image_url", data.profile_pic);
+//         }
+//       } catch (error) {
+//         console.error("Failed to fetch vendor data", error);
+//       }
+//     };
+
+//     fetchVendorDetails();
+//   }, [userId]);
+
+//   useEffect(() => {
+//     const {
+//       full_name,
+//       phone_number,
+//       business_description,
+//       business_email_id,
+//       business_establishment_year,
+//     } = formData;
+
+//     const hasImage =
+//       profileImageUrl || localStorage.getItem("profile_image_url");
+
+//     if (
+//       hasImage &&
+//       full_name.trim() &&
+//       phone_number.trim() &&
+//       business_description.trim() &&
+//       business_email_id.trim() &&
+//       (business_establishment_year ?? '').toString().trim()
+//     ) {
+//       setIsFormValid(true);
+//     } else {
+//       setIsFormValid(false);
+//     }
+//   }, [formData, profileImageUrl]);
+
+//   const handleFileChange = async (event) => {
+//     if (event.target.files.length === 0) return;
+
+//     const file = event.target.files[0];
+//     if (!file) return;
+
+//     setProfileImageFile(file);
+//     const previewURL = URL.createObjectURL(file);
+//     setPreviewImage(previewURL);
+//     setProfileImageUrl(previewURL);
+
+//     const imageFormData = new FormData();
+//     imageFormData.append("file", file);
+
+//     try {
+//       const response = await axios.post(
+//         "https://api.upswap.app/api/UploadProfileImageAPI/",
+//         imageFormData,
+//         {
+//           headers: {
+//             "Content-Type": "multipart/form-data",
+//             Authorization: `Bearer ${localStorage.getItem("access")}`,
+//           },
+//         }
+//       );
+
+//       const uploadedProfilePic = response.data[0];
+//       setFormData((prev) => ({ ...prev, profile_pic: uploadedProfilePic }));
+//       setProfileImageUrl(uploadedProfilePic);
+//       localStorage.setItem("profile_image_url", uploadedProfilePic);
+//       toast.success("Profile image uploaded successfully!");
+//     } catch (error) {
+//       console.error("Upload error:", error);
+//       toast.warning("Failed to upload image");
+//     }
+//   };
+
+//   const handleChange = (e) => {
+//     setFormData({ ...formData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleNext = () => {
+//     localStorage.setItem("vendorData", JSON.stringify(formData));
+//     navigate("/VendorDocument");
+//   };
+
+//   const handleClose = () => {
+//     navigate("/PostDeal");
+//   };
+
+//   return (
+//     <div className="flex justify-center items-center min-h-screen border-2 bg-[#FE7A3A] to-white p-4 rounded-lg">
+//       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+//         <button
+//           onClick={handleClose}
+//           className="absolute top-0 right-2 text-gray-500 hover:text-[#FE7A3A]"
+//           type="button"
+//         >
+//           <FaTimes size={20} />
+//         </button>
+
+//         <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">
+//           Become a Vendor
+//         </h2>
+
+//         <div className="flex justify-center mt-4">
+//           <div className="relative">
+//             {previewImage || profileImageUrl ? (
+//               <img
+//                 src={previewImage || profileImageUrl}
+//                 alt="Profile Preview"
+//                 className="w-24 h-24 rounded-full object-cover border-2 border-[#FE7A3A]"
+//               />
+//             ) : (
+//               <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center border-2 border-[#FE7A3A]">
+//                 No image
+//               </div>
+//             )}
+//             <label
+//               htmlFor="profileImageInput"
+//               className="absolute bottom-1 right-1 bg-[#FE7A3A] p-1.5 rounded-full cursor-pointer shadow-md"
+//             >
+//               <FaEdit className="text-white text-sm" />
+//             </label>
+
+//             <input
+//               type="file"
+//               accept="image/*"
+//               className="hidden"
+//               id="profileImageInput"
+//               onChange={handleFileChange}
+//             />
+//           </div>
+//         </div>
+
+//         <label className="block text-gray-700 mb-1 font-semibold">
+//           Full Name
+//         </label>
+//         <input
+//           type="text"
+//           name="full_name"
+//           className="w-full border p-2 rounded-lg mb-3"
+//           placeholder="Enter full name"
+//           value={formData.full_name}
+//           onChange={handleChange}
+//         />
+
+//         <label className="block text-gray-700 mb-1 font-semibold">
+//           Phone Number
+//         </label>
+//         <div className="flex items-center border p-2 rounded-lg mb-3">
+//           <span className="mr-2">🇮🇳 +91</span>
+//           <input
+//             inputMode="numeric"
+//             pattern="\d*"
+//             name="phone_number"
+//             className="flex-1 outline-none"
+//             placeholder="Business Phone number"
+//             value={formData.phone_number}
+//             onChange={handleChange}
+//           />
+//         </div>
+
+//         <div className="flex items-center gap-2 mb-3">
+//           <input type="checkbox" id="samePhone" className="w-4 h-4" />
+//           <label htmlFor="samePhone" className="text-gray-600 font-semibold">
+//             Same as personal phone number
+//           </label>
+//         </div>
+
+//         <label className="block text-gray-700 mb-1 font-semibold">
+//           Business Email ID
+//         </label>
+//         <input
+//           type="email"
+//           name="business_email_id"
+//           className="w-full border p-2 rounded-lg mb-3"
+//           placeholder="Business email id"
+//           value={formData.business_email_id}
+//           onChange={handleChange}
+//         />
+
+//         <div className="flex items-center gap-2 mb-3">
+//           <input type="checkbox" id="sameEmail" className="w-4 h-4" />
+//           <label htmlFor="sameEmail" className="text-gray-600 font-semibold">
+//             Same as personal email id
+//           </label>
+//         </div>
+
+//         <label className="block text-gray-700 mb-1 font-semibold">
+//           Business Establishment Year
+//         </label>
+//         <input
+//           type="number"
+//           name="business_establishment_year"
+//           className="w-full border p-2 rounded-lg mb-3"
+//           placeholder="Enter Business establishment year"
+//           value={formData.business_establishment_year}
+//           onChange={handleChange}
+//         />
+
+//         <label className="block text-gray-700 mb-1 font-semibold">
+//           Business Description
+//         </label>
+//         <textarea
+//           name="business_description"
+//           className="w-full border p-2 rounded-lg"
+//           placeholder="Enter your business description"
+//           rows="3"
+//           value={formData.business_description}
+//           onChange={handleChange}
+//         ></textarea>
+
+//         <button
+//           className={`w-full ${
+//             isFormValid
+//               ? "bg-[#FE7A3A] hover:bg-[#fe924e]"
+//               : "bg-gray-400 cursor-not-allowed"
+//           } text-white p-2 rounded-lg mt-4`}
+//           onClick={handleNext}
+//           disabled={!isFormValid}
+//         >
+//           Next
+//         </button>
+
+//         <ToastContainer position="top-center" autoClose={3000} />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default BasicInfo;
 
 // import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
