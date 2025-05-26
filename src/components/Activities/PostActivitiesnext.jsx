@@ -345,6 +345,8 @@
 // );
 
 // export default PostActivitiesnext;
+
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FaUpload, FaTimes, FaSpinner } from "react-icons/fa";

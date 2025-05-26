@@ -388,6 +388,155 @@
 
 // export default UpswapVendors;
 
+// import { useEffect, useState } from "react";
+// import { FaSearch, FaMapMarkerAlt, FaHeart, FaBars } from "react-icons/fa";
+// import { useNavigate } from "react-router-dom";
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// const UpswapVendors = () => {
+//   const navigate = useNavigate();
+//   const [vendors, setVendors] = useState([]);
+//   const [favorites, setFavorites] = useState({});
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     setLoading(true);
+//     fetch("https://api.upswap.app/api/vendor/lists/")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         console.log("API Response:", data);
+//         setVendors(data?.vendors || []);
+//         setLoading(false);
+//       })
+//       .catch((err) => {
+//         console.error("Error fetching vendors:", err);
+//         setLoading(false);
+//       });
+//   }, []);
+
+//   const handleFavorite = async (vendor) => {
+//     const vendorId = vendor.vendor_id;
+//     const userId = localStorage.getItem("vendor_id");
+
+//     if (!userId) {
+//       toast.error("User ID not found!");
+//       return;
+//     }
+
+//     const apiUrl = `https://api.upswap.app/api/vendors/${vendorId}/favorite/`;
+
+//     try {
+//       const response = await fetch(apiUrl, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${localStorage.getItem("access")}`,
+//         },
+//         body: JSON.stringify({
+//           user_id: userId,
+//         }),
+//       });
+
+//       const result = await response.json();
+
+//       if (!response.ok) {
+//         toast.error(result.message || "You cannot favorite yourself.");
+//         return;
+//       }
+
+//       setFavorites((prev) => ({
+//         ...prev,
+//         [vendorId]: !prev[vendorId],
+//       }));
+
+//       toast.success(result.message || "Updated successfully!");
+//     } catch (error) {
+//       console.error("Error:", error);
+//       toast.error("Network error, please try again.");
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-white">
+//       <ToastContainer position="top-center" autoClose={3000} />
+
+//       {/* Header */}
+//       <div className="flex items-center justify-between bg-gradient-to-r border-2 bg-[#FE7A3A] text-white p-4 rounded-lg">
+//         <button className="text-xl" onClick={() => navigate("/DealsPage")}>
+//           &#8592;
+//         </button>
+//         <h1 className="text-lg font-semibold">Vendors</h1>
+//         <div className="flex gap-4">
+//           {/* <FaHeart className="text-xl" /> */}
+//           <FaHeart
+//             className="text-xl cursor-pointer"
+//             onClick={() => navigate("/Favorite")}
+//           />
+
+//           <FaBars className="text-xl" />
+//         </div>
+//       </div>
+
+//       {/* Search Bar */}
+//       <div className="p-4">
+//         <div className="flex items-center bg-gray-100 p-2 rounded-md shadow-md">
+//           <FaSearch className="text-gray-500 ml-2" />
+//           <input
+//             type="text"
+//             placeholder="Search vendor, category..."
+//             className="flex-grow bg-transparent outline-none p-2"
+//           />
+//           <FaMapMarkerAlt className="text-gray-500 mr-2" />
+//         </div>
+//       </div>
+
+//       {/* Loader */}
+//       {loading ? (
+//         <div className="flex justify-center items-center p-10">
+//           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
+//         </div>
+//       ) : (
+//         <div className="p-4 space-y-4">
+//           {vendors.map((vendor) => (
+//             <div
+//               key={vendor.vendor_id}
+//               className="flex flex-col sm:flex-row bg-white rounded-lg shadow-md p-4 items-center"
+//             >
+//               <div className="w-20 h-20 flex items-center justify-center rounded-lg overflow-hidden">
+//                 <img
+//                   src={vendor.profile_pic || "/placeholder.jpg"}
+//                   alt={vendor.full_name}
+//                   className="w-16 h-16 object-cover rounded-md"
+//                 />
+//               </div>
+//               <div className="flex-grow px-4 mt-2 sm:mt-0 sm:px-6">
+//                 <h2 className="font-bold text-lg">{vendor.full_name}</h2>
+//                 <p className="text-sm text-gray-600">
+//                   {vendor.services[0]?.item_description || "No description"}
+//                 </p>
+//                 <p className="text-xs text-gray-500">
+//                   {vendor.addresses[0]?.road_name_area_colony || "No address"}
+//                 </p>
+//               </div>
+//               <button
+//                 onClick={() => handleFavorite(vendor)}
+//                 className={`text-xl ${
+//                   favorites[vendor.vendor_id] ? "text-red-500" : "text-gray-400"
+//                 }`}
+//               >
+//                 <FaHeart />
+//               </button>
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default UpswapVendors;
+
 import { useEffect, useState } from "react";
 import { FaSearch, FaMapMarkerAlt, FaHeart, FaBars } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -405,22 +554,23 @@ const UpswapVendors = () => {
     fetch("https://api.upswap.app/api/vendor/lists/")
       .then((res) => res.json())
       .then((data) => {
-        console.log("API Response:", data);
+        console.log("API Response (Vendors List):", data);
         setVendors(data?.vendors || []);
         setLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching vendors:", err);
         setLoading(false);
+        toast.error("Failed to fetch vendor list.");
       });
   }, []);
 
   const handleFavorite = async (vendor) => {
     const vendorId = vendor.vendor_id;
-    const userId = localStorage.getItem("vendor_id");
+    const userId = localStorage.getItem("vendor_id"); // Assuming this is the current user's ID for favoriting
 
     if (!userId) {
-      toast.error("User ID not found!");
+      toast.error("User ID not found! Please log in to favorite.");
       return;
     }
 
@@ -431,7 +581,7 @@ const UpswapVendors = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access")}`,
+          Authorization: `Bearer ${localStorage.getItem("access")}`, // Assuming 'access' token for authorization
         },
         body: JSON.stringify({
           user_id: userId,
@@ -441,7 +591,7 @@ const UpswapVendors = () => {
       const result = await response.json();
 
       if (!response.ok) {
-        toast.error(result.message || "You cannot favorite yourself.");
+        toast.error(result.message || "Failed to update favorite status.");
         return;
       }
 
@@ -450,11 +600,16 @@ const UpswapVendors = () => {
         [vendorId]: !prev[vendorId],
       }));
 
-      toast.success(result.message || "Updated successfully!");
+      toast.success(result.message || "Favorite status updated!");
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error favoriting vendor:", error);
       toast.error("Network error, please try again.");
     }
+  };
+
+  // Function to handle navigation to vendor profile
+  const handleVisitProfile = (vendorUserId) => {
+    navigate(`/vendor/${vendorUserId}`);
   };
 
   return (
@@ -468,12 +623,10 @@ const UpswapVendors = () => {
         </button>
         <h1 className="text-lg font-semibold">Vendors</h1>
         <div className="flex gap-4">
-          {/* <FaHeart className="text-xl" /> */}
           <FaHeart
             className="text-xl cursor-pointer"
             onClick={() => navigate("/Favorite")}
           />
-
           <FaBars className="text-xl" />
         </div>
       </div>
@@ -498,6 +651,9 @@ const UpswapVendors = () => {
         </div>
       ) : (
         <div className="p-4 space-y-4">
+          {vendors.length === 0 && (
+            <div className="text-center text-gray-600">No vendors found.</div>
+          )}
           {vendors.map((vendor) => (
             <div
               key={vendor.vendor_id}
@@ -513,20 +669,33 @@ const UpswapVendors = () => {
               <div className="flex-grow px-4 mt-2 sm:mt-0 sm:px-6">
                 <h2 className="font-bold text-lg">{vendor.full_name}</h2>
                 <p className="text-sm text-gray-600">
-                  {vendor.services[0]?.item_description || "No description"}
+                  {vendor.services && vendor.services.length > 0
+                    ? vendor.services[0].item_description
+                    : "No description"}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {vendor.addresses[0]?.road_name_area_colony || "No address"}
+                  {vendor.addresses && vendor.addresses.length > 0
+                    ? vendor.addresses[0].road_name_area_colony
+                    : "No address"}
                 </p>
               </div>
-              <button
-                onClick={() => handleFavorite(vendor)}
-                className={`text-xl ${
-                  favorites[vendor.vendor_id] ? "text-red-500" : "text-gray-400"
-                }`}
-              >
-                <FaHeart />
-              </button>
+              <div className="flex flex-col items-center gap-2 mt-2 sm:mt-0">
+                <button
+                  onClick={() => handleFavorite(vendor)}
+                  className={`text-xl ${
+                    favorites[vendor.vendor_id] ? "text-red-500" : "text-gray-400"
+                  }`}
+                >
+                  <FaHeart />
+                </button>
+                {/* New "Visit Profile" button */}
+                <button
+                  onClick={() => handleVisitProfile(vendor.vendor_id)}
+                  className="bg-[#FE7A3A] text-white text-sm py-1 px-3 rounded-md"
+                >
+                  Visit Profile
+                </button>
+              </div>
             </div>
           ))}
         </div>

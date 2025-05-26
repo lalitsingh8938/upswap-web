@@ -3120,7 +3120,6 @@
 
 // export default ActivityDetailsPage;
 
-
 // import React, { useState, useEffect, useRef, useCallback } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
 // import axios from "axios";
@@ -3345,7 +3344,6 @@
 
 //       const sessionId = localStorage.getItem("sessionid");
 //       console.log("Retrieved sessionId from localStorage:", sessionId);
-
 
 //       toast.success("Chat Request Accepted");
 
@@ -4647,11 +4645,11 @@
 //             // <p className="mt-4 text-center text-gray-600">
 //             //   Your chat request is pending review.
 //             // </p>
-            
+
 //             <h2 className="mt-10 text-center text-[#FE7A3A] font-semibold">
 //               Your chat request is pending review.
 //             </h2>
-          
+
 //           ) : (
 //             // <h2 className="text-lg font-semibold text-center flex-1">
 //             //   Activity Description
@@ -4768,7 +4766,7 @@
 
 // export default ActivityDetailsPage;
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FaLeftLong } from "react-icons/fa6";
@@ -4786,6 +4784,7 @@ function ActivityDetailsPage() {
   const websocket = useRef(null); // This ref is not actively used for chat in this component, but kept for context.
   const navigate = useNavigate();
   const loggedInUserId = String(localStorage.getItem("user_id"));
+  // const SocialID = localStorage.getItem("social_id");
 
   const [allActivityChatRequests, setAllActivityChatRequests] = useState([]);
 
@@ -4797,7 +4796,7 @@ function ActivityDetailsPage() {
         );
         if (res.data && res.data.data) {
           setAllActivityChatRequests(res.data.data);
-          console.log("Fetched chat requests:", res.data.data); // Debug log
+          // console.log("Fetched chat requests:", res.data.data); // Debug log
         } else {
           console.warn(
             "API response data is not in expected format or is empty for chat requests:",
@@ -4821,7 +4820,7 @@ function ActivityDetailsPage() {
           `https://api.upswap.app/api/activities/details/${activityId}/`
         );
         setActivity(res.data);
-        console.log("Fetched activity details:", res.data); // Debug log
+        // console.log("Fetched activity details:", res.data); // Debug log
       } catch (error) {
         console.error("Failed to fetch activity details:", error);
       }
@@ -4848,7 +4847,7 @@ function ActivityDetailsPage() {
       intervalId = setInterval(() => {
         console.log("Participant: Polling for chat request status update...");
         fetchAllChatRequestsForActivity();
-      }, 5000); // Poll every 5 seconds
+      }, 2000); // Poll every 5 seconds
     }
 
     return () => {
@@ -4922,6 +4921,7 @@ function ActivityDetailsPage() {
     try {
       const response = await axios.post(
         "https://api.upswap.app/api/chat/create-chat-request/",
+
         {
           activity: activityId,
           from_user: loggedInUserId,
@@ -4940,7 +4940,11 @@ function ActivityDetailsPage() {
       await fetchAllChatRequestsForActivity();
     } catch (error) {
       console.error("Failed to send chat request:", error);
-      if (error.response && error.response.data && error.response.data.message) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
         toast.error(
           `Failed to send interest request: ${error.response.data.message}`
         );
@@ -4956,7 +4960,9 @@ function ActivityDetailsPage() {
 
     try {
       if (!request || !request.id) {
-        console.error("Error: Invalid request object or missing request ID for acceptance.");
+        console.error(
+          "Error: Invalid request object or missing request ID for acceptance."
+        );
         toast.error("Cannot accept chat request: missing request ID.");
         return;
       }
@@ -4964,6 +4970,7 @@ function ActivityDetailsPage() {
       console.log(`Attempting to accept chat request ID: ${request.id}`);
       const response = await axios.patch(
         "https://api.upswap.app/api/chat/accept-chat-request/",
+
         [
           {
             id: request.id,
@@ -4976,18 +4983,26 @@ function ActivityDetailsPage() {
 
       let chatroomId = null;
 
-      // --- CRITICAL: Updated based on your provided API response structure ---
       // Your API response shows: response.data.accepted[0].chat_room.id
-      if (response.data.accepted && response.data.accepted.length > 0 && response.data.accepted[0].chat_room?.id) {
-          chatroomId = response.data.accepted[0].chat_room.id;
-          console.log("ChatroomId extracted from response.data.accepted[0].chat_room.id");
+      if (
+        response.data.accepted &&
+        response.data.accepted.length > 0 &&
+        response.data.accepted[0].chat_room?.id
+      ) {
+        chatroomId = response.data.accepted[0].chat_room.id;
+        console.log(
+          "ChatroomId extracted from response.data.accepted[0].chat_room.id"
+        );
       } else {
-          console.error("ChatroomId not found in the expected location from API response.");
-          toast.error("Error: Chatroom ID not received from server after accepting request.");
-          // You might want to return here or handle this error more gracefully
+        console.error(
+          "ChatroomId not found in the expected location from API response."
+        );
+        toast.error(
+          "Error: Chatroom ID not received from server after accepting request."
+        );
+        // You might want to return here or handle this error more gracefully
       }
       // --- END CRITICAL UPDATE ---
-
 
       console.log("Extracted chatroomId from response:", chatroomId);
 
@@ -4997,10 +5012,14 @@ function ActivityDetailsPage() {
       toast.success("Chat Request Accepted!"); // Show success toast early
 
       if (!chatroomId || !sessionId) {
-        console.error("Missing chatroomId or sessionId after successful acceptance API call. Cannot navigate.");
+        console.error(
+          "Missing chatroomId or sessionId after successful acceptance API call. Cannot navigate."
+        );
         console.error("Final chatroomId value:", chatroomId);
         console.error("Final sessionId value:", sessionId);
-        toast.error("Failed to navigate to chat: chatroom or session info missing. Please check console for details.");
+        toast.error(
+          "Failed to navigate to chat: chatroom or session info missing. Please check console for details."
+        );
         return;
       }
 
@@ -5014,7 +5033,7 @@ function ActivityDetailsPage() {
         websocket.current = socket;
         // --- ADMIN REDIRECTION: Redirect admin to chatroom immediately after accepting ---
         if (isActivityAdmin) {
-            navigate(`/chat/${activityId}/${chatroomId}`);
+          navigate(`/chat/${activityId}/${chatroomId}`);
         }
         // For participant, the polling will eventually show the "Go to Chat" button.
       };
@@ -5025,9 +5044,11 @@ function ActivityDetailsPage() {
       };
 
       socket.onclose = (event) => {
-        console.log(`🔌 WebSocket closed. Code: ${event.code}, Reason: ${event.reason}`);
+        console.log(
+          `🔌 WebSocket closed. Code: ${event.code}, Reason: ${event.reason}`
+        );
         if (!event.wasClean) {
-            console.error("WebSocket connection closed unexpectedly.");
+          console.error("WebSocket connection closed unexpectedly.");
         }
       };
 
@@ -5038,20 +5059,28 @@ function ActivityDetailsPage() {
 
       // Refresh chat requests for all users after acceptance (important for participant's view)
       await fetchAllChatRequestsForActivity();
-
     } catch (err) {
       console.error("❗ Error accepting request:", err);
       if (err.response) {
         console.error("Error response data:", err.response.data);
         console.error("Error response status:", err.response.status);
         console.error("Error response headers:", err.response.headers);
-        toast.error(`Failed to accept chat request: ${err.response.data.message || 'Server error. Check console for details.'}`);
+        toast.error(
+          `Failed to accept chat request: ${
+            err.response.data.message ||
+            "Server error. Check console for details."
+          }`
+        );
       } else if (err.request) {
         console.error("Error request:", err.request);
-        toast.error("Failed to accept chat request: No response from server. Check network connection.");
+        toast.error(
+          "Failed to accept chat request: No response from server. Check network connection."
+        );
       } else {
         console.error("Error message:", err.message);
-        toast.error(`Failed to accept chat request: ${err.message}. Something went wrong setting up the request.`);
+        toast.error(
+          `Failed to accept chat request: ${err.message}. Something went wrong setting up the request.`
+        );
       }
     }
   };
@@ -5082,15 +5111,20 @@ function ActivityDetailsPage() {
     }
   };
 
-  if (!activity) return <div className="p-4 text-center">Loading activity details...</div>;
+  if (!activity)
+    return <div className="p-4 text-center">Loading activity details...</div>;
 
   const userSentRequest = allActivityChatRequests.find(
     (request) => String(request.from_user) === loggedInUserId
   );
-  const isUserRequestAccepted = userSentRequest && userSentRequest.is_accepted === true;
+  const isUserRequestAccepted =
+    userSentRequest && userSentRequest.is_accepted === true;
 
   const pendingChatRequestsForAdmin = allActivityChatRequests.filter(
-    (request) => request.is_accepted === false && request.is_rejected === false && request.is_undo === false
+    (request) =>
+      request.is_accepted === false &&
+      request.is_rejected === false &&
+      request.is_undo === false
   );
 
   const acceptedChatRoomsForAdmin = allActivityChatRequests.filter(
@@ -5102,7 +5136,7 @@ function ActivityDetailsPage() {
       {/* Top bar */}
       <div className="bg-gradient-to-r bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex items-center justify-between">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/ActivitiesPage")}
           className="text-white text-sm px-1 py-1 rounded-md hover:bg-red-500"
         >
           <FaLeftLong className="w-5 h-5" />
@@ -5228,9 +5262,13 @@ function ActivityDetailsPage() {
                     className="w-full text-left bg-blue-100 border border-blue-300 text-blue-800 p-3 rounded-lg flex items-center justify-between hover:bg-blue-200 transition-colors duration-200"
                   >
                     <span className="font-medium">
-                      Chatting with: {request.from_user_name || `User ID: ${request.from_user}`}
+                      Chatting with:{" "}
+                      {request.from_user_name ||
+                        `User ID: ${request.from_user}`}
                     </span>
-                    <span className="text-blue-600 text-sm">Go to chat &rarr;</span>
+                    <span className="text-blue-600 text-sm">
+                      Go to chat &rarr;
+                    </span>
                   </button>
                 ))}
               </div>
@@ -5295,7 +5333,6 @@ function ActivityDetailsPage() {
 }
 
 export default ActivityDetailsPage;
-
 
 // import React, { useState, useEffect, useRef, useCallback } from "react"; // Added useCallback
 // import { useParams, useNavigate } from "react-router-dom";
@@ -5749,11 +5786,11 @@ export default ActivityDetailsPage;
 //             // <p className="mt-4 text-center text-gray-600">
 //             //   Your chat request is pending review.
 //             // </p>
-            
+
 //             <h2 className="mt-10 text-center text-[#FE7A3A] font-semibold">
 //               Your chat request is pending review.
 //             </h2>
-          
+
 //           ) : (
 //             // <h2 className="text-lg font-semibold text-center flex-1">
 //             //   Activity Description

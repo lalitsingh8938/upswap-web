@@ -991,7 +991,6 @@
 
 // export default VendorDocument;
 
-
 import { useState, useEffect } from "react";
 import { FaUpload, FaPlus, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -1098,8 +1097,8 @@ const VendorDocument = () => {
         }
       );
 
-      const imageData = response.data?.data?.[0];
-
+      // const imageData = response.data?.data?.[0];
+      const imageData = {};
       if (imageData) {
         const thumbnailUrl = imageData?.thumbnail;
         const compressedUrl = imageData?.compressed;
@@ -1110,6 +1109,18 @@ const VendorDocument = () => {
         toast.error("Failed to upload photo or retrieve URLs");
         return null;
       }
+      // To Do
+      // if (response.status === 200 && response.data?.data?.[0]) {
+      //   const imageData = response.data.data[0];
+      //   const thumbnailUrl = imageData?.thumbnail;
+      //   const compressedUrl = imageData?.compressed;
+      //   console.log("Uploaded Photo Response:", imageData);
+      //   toast.success("Photo uploaded successfully!");
+      //   return { thumbnailUrl, compressedUrl };
+      // } else {
+      //   toast.error("Failed to upload photo or retrieve URLs");
+      //   return null;
+      // }
     } catch (error) {
       toast.error("Failed to upload photo");
       return null;
@@ -1316,7 +1327,10 @@ const VendorDocument = () => {
               disabled={!isDocumentUploaded || !isPhotoUploaded}
               style={{
                 opacity: !isDocumentUploaded || !isPhotoUploaded ? 0.5 : 1,
-                cursor: !isDocumentUploaded || !isPhotoUploaded ? 'not-allowed' : 'pointer',
+                cursor:
+                  !isDocumentUploaded || !isPhotoUploaded
+                    ? "not-allowed"
+                    : "pointer",
               }}
             >
               Next

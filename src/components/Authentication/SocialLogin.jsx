@@ -33,8 +33,13 @@ const SocialLogin = () => {
       if (response.data.access && response.data.refresh) {
         localStorage.setItem("access", response.data.access);
         localStorage.setItem("refresh_token", response.data.refresh);
+        localStorage.setItem("social_id", response.data.user.social_id);
+        console.log("sessionid", response.data.sessionid);
+      
+        console.log("social_id", response.data.user.social_id);
         localStorage.setItem("user_id", response.data.user.id);
         localStorage.setItem("sessionid", response.data.sessionid);
+
         localStorage.setItem("username", response.data.user.username);
 
         login();
@@ -45,7 +50,10 @@ const SocialLogin = () => {
       }
     } catch (error) {
       toast.error("Google Login Failed.");
-      console.error("Google Login Error:", error.response?.data || error.message);
+      console.error(
+        "Google Login Error:",
+        error.response?.data || error.message
+      );
     }
   };
 

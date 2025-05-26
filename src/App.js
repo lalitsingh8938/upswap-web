@@ -44,6 +44,7 @@ import DealDetails from "./components/DealDetails";
 
 import Favorite from "./components/Favorite";
 import Unfavorite from "./components/Unfavorite";
+import VendorProfile from "./components/VendorProfile";
 
 // Activities Components
 import PostActivities from "./components/Activities/PostActivities";
@@ -170,6 +171,11 @@ function App() {
 
                 <Route path="Favorite" element={<Favorite />} />
                 <Route path="Unfavorite" element={<Unfavorite />} />
+                {/* <Route path="Vendors" element={<Vendors />} /> */}
+                <Route path="/vendor/:userId" element={<VendorProfile />} />
+                  <Route path="/VendorProfile/:vendorId" element={<VendorProfile />} />
+
+                
               </Route>
             </Route>
           </Routes>
