@@ -53,7 +53,7 @@ import ActivitiesPage from "./components/Activities/ActivitiesPage";
 import ActivitiesDetails from "./components/Activities/ActivitiesDetails";
 
 // Chatting Components
-import ChatRequest from "./components/Activities/ChatRequest";
+
 import ChatRoom from "./components/Activities/ChatRoom";
 
 function App() {
@@ -77,7 +77,7 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Login />} />
-              <Route path="/Register" element={<Register />} />
+            <Route path="/Register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/SocialLogin" element={<SocialLogin />} />
             <Route path="/VerifyOtp" element={<VerifyOtp />} />
@@ -162,7 +162,7 @@ function App() {
                   path="/ActivitiesDetails/:activityId"
                   element={<ActivitiesDetails />}
                 />
-                <Route path="ChatRequest" element={<ChatRequest />} />
+                
                 <Route path="ChatRoom" element={<ChatRoom />} />
                 <Route
                   path="/chat/:activityId/:chatroomId"
@@ -173,9 +173,10 @@ function App() {
                 <Route path="Unfavorite" element={<Unfavorite />} />
                 {/* <Route path="Vendors" element={<Vendors />} /> */}
                 <Route path="/vendor/:userId" element={<VendorProfile />} />
-                  <Route path="/VendorProfile/:vendorId" element={<VendorProfile />} />
-
-                
+                <Route
+                  path="/VendorProfile/:vendorId"
+                  element={<VendorProfile />}
+                />
               </Route>
             </Route>
           </Routes>

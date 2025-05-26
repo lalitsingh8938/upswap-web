@@ -371,7 +371,15 @@ const FavoritesList = () => {
       </div>
       <ToastContainer />
       {favorites.length === 0 ? (
-        <p>No favorite vendors found.</p>
+        // <p>No favorite vendors found.</p>
+        <div className="flex flex-col items-center justify-center h-96">
+          <button
+            onClick={() => navigate("/Favorite")}
+            className="flex items-center gap-2 px-4 mt-2 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
+          >
+            <span data-an>No favorite vendors found</span>
+          </button>
+        </div>
       ) : (
         favorites.map((vendor, index) => (
           <div
@@ -380,7 +388,7 @@ const FavoritesList = () => {
           >
             {/* UnfavoriteButton component use kiya */}
             <Unfavorite
-              vendorId={vendor.id}
+              vendorId={vendor.vendor_id}
               onUnfavorite={removeVendorFromList}
             />
 

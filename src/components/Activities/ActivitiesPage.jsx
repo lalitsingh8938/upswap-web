@@ -304,6 +304,7 @@ const ActivitiesList = () => {
         // console.log("API Response:", response.data);
 
         const activitiesData = response.data.data || response.data || [];
+        // console.log("Activities Data:", activitiesData);
         setActivities(activitiesData);
         setLoading(false);
 
