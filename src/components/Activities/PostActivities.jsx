@@ -480,7 +480,7 @@
 
 // export default PostActivity;
 
-/* global google */ // Add this line at the beginning of the file
+
 
 
 

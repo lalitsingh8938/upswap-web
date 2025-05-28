@@ -8,7 +8,7 @@
 // const AddService = ({ onClose }) => {
 //   const navigate = useNavigate();
 //   const [vendorData, setVendorData] = useState(null);
- 
+
 //   const [formData, setFormData] = useState({
 //     item_name: "",
 //     service_category: "",
@@ -28,14 +28,14 @@
 //             },
 //           }
 //         );
-  
+
 //         const data = response.data;
 //         console.log("Fetched vendor details:", data);
 //         setVendorData(data);
-  
+
 //         if (data.services && data.services.length > 0) {
 //           const service = data.services[0]; // 👈 pick the first service
-  
+
 //           setFormData({
 //             item_description: service.item_description || "",
 //             item_name: service.item_name || "",
@@ -48,10 +48,9 @@
 //         toast.error("Failed to fetch vendor details");
 //       }
 //     };
-  
+
 //     fetchVendorDetails();
 //   }, [vendorId]);
-  
 
 //   const handleChange = (e) => {
 //     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -175,7 +174,6 @@
 
 // export default AddService;
 
-
 import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -234,7 +232,8 @@ const AddService = ({ onClose }) => {
 
   useEffect(() => {
     // Check if all form fields are filled
-    const { item_name, service_category, item_description, item_price } = formData;
+    const { item_name, service_category, item_description, item_price } =
+      formData;
     const isValid =
       item_name.trim() !== "" &&
       service_category.trim() !== "" &&
@@ -254,7 +253,7 @@ const AddService = ({ onClose }) => {
     }
 
     localStorage.setItem("serviceData", JSON.stringify(formData));
-    toast.success("Service data saved locally!");
+    // toast.success("Service data saved locally!");
     navigate("/ServiceTime");
   };
 
@@ -283,11 +282,24 @@ const AddService = ({ onClose }) => {
         </div>
 
         {/* Input Fields */}
-        <input
+        {/* <input
           type="text"
           name="item_name"
           value={formData.item_name}
           onChange={handleChange}
+          className="w-full border p-2 rounded-lg mb-3"
+          placeholder="Item name"
+        /> */}
+        <input
+          type="text"
+          name="item_name"
+          value={formData.item_name}
+          onChange={(e) => {
+            const onlyLetters = e.target.value.replace(/[^a-zA-Z\s]/g, ""); // allow letters + spaces
+            handleChange({
+              target: { name: "item_name", value: onlyLetters },
+            });
+          }}
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="Item name"
         />
@@ -323,11 +335,33 @@ const AddService = ({ onClose }) => {
           rows="3"
         ></textarea>
 
-        <input
-          type="number"
+        {/* <input
+          // type="number"
+            inputMode="numeric"
+            pattern="\d*"
           name="item_price"
           value={formData.item_price}
           onChange={handleChange}
+          className="w-full border p-2 rounded-lg mb-3"
+          placeholder="₹ Item price"
+        /> */}
+
+        <input
+          inputMode="numeric"
+          pattern="\d*"
+          name="item_price"
+          value={formData.item_price}
+          onChange={(e) => {
+            const onlyNumbers = e.target.value.replace(/[^\d]/g, ""); // keep only digits
+            handleChange({
+              target: { name: "item_price", value: onlyNumbers },
+            });
+          }}
+          onKeyDown={(e) => {
+            if (["e", "E", "+", "-", "."].includes(e.key)) {
+              e.preventDefault(); // block invalid keys even on number inputs
+            }
+          }}
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="₹ Item price"
         />
@@ -340,7 +374,7 @@ const AddService = ({ onClose }) => {
             disabled={!isFormValid}
             style={{
               opacity: !isFormValid ? 0.5 : 1,
-              cursor: !isFormValid ? 'not-allowed' : 'pointer',
+              cursor: !isFormValid ? "not-allowed" : "pointer",
             }}
           >
             Next

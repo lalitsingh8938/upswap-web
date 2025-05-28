@@ -276,13 +276,13 @@
 
 // export default BasicInfo;
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil } from "lucide-react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaTimes } from "react-icons/fa";
+import { FaSpinner } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
 
 const BasicInfo = () => {
@@ -290,6 +290,8 @@ const BasicInfo = () => {
   const [previewImage, setPreviewImage] = useState();
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [profileImageUrl, setProfileImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
   const userId = localStorage.getItem("user_id");
 
   const [formData, setFormData] = useState({
@@ -302,7 +304,58 @@ const BasicInfo = () => {
     business_establishment_year: "",
   });
 
+  // useEffect(() => {
+  //   const vendorId = localStorage.getItem("vendor_id");
+  //   if (!vendorId) return;
+
+  //   const fetchVendorDetails = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `https://api.upswap.app/api/vendor/details/${vendorId}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("access")}`,
+  //           },
+  //         }
+  //       );
+
+  //       const data = response.data;
+
+  //       setFormData({
+  //         user: userId,
+  //         profile_pic: data.profile_pic || "",
+  //         full_name: data.full_name || "",
+  //         phone_number: data.phone_number || "",
+  //         business_description: data.business_description || "",
+  //         business_email_id: data.business_email_id || "",
+  //         business_establishment_year: data.business_establishment_year || "",
+  //       });
+
+  //       if (data.profile_pic) {
+  //         setProfileImageUrl(data.profile_pic);
+  //         localStorage.setItem("profile_image_url", data.profile_pic); // Save URL on fetch
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to fetch vendor data", error);
+  //     }
+  //   };
+
+  //   fetchVendorDetails();
+  // }, [userId]);
+
   useEffect(() => {
+    // Pehle API call ke alawa, localStorage se bhi data check karo
+    const savedData = localStorage.getItem("vendorData");
+    if (savedData) {
+      setFormData(JSON.parse(savedData));
+      const savedProfilePic = localStorage.getItem("profile_image_url");
+      if (savedProfilePic) {
+        setProfileImageUrl(savedProfilePic);
+      }
+      return; // localStorage data mil gaya toh API call nahi karni
+    }
+
+    // Agar localStorage mein data nahi hai, tab API call karo
     const vendorId = localStorage.getItem("vendor_id");
     if (!vendorId) return;
 
@@ -331,7 +384,7 @@ const BasicInfo = () => {
 
         if (data.profile_pic) {
           setProfileImageUrl(data.profile_pic);
-          localStorage.setItem("profile_image_url", data.profile_pic); // Save URL on fetch
+          localStorage.setItem("profile_image_url", data.profile_pic);
         }
       } catch (error) {
         console.error("Failed to fetch vendor data", error);
@@ -340,6 +393,43 @@ const BasicInfo = () => {
 
     fetchVendorDetails();
   }, [userId]);
+
+  // const handleFileChange = async (event) => {
+  //   if (event.target.files.length === 0) return;
+
+  //   const file = event.target.files[0];
+  //   if (!file) return;
+
+  //   setProfileImageFile(file);
+  //   const previewURL = URL.createObjectURL(file);
+  //   setPreviewImage(previewURL);
+  //   setProfileImageUrl(previewURL);
+
+  //   const imageFormData = new FormData();
+  //   imageFormData.append("file", file);
+
+  //   try {
+  //     const response = await axios.post(
+  //       "https://api.upswap.app/api/UploadProfileImageAPI/",
+  //       imageFormData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${localStorage.getItem("access")}`,
+  //         },
+  //       }
+  //     );
+
+  //     const uploadedProfilePic = response.data[0];
+  //     setFormData((prev) => ({ ...prev, profile_pic: uploadedProfilePic }));
+  //     setProfileImageUrl(uploadedProfilePic);
+  //     localStorage.setItem("profile_image_url", uploadedProfilePic); // Save URL on upload
+  //     toast.success("Profile image uploaded successfully!");
+  //   } catch (error) {
+  //     console.error("Upload error:", error);
+  //     toast.warning("Failed to upload image");
+  //   }
+  // };
 
   const handleFileChange = async (event) => {
     if (event.target.files.length === 0) return;
@@ -354,6 +444,8 @@ const BasicInfo = () => {
 
     const imageFormData = new FormData();
     imageFormData.append("file", file);
+
+    setIsUploading(true); // <-- start loading
 
     try {
       const response = await axios.post(
@@ -370,11 +462,13 @@ const BasicInfo = () => {
       const uploadedProfilePic = response.data[0];
       setFormData((prev) => ({ ...prev, profile_pic: uploadedProfilePic }));
       setProfileImageUrl(uploadedProfilePic);
-      localStorage.setItem("profile_image_url", uploadedProfilePic); // Save URL on upload
+      localStorage.setItem("profile_image_url", uploadedProfilePic);
       toast.success("Profile image uploaded successfully!");
     } catch (error) {
       console.error("Upload error:", error);
       toast.warning("Failed to upload image");
+    } finally {
+      setIsUploading(false); // <-- stop loading
     }
   };
 
@@ -384,7 +478,6 @@ const BasicInfo = () => {
 
   const handleNext = () => {
     const {
-      
       full_name,
       phone_number,
       business_description,
@@ -442,7 +535,7 @@ const BasicInfo = () => {
         </h2>
 
         {/* Profile Image Upload */}
-        <div className="flex justify-center mt-4">
+        {/* <div className="flex justify-center mt-4">
           <div className="relative">
             {previewImage ||
             profileImageUrl ||
@@ -474,12 +567,58 @@ const BasicInfo = () => {
               onChange={handleFileChange}
             />
           </div>
+        </div> */}
+        <div className="flex justify-center items-center h-full">
+          <div className="relative w-24 h-24">
+            {isUploading && (
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-full">
+                <FaSpinner className="animate-spin text-white text-xl" />
+              </div>
+            )}
+
+            {previewImage ||
+            profileImageUrl ||
+            localStorage.getItem("profile_image_url") ? (
+              <img
+                src={
+                  previewImage ||
+                  profileImageUrl ||
+                  localStorage.getItem("profile_image_url")
+                }
+                alt="Profile Preview"
+                className="w-24 h-24 rounded-full object-cover border-2 border-[#FE7A3A]"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                No image
+              </div>
+            )}
+
+            <label
+              htmlFor="profileImageInput"
+              className={`absolute bottom-1 right-1 bg-[#FE7A3A] p-1.5 rounded-full cursor-pointer shadow-md ${
+                isUploading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              <FaEdit className="text-white text-sm" />
+            </label>
+
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              id="profileImageInput"
+              onChange={handleFileChange}
+              disabled={isUploading}
+            />
+          </div>
         </div>
 
         {/* Full Name */}
         <label className="block text-gray-700 mb-1 font-semibold">
           Full Name
         </label>
+
         <input
           type="text"
           name="full_name"
@@ -507,8 +646,60 @@ const BasicInfo = () => {
           />
         </div>
 
-        <div className="flex items-center gap-2 mb-3">
+        {/* <div className="flex items-center gap-2 mb-3">
           <input type="checkbox" id="samePhone" className="w-4 h-4" />
+          <label htmlFor="samePhone" className="text-gray-600 font-semibold">
+            Same as personal phone number
+          </label>
+        </div> */}
+        <div className="flex items-center gap-2 mb-3">
+          {/* <input
+            type="checkbox"
+            id="samePhone"
+            className="w-4 h-4"
+            onChange={(e) => {
+              if (e.target.checked) {
+                const personalPhone = localStorage.getItem("phone_number");
+                if (personalPhone) {
+                  setFormData({
+                    ...formData,
+                    phone_number: personalPhone,
+                  });
+                } else {
+                  toast.warning(
+                    "Personal phone number not found in local storage"
+                  );
+                }
+              }
+            }}
+          /> */}
+          <input
+            type="checkbox"
+            id="samePhone"
+            className="w-4 h-4"
+            onChange={(e) => {
+              if (e.target.checked) {
+                const personalPhone = localStorage.getItem("phone_number");
+                if (personalPhone) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    phone_number: personalPhone,
+                  }));
+                } else {
+                  toast.warning(
+                    "Personal phone number not found in local storage"
+                  );
+                }
+              } else {
+                // Unchecked → clear the field
+                setFormData((prev) => ({
+                  ...prev,
+                  phone_number: "",
+                }));
+              }
+            }}
+          />
+
           <label htmlFor="samePhone" className="text-gray-600 font-semibold">
             Same as personal phone number
           </label>
@@ -527,8 +718,56 @@ const BasicInfo = () => {
           onChange={handleChange}
         />
 
-        <div className="flex items-center gap-2 mb-3">
+        {/* <div className="flex items-center gap-2 mb-3">
           <input type="checkbox" id="sameEmail" className="w-4 h-4" />
+          <label htmlFor="sameEmail" className="text-gray-600 font-semibold">
+            Same as personal email id
+          </label>
+        </div> */}
+        <div className="flex items-center gap-2 mb-3">
+          {/* <input
+            type="checkbox"
+            id="sameEmail"
+            className="w-4 h-4"
+            onChange={(e) => {
+              if (e.target.checked) {
+                const email = localStorage.getItem("email");
+                if (email) {
+                  setFormData({
+                    ...formData,
+                    business_email_id: email,
+                  });
+                } else {
+                  toast.warning("Personal email not found in local storage");
+                }
+              }
+            }}
+          /> */}
+          <input
+            type="checkbox"
+            id="sameEmail"
+            className="w-4 h-4"
+            onChange={(e) => {
+              if (e.target.checked) {
+                const email = localStorage.getItem("email");
+                if (email) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    business_email_id: email,
+                  }));
+                } else {
+                  toast.warning("Personal email not found in local storage");
+                }
+              } else {
+                // Unchecked → clear the field
+                setFormData((prev) => ({
+                  ...prev,
+                  business_email_id: "",
+                }));
+              }
+            }}
+          />
+
           <label htmlFor="sameEmail" className="text-gray-600 font-semibold">
             Same as personal email id
           </label>
@@ -538,14 +777,54 @@ const BasicInfo = () => {
         <label className="block text-gray-700 mb-1 font-semibold">
           Business Establishment Year
         </label>
-        <input
+        {/* <input
           type="number"
+          // type="text"
+            pattern="\d*" // Ensures only digits are entered
           name="business_establishment_year"
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="Enter Business establishment year"
           value={formData.business_establishment_year}
           onChange={handleChange}
-        />
+        /> */}
+        {/* <input
+          // type="number"
+          name="business_establishment_year"
+          className="w-full border p-2 rounded-lg mb-3"
+          placeholder="Enter Business establishment year (e.g., 2005)"
+          value={formData.business_establishment_year}
+          onChange={(e) => {
+            const value = e.target.value;
+            // Allow only 4-digit numbers (1000–9999)
+            if (
+              value === "" ||
+              (/^\d{0,4}$/.test(value) && value <= new Date().getFullYear())
+            ) {
+              setFormData({ ...formData, business_establishment_year: value });
+            }
+          }}
+        /> */}
+        <select
+          name="business_establishment_year"
+          value={formData.business_establishment_year}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              business_establishment_year: e.target.value,
+            }))
+          }
+          className="w-full border p-2 rounded-lg mb-3"
+        >
+          <option value="">Select Year</option>
+          {Array.from({ length: 100 }, (_, i) => {
+            const year = new Date().getFullYear() - i;
+            return (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            );
+          })}
+        </select>
 
         {/* Business Description */}
         <label className="block text-gray-700 mb-1 font-semibold">
@@ -577,7 +856,6 @@ const BasicInfo = () => {
 };
 
 export default BasicInfo;
-
 
 // import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";

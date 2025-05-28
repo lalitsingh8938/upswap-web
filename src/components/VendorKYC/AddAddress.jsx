@@ -705,7 +705,8 @@
 // };
 
 // export default AddAddress;
-import React, { useState, useEffect, useMemo } from "react";
+
+import { useState, useEffect, useMemo } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { Country, State, City } from "country-state-city";
@@ -1065,13 +1066,45 @@ const AddAddress = ({ onClose }) => {
           className="w-full rounded-lg mb-3"
         />
 
-        <input
-          type="number"
+        {/* <input
+          // type="number"
+           inputMode="numeric"
+            pattern="\d*"
           name="pincode"
           value={formData.pincode}
           onChange={handleChange}
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="Enter pincode"
+        /> */}
+        <input
+          type="text"
+          name="pincode"
+          value={formData.pincode}
+          maxLength={11}
+          onChange={(e) => {
+            const numericValue = e.target.value.replace(/\D/g, ""); // Remove non-digits
+            if (numericValue.length <= 11) {
+              handleChange({
+                target: { name: e.target.name, value: numericValue },
+              });
+            }
+          }}
+          onKeyDown={(e) => {
+            if (
+              !(
+                (e.key >= "0" && e.key <= "9") ||
+                e.key === "Backspace" ||
+                e.key === "Delete" ||
+                e.key === "ArrowLeft" ||
+                e.key === "ArrowRight" ||
+                e.key === "Tab"
+              )
+            ) {
+              e.preventDefault();
+            }
+          }}
+          className="w-full border p-2 rounded-lg mb-3"
+          placeholder="Enter 6-digit pincode"
         />
 
         <div className="flex justify-end mt-6">

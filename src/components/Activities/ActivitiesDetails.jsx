@@ -4785,6 +4785,7 @@ function ActivityDetailsPage() {
   const navigate = useNavigate();
   const loggedInUserId = String(localStorage.getItem("user_id"));
   // const SocialID = localStorage.getItem("social_id");
+  
 
   const [allActivityChatRequests, setAllActivityChatRequests] = useState([]);
 
@@ -4931,6 +4932,8 @@ function ActivityDetailsPage() {
       );
 
       console.log("Chat request sent:", response.data);
+       localStorage.setItem("from_user_name", response.data.from_user_name);
+      // console.log("from_user_name" , from_user_name);
       toast.success(
         "Your interest request has been sent. Waiting for the Activity Admin to accept."
       );
@@ -5152,10 +5155,23 @@ function ActivityDetailsPage() {
 
       <div className="flex flex-wrap justify-center gap-4 mb-8">
         {activity.uploaded_images.map((imgUrl, index) => (
+          // <img
+          //   key={index}
+          //   src={imgUrl}
+          //   alt={`Activity image ${index + 1}`}
+          //   // alt={`Activity photo ${index + 1}`}
+          //   // alt={`View of activity ${index + 1}`}
+          //   className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
+          //   onClick={() => handleImageClick(imgUrl)}
+          //   onError={(e) => {
+          //     console.error("Failed to load image:", imgUrl);
+          //     e.target.style.display = "none";
+          //   }}
+          // />
           <img
             key={index}
             src={imgUrl}
-            alt={`Activity image ${index + 1}`}
+            alt={`Detail of activity ${index + 1}`} // More descriptive, less redundant
             className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
             onClick={() => handleImageClick(imgUrl)}
             onError={(e) => {

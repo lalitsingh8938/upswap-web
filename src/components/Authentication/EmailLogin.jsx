@@ -108,7 +108,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+// import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "./AuthContext";
@@ -116,7 +116,7 @@ import { useAuth } from "./AuthContext";
 const EmailLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  // const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -146,6 +146,7 @@ const EmailLogin = () => {
         localStorage.setItem("vendor_id", response.data.vendor_id);
         localStorage.setItem("sessionid", response.data.sessionid);
         localStorage.setItem("username", response.data.user.username);
+        localStorage.setItem("email", response.data.user.email);
         if (response.data?.user?.country) {
           localStorage.setItem("country", response.data.user.country);
           localStorage.setItem("country_code", response.data.user.country_code);

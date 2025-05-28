@@ -72,11 +72,21 @@ const DealDetails = () => {
 
       {/* Images preview */}
       <div className="relative mx-4 flex gap-2 flex-wrap justify-center">
-        {dealDetails.uploaded_images?.map((img, index) => (
+        {/* {dealDetails.uploaded_images?.map((img, index) => (
           <img
             key={index}
             src={img}
             alt={`Deal Image ${index + 1}`}
+            onClick={() => handleImageClick(img)}
+            className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
+          />
+        ))} */}
+        {dealDetails.uploaded_images?.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            // src={img || img || "/default-avatar.png"}
+            alt={`Detail of deal ${index + 1}`} // Changed this line
             onClick={() => handleImageClick(img)}
             className="w-52 h-52 object-cover rounded-md cursor-pointer border-2 border-gray-200 hover:scale-105 transition-all duration-200"
           />
@@ -89,7 +99,7 @@ const DealDetails = () => {
 
       {/* Description */}
       <div className="p-4">
-        <h3 className="text-lg font-semibold mb-1">Deal Description</h3>
+        <h3 className="text-lg font-semibold mb-1 mt-4">Deal Description</h3>
         <p className="text-sm text-gray-700 whitespace-pre-line">
           {dealDetails.deal_description}
         </p>

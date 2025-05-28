@@ -703,6 +703,353 @@
 
 // export default ChatRoomPage;
 
+// import { useState, useEffect, useRef, useCallback } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import { FaLeftLong } from "react-icons/fa6";
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+
+// // Define WebSocket ready states for clarity
+// const WebSocketReadyState = {
+//   CONNECTING: 0,
+//   OPEN: 1,
+//   CLOSING: 2,
+//   CLOSED: 3,
+// };
+
+// function ChatRoomPage() {
+//   const { activityId, chatroomId } = useParams();
+//   const [messages, setMessages] = useState([]);
+//   const [newMessage, setNewMessage] = useState("");
+//   // State to track connection status for UI
+//   const [isConnected, setIsConnected] = useState(false);
+//   const websocket = useRef(null);
+//   const loggedInUserId = localStorage.getItem("user_id");
+//   const username = localStorage.getItem("username");
+//   const navigate = useNavigate();
+//   const sessionId = localStorage.getItem("sessionid");
+//   const messagesEndRef = useRef(null);
+//   const adminUserId = localStorage.getItem("admin_user_id"); // Assuming you store the admin's user ID
+//   const SocailId = localStorage.getItem("social_id"); // Assuming you store the social ID
+
+//   const scrollToBottom = useCallback(() => {
+//     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+//   }, []);
+
+//   useEffect(() => {
+//     if (!activityId || !chatroomId || !loggedInUserId || !sessionId) {
+//       console.error(
+//         "Required IDs (Activity, Chatroom, User, or Session) are missing. Cannot establish WebSocket connection."
+//       );
+//       if (!loggedInUserId || !sessionId) {
+//         toast.warn("Session information is missing. Please log in again.");
+//       } else if (!activityId || !chatroomId) {
+//         toast.warn(
+//           "Chatroom or activity information is missing. Cannot load chat."
+//         );
+//       }
+//       setIsConnected(false);
+//       return;
+//     }
+
+//     const websocketUrl = `wss://api.upswap.app/ws/ws/uchat/${chatroomId}/${sessionId}/`;
+
+//     console.log("Attempting to connect WebSocket to:", websocketUrl);
+
+//     if (websocket.current) {
+//       console.log(
+//         "Closing existing WebSocket connection before creating a new one."
+//       );
+//       websocket.current.close();
+//       setIsConnected(false);
+//     }
+
+//     websocket.current = new WebSocket(websocketUrl);
+
+//     websocket.current.onopen = () => {
+//       console.log(
+//         `✅ WebSocket connected to chatroom: ${chatroomId} with session: ${sessionId}`
+//       );
+//       setIsConnected(true);
+//     };
+
+//     websocket.current.onmessage = (event) => {
+//       try {
+//         const data = JSON.parse(event.data);
+//         console.log("WebSocket Message Received:", data);
+
+//         if (data.message && data.sender && data.sent_at) {
+//           const receivedMessage = {
+//             user: data.sender,
+//             username: data.sender,
+//             text: data.message,
+//             timestamp: data.sent_at,
+//             id: Math.random().toString(36).substring(7),
+//           };
+//           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+//         } else {
+//           console.warn("Received unexpected WebSocket message format:", data);
+//         }
+//       } catch (error) {
+//         console.error(
+//           "Error parsing or handling received WebSocket message:",
+//           error,
+//           event.data
+//         );
+//       }
+//     };
+
+//     websocket.current.onerror = (event) => {
+//       console.error("❌ WebSocket error:", event);
+//       setIsConnected(false);
+//       console.warn("WebSocket connection error. Check server and network.");
+//     };
+
+//     websocket.current.onclose = (event) => {
+//       console.warn("🔌 WebSocket disconnected:", event);
+//       console.warn("Close code:", event.code, "Reason:", event.reason);
+//       setIsConnected(false);
+//     };
+
+//     return () => {
+//       if (
+//         websocket.current &&
+//         websocket.current.readyState !== WebSocketReadyState.CLOSING &&
+//         websocket.current.readyState !== WebSocketReadyState.CLOSED
+//       ) {
+//         console.log(
+//           `WebSocket disconnected from chatroom: ${chatroomId} during cleanup`
+//         );
+//         websocket.current.close();
+//       }
+//       setIsConnected(false);
+//     };
+//   }, [activityId, chatroomId, loggedInUserId, sessionId]);
+
+//   useEffect(() => {
+//     const fetchMessageHistory = async () => {
+//       if (chatroomId && sessionId) {
+//         console.log("Fetching message history for chatroom:", chatroomId);
+//         try {
+//           const res = await axios.get(
+//             `https://api.upswap.app/api/chat/get-chat-messages/${chatroomId}/`,
+//             {
+//               headers: {
+//                 "X-Session-Id": sessionId,
+//                 Authorization: `Bearer ${localStorage.getItem("access")}`,
+//               },
+//             }
+//           );
+//           console.log("History API Response:", res.data);
+//           if (res.data && Array.isArray(res.data.results)) {
+//             const formattedMessages = res.data.results.map((msg) => ({
+//               user: msg.sender,
+//               text: msg.content,
+//               timestamp: msg.created_at,
+//               id: msg.id,
+//             }));
+
+//             setMessages(formattedMessages.reverse());
+//             console.log("Formatted History Messages:", formattedMessages);
+//             scrollToBottom();
+//           } else {
+//             console.warn(
+//               "Message history API did not return results array:",
+//               res.data
+//             );
+//             setMessages([]);
+//           }
+//         } catch (error) {
+//           console.error("Failed to fetch message history:", error);
+//         }
+//       } else {
+//         console.warn(
+//           "Cannot fetch message history: Missing chatroom ID or session ID."
+//         );
+//         setMessages([]);
+//       }
+//     };
+//     fetchMessageHistory();
+//   }, [chatroomId, sessionId, scrollToBottom]);
+
+//   useEffect(() => {
+//     scrollToBottom();
+//   }, [messages, scrollToBottom]);
+
+//   const sendMessage = () => {
+//     if (
+//       websocket.current &&
+//       websocket.current.readyState === WebSocketReadyState.OPEN &&
+//       newMessage.trim()
+//     ) {
+//       const messageToSend = {
+//         type: "chat_message",
+//         message: newMessage.trim(),
+//       };
+//       websocket.current.send(JSON.stringify(messageToSend));
+//       setNewMessage("");
+//     } else {
+//       console.warn(
+//         "Cannot send message: WebSocket not connected, message empty, or missing required IDs."
+//       );
+//       if (!isConnected) {
+//         toast.warn(
+//           "Chat connection is not ready. Please wait or try refreshing."
+//         );
+//       } else if (!newMessage.trim()) {
+//         // Do nothing for empty message
+//       } else {
+//         toast.warn("Missing user or session information. Please log in again.");
+//       }
+//     }
+//   };
+
+//   const handleKeyDown = (event) => {
+//     if (event.key === "Enter") {
+//       event.preventDefault();
+//       if (isConnected) {
+//         sendMessage();
+//       } else {
+//         console.warn("Cannot send message on Enter: WebSocket not connected.");
+//       }
+//     }
+//   };
+
+//   return (
+//     <div className="flex flex-col h-screen">
+//       {/* Header */}
+//       <div className="p-3 bg-gray-100 border-b border-gray-300 flex items-center">
+//         <button
+//           onClick={() =>
+//             activityId
+//               ? navigate(`/ActivitiesDetails/${activityId}`)
+//               : navigate(-1)
+//           }
+//           className="mr-2"
+//         >
+//           <FaLeftLong className="w-5 h-5" />
+//         </button>
+//         <h2 className="flex-grow m-0 text-lg font-semibold">
+//           Chat with: {username}
+//         </h2>
+//         <span
+//           className={`ml-2 text-sm ${
+//             isConnected ? "text-green-600" : "text-red-500"
+//           }`}
+//         >
+//           {isConnected ? "Connected" : "Disconnected"}
+//         </span>
+//       </div>
+
+//       {/* Message List */}
+//       <div className="flex-grow overflow-y-auto p-3 flex flex-col space-y-2">
+//         {messages.map((msg) => {
+//           const isOwnMessage = String(msg.user) === String(loggedInUserId);
+//           // const isAdmin = String(msg.user) === String(adminUserId); // Not directly used for styling in this new approach
+
+//           let localTime = "";
+//           if (msg.timestamp) {
+//             try {
+//               const date = new Date(msg.timestamp);
+//               localTime = date.toLocaleTimeString("en-IN", {
+//                 hour: "2-digit",
+//                 minute: "2-digit",
+//                 hour12: true,
+//                 timeZone: "Asia/Kolkata",
+//               });
+//             } catch (error) {
+//               console.error("Error parsing timestamp:", msg.timestamp, error);
+//               localTime = "Invalid Time";
+//             }
+//           }
+
+//           return (
+//             <div
+//               key={msg.id}
+//               className={`flex ${
+//                 isOwnMessage ? "justify-end" : "justify-start"
+//               }`}
+//             >
+//               <div
+//                 className={`rounded-lg px-4 py-2 max-w-xs break-words flex items-end ${
+//                   // Added flex items-end
+//                   isOwnMessage
+//                     ? "bg-blue-500 text-white"
+//                     : "bg-orange-500 text-white"
+//                 }`}
+//               >
+//                 {/* Message text */}
+//                 <span className="text-base leading-tight">{msg.text}</span>
+
+//                 {/* Timestamp */}
+//                 {msg.timestamp && (
+//                   // <span
+//                   //   className={`ml-2 text-xs opacity-80 ${ // ml-2 for gap, opacity for subtle look
+//                   //     isOwnMessage ? "text-blue-200" : "text-orange-200"
+//                   //   }`}
+//                   //   style={{ whiteSpace: 'nowrap' }} // Prevent time from wrapping
+//                   // >
+//                   //   {localTime}
+//                   // </span>
+//                   <sub
+//                     className={`ml-2 text-xs opacity 90 ${
+//                       isOwnMessage ? "text-blue-200" : "text-orange-200"
+//                     }`}
+//                     style={{ whiteSpace: "nowrap" }}
+//                   >
+//                     {localTime}
+//                   </sub>
+//                 )}
+//               </div>
+//             </div>
+//           );
+//         })}
+//         <div ref={messagesEndRef} />
+//       </div>
+
+//       {/* Message Input Area */}
+//       <div className="p-3 border-t border-gray-300 flex items-center">
+//         {chatroomId && sessionId ? (
+//           <>
+//             <input
+//               type="text"
+//               className="flex-grow mr-2 p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+//               placeholder="Type your message..."
+//               value={newMessage}
+//               onChange={(e) => setNewMessage(e.target.value)}
+//               onKeyDown={handleKeyDown}
+//               disabled={!isConnected}
+//             />
+//             <button
+//               onClick={sendMessage}
+//               disabled={!isConnected || !newMessage.trim()}
+//               className={`px-4 py-2 rounded-md text-white ${
+//                 !isConnected || !newMessage.trim()
+//                   ? "bg-blue-300 cursor-not-allowed"
+//                   : "bg-blue-600 hover:bg-blue-700"
+//               }`}
+//             >
+//               Send
+//             </button>
+//           </>
+//         ) : (
+//           <p className="text-orange-500 text-center w-full">
+//             Loading chat or session information...
+//           </p>
+//         )}
+
+//         {chatroomId && sessionId && !isConnected && (
+//           <p className="text-orange-500 text-center w-full">Connecting...</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default ChatRoomPage;
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -710,7 +1057,7 @@ import { FaLeftLong } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Define WebSocket ready states for clarity
+// WebSocket ready state constants
 const WebSocketReadyState = {
   CONNECTING: 0,
   OPEN: 1,
@@ -722,16 +1069,18 @@ function ChatRoomPage() {
   const { activityId, chatroomId } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  // State to track connection status for UI
   const [isConnected, setIsConnected] = useState(false);
+
   const websocket = useRef(null);
-  const loggedInUserId = localStorage.getItem("user_id");
-  const username = localStorage.getItem("username");
-  const navigate = useNavigate();
-  const sessionId = localStorage.getItem("sessionid");
   const messagesEndRef = useRef(null);
-  const adminUserId = localStorage.getItem("admin_user_id"); // Assuming you store the admin's user ID
-  const SocailId = localStorage.getItem("social_id"); // Assuming you store the social ID
+  const navigate = useNavigate();
+
+  const loggedInUserId = localStorage.getItem("user_id");
+  const sessionId = localStorage.getItem("sessionid");
+  const adminUserId = localStorage.getItem("admin_user_id");
+  const username = localStorage.getItem("username");
+  //  const loggedInUserId = String(localStorage.getItem("user_id"));
+  const from_user_name = localStorage.getItem("from_user_name");
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -739,88 +1088,55 @@ function ChatRoomPage() {
 
   useEffect(() => {
     if (!activityId || !chatroomId || !loggedInUserId || !sessionId) {
-      console.error(
-        "Required IDs (Activity, Chatroom, User, or Session) are missing. Cannot establish WebSocket connection."
-      );
-      if (!loggedInUserId || !sessionId) {
-        toast.warn("Session information is missing. Please log in again.");
-      } else if (!activityId || !chatroomId) {
-        toast.warn(
-          "Chatroom or activity information is missing. Cannot load chat."
-        );
-      }
-      setIsConnected(false);
+      toast.warn("Missing required information. Please log in again.");
       return;
     }
 
     const websocketUrl = `wss://api.upswap.app/ws/ws/uchat/${chatroomId}/${sessionId}/`;
 
-    console.log("Attempting to connect WebSocket to:", websocketUrl);
-
     if (websocket.current) {
-      console.log(
-        "Closing existing WebSocket connection before creating a new one."
-      );
       websocket.current.close();
-      setIsConnected(false);
     }
 
     websocket.current = new WebSocket(websocketUrl);
 
     websocket.current.onopen = () => {
-      console.log(
-        `✅ WebSocket connected to chatroom: ${chatroomId} with session: ${sessionId}`
-      );
+      console.log("✅ WebSocket connected");
       setIsConnected(true);
     };
 
     websocket.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log("WebSocket Message Received:", data);
-
         if (data.message && data.sender && data.sent_at) {
           const receivedMessage = {
             user: data.sender,
-            username: data.sender,
             text: data.message,
             timestamp: data.sent_at,
             id: Math.random().toString(36).substring(7),
           };
-          setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-        } else {
-          console.warn("Received unexpected WebSocket message format:", data);
+          setMessages((prev) => [...prev, receivedMessage]);
         }
       } catch (error) {
-        console.error(
-          "Error parsing or handling received WebSocket message:",
-          error,
-          event.data
-        );
+        console.error("Error parsing WebSocket message:", error);
       }
     };
 
     websocket.current.onerror = (event) => {
-      console.error("❌ WebSocket error:", event);
+      console.error("WebSocket error:", event);
       setIsConnected(false);
-      console.warn("WebSocket connection error. Check server and network.");
     };
 
     websocket.current.onclose = (event) => {
-      console.warn("🔌 WebSocket disconnected:", event);
-      console.warn("Close code:", event.code, "Reason:", event.reason);
+      console.warn("WebSocket closed:", event);
       setIsConnected(false);
     };
 
     return () => {
       if (
         websocket.current &&
-        websocket.current.readyState !== WebSocketReadyState.CLOSING &&
         websocket.current.readyState !== WebSocketReadyState.CLOSED
       ) {
-        console.log(
-          `WebSocket disconnected from chatroom: ${chatroomId} during cleanup`
-        );
         websocket.current.close();
       }
       setIsConnected(false);
@@ -828,50 +1144,34 @@ function ChatRoomPage() {
   }, [activityId, chatroomId, loggedInUserId, sessionId]);
 
   useEffect(() => {
-    const fetchMessageHistory = async () => {
-      if (chatroomId && sessionId) {
-        console.log("Fetching message history for chatroom:", chatroomId);
-        try {
-          const res = await axios.get(
-            `https://api.upswap.app/api/chat/get-chat-messages/${chatroomId}/`,
-            {
-              headers: {
-                "X-Session-Id": sessionId,
-                Authorization: `Bearer ${localStorage.getItem("access")}`,
-              },
-            }
-          );
-          console.log("History API Response:", res.data);
-          if (res.data && Array.isArray(res.data.results)) {
-            const formattedMessages = res.data.results.map((msg) => ({
-              user: msg.sender,
-              text: msg.content,
-              timestamp: msg.created_at,
-              id: msg.id,
-            }));
-
-            setMessages(formattedMessages.reverse());
-            console.log("Formatted History Messages:", formattedMessages);
-            scrollToBottom();
-          } else {
-            console.warn(
-              "Message history API did not return results array:",
-              res.data
-            );
-            setMessages([]);
+    const fetchHistory = async () => {
+      try {
+        const res = await axios.get(
+          `https://api.upswap.app/api/chat/get-chat-messages/${chatroomId}/`,
+          {
+            headers: {
+              "X-Session-Id": sessionId,
+              Authorization: `Bearer ${localStorage.getItem("access")}`,
+            },
           }
-        } catch (error) {
-          console.error("Failed to fetch message history:", error);
-        }
-      } else {
-        console.warn(
-          "Cannot fetch message history: Missing chatroom ID or session ID."
         );
-        setMessages([]);
+        if (Array.isArray(res.data.results)) {
+          const formatted = res.data.results.map((msg) => ({
+            user: msg.sender,
+            text: msg.content,
+            timestamp: msg.created_at,
+            id: msg.id,
+          }));
+          setMessages(formatted.reverse());
+        }
+      } catch (error) {
+        console.error("Failed to load chat history:", error);
       }
     };
-    fetchMessageHistory();
-  }, [chatroomId, sessionId, scrollToBottom]);
+    if (chatroomId && sessionId) {
+      fetchHistory();
+    }
+  }, [chatroomId, sessionId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -883,43 +1183,43 @@ function ChatRoomPage() {
       websocket.current.readyState === WebSocketReadyState.OPEN &&
       newMessage.trim()
     ) {
-      const messageToSend = {
-        type: "chat_message",
-        message: newMessage.trim(),
-      };
-      websocket.current.send(JSON.stringify(messageToSend));
+      websocket.current.send(
+        JSON.stringify({
+          type: "chat_message",
+          message: newMessage.trim(),
+        })
+      );
       setNewMessage("");
     } else {
-      console.warn(
-        "Cannot send message: WebSocket not connected, message empty, or missing required IDs."
-      );
-      if (!isConnected) {
-        toast.warn(
-          "Chat connection is not ready. Please wait or try refreshing."
-        );
-      } else if (!newMessage.trim()) {
-        // Do nothing for empty message
-      } else {
-        toast.warn("Missing user or session information. Please log in again.");
-      }
+      toast.warn("Cannot send message. Check connection.");
     }
   };
 
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      if (isConnected) {
-        sendMessage();
-      } else {
-        console.warn("Cannot send message on Enter: WebSocket not connected.");
-      }
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
+
+  const formatTime = (timestamp) => {
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString("en-IN", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "Asia/Kolkata",
+      });
+    } catch {
+      return "Invalid Time";
     }
   };
 
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <div className="p-3 bg-gray-100 border-b border-gray-300 flex items-center">
+      <div className="p-3 bg-gray-100 border-b flex items-center">
         <button
           onClick={() =>
             activityId
@@ -930,76 +1230,28 @@ function ChatRoomPage() {
         >
           <FaLeftLong className="w-5 h-5" />
         </button>
-        <h2 className="flex-grow m-0 text-lg font-semibold">
-          Chat with: {username}
-        </h2>
-        <span
-          className={`ml-2 text-sm ${
-            isConnected ? "text-green-600" : "text-red-500"
-          }`}
-        >
+        <h2 className="flex-grow text-lg font-semibold">Chat with: {username}</h2>
+        <span className={`ml-2 text-sm ${isConnected ? "text-green-600" : "text-red-500"}`}>
           {isConnected ? "Connected" : "Disconnected"}
         </span>
       </div>
 
-      {/* Message List */}
-      <div className="flex-grow overflow-y-auto p-3 flex flex-col space-y-2">
+      {/* Messages */}
+      <div className="flex-grow overflow-y-auto p-3 space-y-2">
         {messages.map((msg) => {
-          const isOwnMessage = String(msg.user) === String(loggedInUserId);
-          // const isAdmin = String(msg.user) === String(adminUserId); // Not directly used for styling in this new approach
-
-          let localTime = "";
-          if (msg.timestamp) {
-            try {
-              const date = new Date(msg.timestamp);
-              // Options to show only time with AM/PM
-              localTime = date.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              });
-            } catch (error) {
-              console.error("Error parsing timestamp:", msg.timestamp, error);
-              localTime = "Invalid Time";
-            }
-          }
+          const isOwn = String(msg.user) === String(loggedInUserId);
+          const isAdmin = String(msg.user) === String(adminUserId);
+          const bubbleColor = isOwn
+            ? "bg-blue-500"
+            : isAdmin
+            ? "bg-purple-500"
+            : "bg-orange-500";
 
           return (
-            <div
-              key={msg.id}
-              className={`flex ${
-                isOwnMessage ? "justify-end" : "justify-start"
-              }`}
-            >
-              <div
-                className={`rounded-lg px-4 py-2 max-w-xs break-words flex items-end ${
-                  // Added flex items-end
-                  isOwnMessage
-                    ? "bg-blue-500 text-white"
-                    : "bg-orange-500 text-white"
-                }`}
-              >
-                {/* Message text */}
-                <span className="text-base leading-tight">{msg.text}</span>
-
-                {/* Timestamp */}
-                {msg.timestamp && (
-                  // <span
-                  //   className={`ml-2 text-xs opacity-80 ${ // ml-2 for gap, opacity for subtle look
-                  //     isOwnMessage ? "text-blue-200" : "text-orange-200"
-                  //   }`}
-                  //   style={{ whiteSpace: 'nowrap' }} // Prevent time from wrapping
-                  // >
-                  //   {localTime}
-                  // </span>
-                  <sub
-                    className={`ml-2 text-xs opacity 90 ${
-                      isOwnMessage ? "text-blue-200" : "text-orange-200"
-                    }`}
-                    style={{ whiteSpace: "nowrap" }}
-                  >
-                    {localTime}
-                  </sub>
-                )}
+            <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+              <div className={`rounded-lg px-4 py-2 max-w-xs break-words ${bubbleColor} text-white`}>
+                <span className="text-base">{msg.text}</span>
+                <sub className="ml-2 text-xs opacity-80">{formatTime(msg.timestamp)}</sub>
               </div>
             </div>
           );
@@ -1007,13 +1259,13 @@ function ChatRoomPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Message Input Area */}
-      <div className="p-3 border-t border-gray-300 flex items-center">
+      {/* Input */}
+      <div className="p-3 border-t flex items-center">
         {chatroomId && sessionId ? (
           <>
             <input
               type="text"
-              className="flex-grow mr-2 p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex-grow mr-2 p-2 rounded-md border"
               placeholder="Type your message..."
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
@@ -1033,13 +1285,7 @@ function ChatRoomPage() {
             </button>
           </>
         ) : (
-          <p className="text-orange-500 text-center w-full">
-            Loading chat or session information...
-          </p>
-        )}
-
-        {chatroomId && sessionId && !isConnected && (
-          <p className="text-orange-500 text-center w-full">Connecting...</p>
+          <p className="text-orange-500 text-center w-full">Loading chat...</p>
         )}
       </div>
     </div>
@@ -1047,3 +1293,351 @@ function ChatRoomPage() {
 }
 
 export default ChatRoomPage;
+
+
+// import { useState, useEffect, useRef, useCallback } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import { FaLeftLong } from "react-icons/fa6";
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+
+// // Define WebSocket ready states for clarity
+// const WebSocketReadyState = {
+//   CONNECTING: 0,
+//   OPEN: 1,
+//   CLOSING: 2,
+//   CLOSED: 3,
+// };
+
+// function ChatRoomPage() {
+//   const { activityId, chatroomId } = useParams();
+//   const [messages, setMessages] = useState([]);
+//   const [newMessage, setNewMessage] = useState("");
+//   // State to track connection status for UI
+//   const [isConnected, setIsConnected] = useState(false);
+//   const websocket = useRef(null);
+//   const loggedInUserId = localStorage.getItem("user_id");
+//   const username = localStorage.getItem("username");
+//   const navigate = useNavigate();
+//   const sessionId = localStorage.getItem("sessionid");
+//   const messagesEndRef = useRef(null);
+//   const adminUserId = localStorage.getItem("admin_user_id"); // Assuming you store the admin's user ID
+//   const SocailId = localStorage.getItem("social_id"); // Assuming you store the social ID
+
+//   const scrollToBottom = useCallback(() => {
+//     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+//   }, []);
+
+//   useEffect(() => {
+//     if (!activityId || !chatroomId || !loggedInUserId || !sessionId) {
+//       console.error(
+//         "Required IDs (Activity, Chatroom, User, or Session) are missing. Cannot establish WebSocket connection."
+//       );
+//       if (!loggedInUserId || !sessionId) {
+//         toast.warn("Session information is missing. Please log in again.");
+//       } else if (!activityId || !chatroomId) {
+//         toast.warn(
+//           "Chatroom or activity information is missing. Cannot load chat."
+//         );
+//       }
+//       setIsConnected(false);
+//       return;
+//     }
+
+//     const websocketUrl = `wss://api.upswap.app/ws/ws/uchat/${chatroomId}/${sessionId}/`;
+
+//     console.log("Attempting to connect WebSocket to:", websocketUrl);
+
+//     if (websocket.current) {
+//       console.log(
+//         "Closing existing WebSocket connection before creating a new one."
+//       );
+//       websocket.current.close();
+//       setIsConnected(false);
+//     }
+
+//     websocket.current = new WebSocket(websocketUrl);
+
+//     websocket.current.onopen = () => {
+//       console.log(
+//         `✅ WebSocket connected to chatroom: ${chatroomId} with session: ${sessionId}`
+//       );
+//       setIsConnected(true);
+//     };
+
+//     websocket.current.onmessage = (event) => {
+//       try {
+//         const data = JSON.parse(event.data);
+//         console.log("WebSocket Message Received:", data);
+
+//         if (data.message && data.sender && data.sent_at) {
+//           const receivedMessage = {
+//             user: data.sender,
+//             username: data.sender, // Assuming sender is the username or can be derived
+//             text: data.message,
+//             timestamp: data.sent_at, // Use the timestamp as received
+//             id: Math.random().toString(36).substring(7),
+//           };
+//           setMessages((prevMessages) => [...prevMessages, receivedMessage]);
+//         } else {
+//           console.warn("Received unexpected WebSocket message format:", data);
+//         }
+//       } catch (error) {
+//         console.error(
+//           "Error parsing or handling received WebSocket message:",
+//           error,
+//           event.data
+//         );
+//       }
+//     };
+
+//     websocket.current.onerror = (event) => {
+//       console.error("❌ WebSocket error:", event);
+//       setIsConnected(false);
+//       console.warn("WebSocket connection error. Check server and network.");
+//     };
+
+//     websocket.current.onclose = (event) => {
+//       console.warn("🔌 WebSocket disconnected:", event);
+//       console.warn("Close code:", event.code, "Reason:", event.reason);
+//       setIsConnected(false);
+//     };
+
+//     return () => {
+//       if (
+//         websocket.current &&
+//         websocket.current.readyState !== WebSocketReadyState.CLOSING &&
+//         websocket.current.readyState !== WebSocketReadyState.CLOSED
+//       ) {
+//         console.log(
+//           `WebSocket disconnected from chatroom: ${chatroomId} during cleanup`
+//         );
+//         websocket.current.close();
+//       }
+//       setIsConnected(false);
+//     };
+//   }, [activityId, chatroomId, loggedInUserId, sessionId]);
+
+//   useEffect(() => {
+//     const fetchMessageHistory = async () => {
+//       if (chatroomId && sessionId) {
+//         console.log("Fetching message history for chatroom:", chatroomId);
+//         try {
+//           const res = await axios.get(
+//             `https://api.upswap.app/api/chat/get-chat-messages/${chatroomId}/`,
+//             {
+//               headers: {
+//                 "X-Session-Id": sessionId,
+//                 Authorization: `Bearer ${localStorage.getItem("access")}`,
+//               },
+//             }
+//           );
+//           console.log("History API Response:", res.data);
+//           if (res.data && Array.isArray(res.data.results)) {
+//             const formattedMessages = res.data.results.map((msg) => ({
+//               user: msg.sender,
+//               text: msg.content,
+//               timestamp: msg.created_at, // Use the timestamp as received
+//               id: msg.id,
+//             }));
+
+//             setMessages(formattedMessages.reverse());
+//             console.log("Formatted History Messages:", formattedMessages);
+//             scrollToBottom();
+//           } else {
+//             console.warn(
+//               "Message history API did not return results array:",
+//               res.data
+//             );
+//             setMessages([]);
+//           }
+//         } catch (error) {
+//           console.error("Failed to fetch message history:", error);
+//         }
+//       } else {
+//         console.warn(
+//           "Cannot fetch message history: Missing chatroom ID or session ID."
+//         );
+//         setMessages([]);
+//       }
+//     };
+//     fetchMessageHistory();
+//   }, [chatroomId, sessionId, scrollToBottom]);
+
+//   useEffect(() => {
+//     scrollToBottom();
+//   }, [messages, scrollToBottom]);
+
+//   const sendMessage = () => {
+//     if (
+//       websocket.current &&
+//       websocket.current.readyState === WebSocketReadyState.OPEN &&
+//       newMessage.trim()
+//     ) {
+//       const messageToSend = {
+//         type: "chat_message",
+//         message: newMessage.trim(),
+//         // Consider sending the current client-side timestamp here if your backend doesn't add it
+//         // e.g., sent_at: new Date().toISOString()
+//       };
+//       websocket.current.send(JSON.stringify(messageToSend));
+//       setNewMessage("");
+//     } else {
+//       console.warn(
+//         "Cannot send message: WebSocket not connected, message empty, or missing required IDs."
+//       );
+//       if (!isConnected) {
+//         toast.warn(
+//           "Chat connection is not ready. Please wait or try refreshing."
+//         );
+//       } else if (!newMessage.trim()) {
+//         // Do nothing for empty message
+//       } else {
+//         toast.warn("Missing user or session information. Please log in again.");
+//       }
+//     }
+//   };
+
+//   const handleKeyDown = (event) => {
+//     if (event.key === "Enter") {
+//       event.preventDefault();
+//       if (isConnected) {
+//         sendMessage();
+//       } else {
+//         console.warn("Cannot send message on Enter: WebSocket not connected.");
+//       }
+//     }
+//   };
+
+//   return (
+//     <div className="flex flex-col h-screen">
+//       {/* Header */}
+//       <div className="p-3 bg-gray-100 border-b border-gray-300 flex items-center">
+//         <button
+//           onClick={() =>
+//             activityId
+//               ? navigate(`/ActivitiesDetails/${activityId}`)
+//               : navigate(-1)
+//           }
+//           className="mr-2"
+//         >
+//           <FaLeftLong className="w-5 h-5" />
+//         </button>
+//         <h2 className="flex-grow m-0 text-lg font-semibold">
+//           Chat with: {username}
+//         </h2>
+//         <span
+//           className={`ml-2 text-sm ${
+//             isConnected ? "text-green-600" : "text-red-500"
+//           }`}
+//         >
+//           {isConnected ? "Connected" : "Disconnected"}
+//         </span>
+//       </div>
+
+//       {/* Message List */}
+//       <div className="flex-grow overflow-y-auto p-3 flex flex-col space-y-2">
+//         {messages.map((msg) => {
+//           const isOwnMessage = String(msg.user) === String(loggedInUserId);
+
+//           let localTime = "";
+//           if (msg.timestamp) {
+//             try {
+//               // Ensure the timestamp is treated as UTC if it comes without timezone info
+//               // and you know it's UTC. Otherwise, new Date() handles ISO 8601 well.
+//               const date = new Date(msg.timestamp);
+
+//               // Check if the date is valid before formatting
+//               if (!isNaN(date.getTime())) {
+//                 localTime = date.toLocaleTimeString('en-IN',  {
+//                   hour: "2-digit",
+//                   minute: "2-digit",
+//                   hour12: true, // Ensure AM/PM is shown
+//                     timeZone: 'Asia/Kolkata', // force India time
+//                 });
+//               } else {
+//                 console.warn("Invalid date received for timestamp:", msg.timestamp);
+//                 localTime = "Invalid Time";
+//               }
+//             } catch (error) {
+//               console.error("Error parsing timestamp:", msg.timestamp, error);
+//               localTime = "Invalid Time";
+//             }
+//           }
+
+//           return (
+//             <div
+//               key={msg.id}
+//               className={`flex ${
+//                 isOwnMessage ? "justify-end" : "justify-start"
+//               }`}
+//             >
+//               <div
+//                 className={`rounded-lg px-4 py-2 max-w-xs break-words flex items-end ${
+//                   isOwnMessage
+//                     ? "bg-blue-500 text-white"
+//                     : "bg-orange-500 text-white"
+//                 }`}
+//               >
+//                 {/* Message text */}
+//                 <span className="text-base leading-tight">{msg.text}</span>
+
+//                 {/* Timestamp */}
+//                 {msg.timestamp && (
+//                   <sub
+//                     className={`ml-2 text-xs opacity-90 ${
+//                       isOwnMessage ? "text-blue-200" : "text-orange-200"
+//                     }`}
+//                     style={{ whiteSpace: "nowrap" }}
+//                   >
+//                     {localTime}
+//                   </sub>
+//                 )}
+//               </div>
+//             </div>
+//           );
+//         })}
+//         <div ref={messagesEndRef} />
+//       </div>
+
+//       {/* Message Input Area */}
+//       <div className="p-3 border-t border-gray-300 flex items-center">
+//         {chatroomId && sessionId ? (
+//           <>
+//             <input
+//               type="text"
+//               className="flex-grow mr-2 p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
+//               placeholder="Type your message..."
+//               value={newMessage}
+//               onChange={(e) => setNewMessage(e.target.value)}
+//               onKeyDown={handleKeyDown}
+//               disabled={!isConnected}
+//             />
+//             <button
+//               onClick={sendMessage}
+//               disabled={!isConnected || !newMessage.trim()}
+//               className={`px-4 py-2 rounded-md text-white ${
+//                 !isConnected || !newMessage.trim()
+//                   ? "bg-blue-300 cursor-not-allowed"
+//                   : "bg-blue-600 hover:bg-blue-700"
+//               }`}
+//             >
+//               Send
+//             </button>
+//           </>
+//         ) : (
+//           <p className="text-orange-500 text-center w-full">
+//             Loading chat or session information...
+//           </p>
+//         )}
+
+//         {chatroomId && sessionId && !isConnected && (
+//           <p className="text-orange-500 text-center w-full">Connecting...</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default ChatRoomPage;

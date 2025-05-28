@@ -623,6 +623,11 @@ const MyActivities = () => {
                         "https://placehold.co/600x400?text=No+Image";
                     }}
                   />
+                  <div
+                    className={`absolute top-0 right-0 m-2 p-1 rounded-full ${categoryInfo.color}`}
+                  >
+                    {categoryInfo.icon}
+                  </div>
                   {filter === "live" && (
                     <div className="absolute top-0 left-0 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-md">
                       LIVE

@@ -35,11 +35,13 @@ const SocialLogin = () => {
         localStorage.setItem("refresh_token", response.data.refresh);
         localStorage.setItem("social_id", response.data.user.social_id);
         console.log("sessionid", response.data.sessionid);
-      
+        localStorage.setItem("phone_number", response.data.user.phone_number);
+        console.log("phone_number", response.data.user.phone_number);
         console.log("social_id", response.data.user.social_id);
         localStorage.setItem("user_id", response.data.user.id);
         localStorage.setItem("sessionid", response.data.sessionid);
-
+        localStorage.setItem("email", response.data.user.email);
+        
         localStorage.setItem("username", response.data.user.username);
 
         login();
