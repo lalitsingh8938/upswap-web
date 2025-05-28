@@ -1363,108 +1363,109 @@ const VendorDocument = () => {
   const [isUploadingDoc, setIsUploadingDoc] = useState(false); // 🌀 doc uploading state
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false); // 🌀 photo uploading state
 
-  // useEffect(() => {
-  //   const fetchVendorData = async () => {
-  //     const vendorId = localStorage.getItem("vendor_id");
-  //     if (!vendorId) return;
+  useEffect(() => {
+    const fetchVendorData = async () => {
+      const vendorId = localStorage.getItem("vendor_id");
+      if (!vendorId) return;
 
-  //     try {
-  //       const response = await axios.get(
-  //         `https://api.upswap.app/api/vendor/details/${vendorId}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${localStorage.getItem("access")}`,
-  //           },
-  //         }
-  //       );
-
-  //       const vendorData = response.data;
-
-  //       if (vendorData.uploaded_business_documents?.length > 0) {
-  //         setBusinessDocs(vendorData.uploaded_business_documents);
-  //         setIsDocumentUploaded(true);
-  //       }
-
-  //       if (vendorData.uploaded_images?.length > 0) {
-  //         const photos = vendorData.uploaded_images.map((img) => ({
-  //           thumbnailUrl: img?.thumbnail,
-  //           compressedUrl: img?.compressed,
-  //         }));
-  //         setBusinessPhotos(photos);
-  //         setIsPhotoUploaded(true);
-  //       }
-  //     } catch (error) {
-  //       console.error("Failed to fetch vendor document data:", error);
-  //     }
-  //   };
-
-  //   fetchVendorData();
-
-  //   const storedDocs = localStorage.getItem("uploaded_business_documents1");
-  //   if (storedDocs) {
-  //     setBusinessDocs(JSON.parse(storedDocs));
-  //     setIsDocumentUploaded(JSON.parse(storedDocs).length > 0);
-  //   }
-  //   const storedPhotos = localStorage.getItem("uploaded_images1");
-  //   if (storedPhotos) {
-  //     setBusinessPhotos(JSON.parse(storedPhotos));
-  //     setIsPhotoUploaded(JSON.parse(storedPhotos).length > 0);
-  //   }
-  // }, []);
-useEffect(() => {
-  const fetchVendorData = async () => {
-    const vendorId = localStorage.getItem("vendor_id");
-    if (!vendorId) return;
-
-    try {
-      const response = await axios.get(
-        `https://api.upswap.app/api/vendor/details/${vendorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access")}`,
-          },
-        }
-      );
-
-      const vendorData = response.data;
-
-      if (vendorData.uploaded_business_documents?.length > 0) {
-        setBusinessDocs(vendorData.uploaded_business_documents);
-        localStorage.setItem(
-          "uploaded_business_documents1",
-          JSON.stringify(vendorData.uploaded_business_documents)
+      try {
+        const response = await axios.get(
+          `https://api.upswap.app/api/vendor/details/${vendorId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access")}`,
+            },
+          }
         );
-        setIsDocumentUploaded(true);
-      }
 
-      if (vendorData.uploaded_images?.length > 0) {
-        const photos = vendorData.uploaded_images.map((img) => ({
-          thumbnailUrl: img?.thumbnail,
-          compressedUrl: img?.compressed,
-        }));
-        setBusinessPhotos(photos);
-        localStorage.setItem("uploaded_images1", JSON.stringify(photos));
-        setIsPhotoUploaded(true);
-      }
-    } catch (error) {
-      console.error("Failed to fetch vendor document data:", error);
+        const vendorData = response.data;
 
-      // Fallback: load from localStorage if API fails
-      const storedDocs = localStorage.getItem("uploaded_business_documents1");
-      if (storedDocs) {
-        setBusinessDocs(JSON.parse(storedDocs));
-        setIsDocumentUploaded(JSON.parse(storedDocs).length > 0);
+        if (vendorData.uploaded_business_documents?.length > 0) {
+          setBusinessDocs(vendorData.uploaded_business_documents);
+          setIsDocumentUploaded(true);
+        }
+
+        if (vendorData.uploaded_images?.length > 0) {
+          const photos = vendorData.uploaded_images.map((img) => ({
+            thumbnailUrl: img?.thumbnail,
+            compressedUrl: img?.compressed,
+          }));
+          setBusinessPhotos(photos);
+          setIsPhotoUploaded(true);
+        }
+      } catch (error) {
+        console.error("Failed to fetch vendor document data:", error);
       }
-      const storedPhotos = localStorage.getItem("uploaded_images1");
-      if (storedPhotos) {
-        setBusinessPhotos(JSON.parse(storedPhotos));
-        setIsPhotoUploaded(JSON.parse(storedPhotos).length > 0);
-      }
+    };
+
+    fetchVendorData();
+
+    const storedDocs = localStorage.getItem("uploaded_business_documents1");
+    if (storedDocs) {
+      setBusinessDocs(JSON.parse(storedDocs));
+      setIsDocumentUploaded(JSON.parse(storedDocs).length > 0);
     }
-  };
+    const storedPhotos = localStorage.getItem("uploaded_images1");
+    if (storedPhotos) {
+      setBusinessPhotos(JSON.parse(storedPhotos));
+      setIsPhotoUploaded(JSON.parse(storedPhotos).length > 0);
+    }
+  }, []);
 
-  fetchVendorData();
-}, []);
+// useEffect(() => {
+//   const fetchVendorData = async () => {
+//     const vendorId = localStorage.getItem("vendor_id");
+//     if (!vendorId) return;
+
+//     try {
+//       const response = await axios.get(
+//         `https://api.upswap.app/api/vendor/details/${vendorId}`,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${localStorage.getItem("access")}`,
+//           },
+//         }
+//       );
+
+//       const vendorData = response.data;
+
+//       if (vendorData.uploaded_business_documents?.length > 0) {
+//         setBusinessDocs(vendorData.uploaded_business_documents);
+//         localStorage.setItem(
+//           "uploaded_business_documents1",
+//           JSON.stringify(vendorData.uploaded_business_documents)
+//         );
+//         setIsDocumentUploaded(true);
+//       }
+
+//       if (vendorData.uploaded_images?.length > 0) {
+//         const photos = vendorData.uploaded_images.map((img) => ({
+//           thumbnailUrl: img?.thumbnail,
+//           compressedUrl: img?.compressed,
+//         }));
+//         setBusinessPhotos(photos);
+//         localStorage.setItem("uploaded_images1", JSON.stringify(photos));
+//         setIsPhotoUploaded(true);
+//       }
+//     } catch (error) {
+//       console.error("Failed to fetch vendor document data:", error);
+
+//       // Fallback: load from localStorage if API fails
+//       const storedDocs = localStorage.getItem("uploaded_business_documents1");
+//       if (storedDocs) {
+//         setBusinessDocs(JSON.parse(storedDocs));
+//         setIsDocumentUploaded(JSON.parse(storedDocs).length > 0);
+//       }
+//       const storedPhotos = localStorage.getItem("uploaded_images1");
+//       if (storedPhotos) {
+//         setBusinessPhotos(JSON.parse(storedPhotos));
+//         setIsPhotoUploaded(JSON.parse(storedPhotos).length > 0);
+//       }
+//     }
+//   };
+
+//   fetchVendorData();
+// }, []);
 
   const uploadDocument = async (file) => {
     const formData = new FormData();
