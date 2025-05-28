@@ -173,8 +173,7 @@
 // };
 
 // export default AddService;
-
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -195,43 +194,49 @@ const AddService = ({ onClose }) => {
   const vendorId = localStorage.getItem("vendor_id");
 
   useEffect(() => {
-    const fetchVendorDetails = async () => {
-      try {
-        const token = localStorage.getItem("access");
-        const response = await axios.get(
-          `https://api.upswap.app/api/vendor/details/${vendorId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+    const localServiceData = localStorage.getItem("serviceData");
+
+    if (localServiceData) {
+      console.log("Loading service data from localStorage");
+      setFormData(JSON.parse(localServiceData));
+    } else {
+      const fetchVendorDetails = async () => {
+        try {
+          const token = localStorage.getItem("access");
+          const response = await axios.get(
+            `https://api.upswap.app/api/vendor/details/${vendorId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const data = response.data;
+          console.log("Fetched vendor details:", data);
+          setVendorData(data);
+
+          if (data.services && data.services.length > 0) {
+            const service = data.services[0]; // 👈 pick the first service
+
+            setFormData({
+              item_description: service.item_description || "",
+              item_name: service.item_name || "",
+              item_price: service.item_price || "",
+              service_category: service.service_category || "",
+            });
           }
-        );
-
-        const data = response.data;
-        console.log("Fetched vendor details:", data);
-        setVendorData(data);
-
-        if (data.services && data.services.length > 0) {
-          const service = data.services[0]; // 👈 pick the first service
-
-          setFormData({
-            item_description: service.item_description || "",
-            item_name: service.item_name || "",
-            item_price: service.item_price || "",
-            service_category: service.service_category || "",
-          });
+        } catch (error) {
+          console.error("Vendor details fetch error:", error);
+          toast.error("Failed to fetch vendor details");
         }
-      } catch (error) {
-        console.error("Vendor details fetch error:", error);
-        toast.error("Failed to fetch vendor details");
-      }
-    };
+      };
 
-    fetchVendorDetails();
+      fetchVendorDetails();
+    }
   }, [vendorId]);
 
   useEffect(() => {
-    // Check if all form fields are filled
     const { item_name, service_category, item_description, item_price } =
       formData;
     const isValid =
@@ -253,7 +258,6 @@ const AddService = ({ onClose }) => {
     }
 
     localStorage.setItem("serviceData", JSON.stringify(formData));
-    // toast.success("Service data saved locally!");
     navigate("/ServiceTime");
   };
 
@@ -268,7 +272,6 @@ const AddService = ({ onClose }) => {
   return (
     <div className="flex justify-center items-center border-2 min-h-screen bg-[#FE7A3A] to-white p-4 rounded-lg">
       <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        {/* ❌ Cross Button */}
         <button
           onClick={handleClose}
           className="absolute top-4 right-4 text-gray-600 hover:text-[#FE7A3A]"
@@ -276,26 +279,16 @@ const AddService = ({ onClose }) => {
           <FaTimes size={20} />
         </button>
 
-        {/* Header */}
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Add Service</h2>
         </div>
 
-        {/* Input Fields */}
-        {/* <input
-          type="text"
-          name="item_name"
-          value={formData.item_name}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-lg mb-3"
-          placeholder="Item name"
-        /> */}
         <input
           type="text"
           name="item_name"
           value={formData.item_name}
           onChange={(e) => {
-            const onlyLetters = e.target.value.replace(/[^a-zA-Z\s]/g, ""); // allow letters + spaces
+            const onlyLetters = e.target.value.replace(/[^a-zA-Z\s]/g, "");
             handleChange({
               target: { name: "item_name", value: onlyLetters },
             });
@@ -335,38 +328,26 @@ const AddService = ({ onClose }) => {
           rows="3"
         ></textarea>
 
-        {/* <input
-          // type="number"
-            inputMode="numeric"
-            pattern="\d*"
-          name="item_price"
-          value={formData.item_price}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-lg mb-3"
-          placeholder="₹ Item price"
-        /> */}
-
         <input
           inputMode="numeric"
           pattern="\d*"
           name="item_price"
           value={formData.item_price}
           onChange={(e) => {
-            const onlyNumbers = e.target.value.replace(/[^\d]/g, ""); // keep only digits
+            const onlyNumbers = e.target.value.replace(/[^\d]/g, "");
             handleChange({
               target: { name: "item_price", value: onlyNumbers },
             });
           }}
           onKeyDown={(e) => {
             if (["e", "E", "+", "-", "."].includes(e.key)) {
-              e.preventDefault(); // block invalid keys even on number inputs
+              e.preventDefault();
             }
           }}
           className="w-full border p-2 rounded-lg mb-3"
           placeholder="₹ Item price"
         />
 
-        {/* Buttons */}
         <div className="flex justify-end mt-6">
           <button
             onClick={handleNext}

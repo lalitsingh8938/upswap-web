@@ -1363,8 +1363,34 @@ const VendorDocument = () => {
   const [isUploadingDoc, setIsUploadingDoc] = useState(false); // 🌀 doc uploading state
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false); // 🌀 photo uploading state
 
-  useEffect(() => {
-    const fetchVendorData = async () => {
+ useEffect(() => {
+  const fetchFromLocalOrAPI = async () => {
+    const storedDocs = localStorage.getItem("uploaded_business_documents1");
+    const storedPhotos = localStorage.getItem("uploaded_images1");
+
+    let hasLocalDocs = false;
+    let hasLocalPhotos = false;
+
+    if (storedDocs) {
+      const parsedDocs = JSON.parse(storedDocs);
+      if (parsedDocs.length > 0) {
+        setBusinessDocs(parsedDocs);
+        setIsDocumentUploaded(true);
+        hasLocalDocs = true;
+      }
+    }
+
+    if (storedPhotos) {
+      const parsedPhotos = JSON.parse(storedPhotos);
+      if (parsedPhotos.length > 0) {
+        setBusinessPhotos(parsedPhotos);
+        setIsPhotoUploaded(true);
+        hasLocalPhotos = true;
+      }
+    }
+
+    // If local data missing, fetch from API
+    if (!hasLocalDocs || !hasLocalPhotos) {
       const vendorId = localStorage.getItem("vendor_id");
       if (!vendorId) return;
 
@@ -1380,37 +1406,43 @@ const VendorDocument = () => {
 
         const vendorData = response.data;
 
-        if (vendorData.uploaded_business_documents?.length > 0) {
+        if (!hasLocalDocs && vendorData.uploaded_business_documents?.length > 0) {
           setBusinessDocs(vendorData.uploaded_business_documents);
+          localStorage.setItem(
+            "uploaded_business_documents1",
+            JSON.stringify(vendorData.uploaded_business_documents)
+          );
           setIsDocumentUploaded(true);
         }
 
         if (vendorData.uploaded_images?.length > 0) {
-          const photos = vendorData.uploaded_images.map((img) => ({
-            thumbnailUrl: img?.thumbnail,
-            compressedUrl: img?.compressed,
-          }));
-          setBusinessPhotos(photos);
-          setIsPhotoUploaded(true);
-        }
+  const photos = vendorData.uploaded_images.map((img) => {
+    if (typeof img === "string") {
+      // API returned plain URL string
+      return {
+        compressedUrl: img,
+      };
+    } else {
+      // API returned object with keys
+      return {
+        thumbnailUrl: img?.thumbnail || img?.compressed || img?.url,
+        compressedUrl: img?.compressed || img?.thumbnail || img?.url,
+      };
+    }
+  });
+  setBusinessPhotos(photos);
+  localStorage.setItem("uploaded_images1", JSON.stringify(photos));
+  setIsPhotoUploaded(true);
+}
+
       } catch (error) {
         console.error("Failed to fetch vendor document data:", error);
       }
-    };
-
-    fetchVendorData();
-
-    const storedDocs = localStorage.getItem("uploaded_business_documents1");
-    if (storedDocs) {
-      setBusinessDocs(JSON.parse(storedDocs));
-      setIsDocumentUploaded(JSON.parse(storedDocs).length > 0);
     }
-    const storedPhotos = localStorage.getItem("uploaded_images1");
-    if (storedPhotos) {
-      setBusinessPhotos(JSON.parse(storedPhotos));
-      setIsPhotoUploaded(JSON.parse(storedPhotos).length > 0);
-    }
-  }, []);
+  };
+
+  fetchFromLocalOrAPI();
+}, []);
 
 // useEffect(() => {
 //   const fetchVendorData = async () => {

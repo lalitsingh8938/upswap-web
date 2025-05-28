@@ -213,6 +213,7 @@
 // };
 
 // export default BankDetails;
+
 import { FaPlus } from "react-icons/fa";
 import { FaTimes } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
@@ -229,17 +230,31 @@ const BankDetails = () => {
   const [bankName, setBankName] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [isBankDetailsValid, setIsBankDetailsValid] = useState(false);
-  const [hasSubmittedBankDetails, setHasSubmittedBankDetails] = useState(false); // New state to track submission
+  const [hasSubmittedBankDetails, setHasSubmittedBankDetails] = useState(false);
   const vendorId = localStorage.getItem("vendor_id");
 
   useEffect(() => {
+  const localBankAccountNumber = localStorage.getItem("bank_account_number");
+  const localReAccountNumber = localStorage.getItem("retype_bank_account_number");
+  const localBankName = localStorage.getItem("bank_name");
+  const localIfscCode = localStorage.getItem("ifsc_code");
+
+  if (localBankAccountNumber && localReAccountNumber && localBankName && localIfscCode) {
+    console.log("Loading bank details from localStorage");
+
+    setAccountNumber(localBankAccountNumber);
+    setReAccountNumber(localReAccountNumber);
+    setBankName(localBankName);
+    setIfscCode(localIfscCode);
+    setHasSubmittedBankDetails(true); // Mark as submitted since local data exists
+  } else {
     const fetchVendorDetails = async () => {
       try {
         const response = await axios.get(
           `https://api.upswap.app/api/vendor/details/${vendorId}`
         );
         const data = response.data;
-        console.log("Vendor Details:", data);
+        console.log("Vendor Details from API:", data);
 
         if (data) {
           setAccountNumber(data.bank_account_number || "");
@@ -247,7 +262,7 @@ const BankDetails = () => {
           setBankName(data.bank_name || "");
           setIfscCode(data.ifsc_code || "");
           if (data.bank_account_number) {
-            setHasSubmittedBankDetails(true); // Consider as submitted if data exists on load
+            setHasSubmittedBankDetails(true);
           }
         }
       } catch (error) {
@@ -257,10 +272,11 @@ const BankDetails = () => {
     };
 
     fetchVendorDetails();
-  }, [vendorId]);
+  }
+}, [vendorId]);
+
 
   useEffect(() => {
-    // Check if all bank details fields are filled and if account numbers match
     const isValid =
       accountNumber.trim() !== "" &&
       reAccountNumber.trim() !== "" &&
@@ -270,14 +286,13 @@ const BankDetails = () => {
     setIsBankDetailsValid(isValid);
   }, [accountNumber, reAccountNumber, bankName, ifscCode]);
 
-  // Save bank details to localStorage and mark as submitted
   const saveBankDetails = () => {
     localStorage.setItem("bank_account_number", accountNumber);
     localStorage.setItem("retype_bank_account_number", reAccountNumber);
     localStorage.setItem("bank_name", bankName);
     localStorage.setItem("ifsc_code", ifscCode);
     toast.success("Bank details submitted successfully!");
-    setHasSubmittedBankDetails(true); // Mark as submitted after saving
+    setHasSubmittedBankDetails(true);
   };
 
   const handleNext = () => {
@@ -286,7 +301,7 @@ const BankDetails = () => {
       return;
     }
 
-    toast.success("You can now add the services your business provides!"); // Show toast message
+    toast.success("You can now add the services your business provides!");
     navigate("/AddService");
   };
 
@@ -295,7 +310,7 @@ const BankDetails = () => {
       <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
         <button
           className="absolute top-2 right-3 text-gray-600 hover:text-[#FE7A3A]"
-          onClick={() => navigate("/VendorDocument")}
+          onClick={() => navigate("/AddAddress")}
         >
           <FaTimes size={20} />
         </button>
@@ -307,32 +322,23 @@ const BankDetails = () => {
         <label className="block text-gray-600 mb-1 font-semibold">
           Account Number
         </label>
-        {/* <input
-          // type="number"
-           inputMode="numeric"
-            pattern="\d*"
-            name="accountNumber"
-          value={accountNumber}
-          onChange={(e) => setAccountNumber(e.target.value)}
-          className="w-full border p-2 rounded-lg mb-2 text-gray-600"
-          placeholder="Enter bank account number"
-        /> */}
-       
-         <input
+        <input
           inputMode="numeric"
           pattern="\d*"
           name="accountNumber"
           value={accountNumber}
           onChange={(e) => {
-            const onlyNumbers = e.target.value.replace(/\D/g, ""); // Remove all non-digits
+            const onlyNumbers = e.target.value.replace(/\D/g, "");
             setAccountNumber(onlyNumbers);
           }}
           className="w-full border p-2 rounded-lg mb-2 text-gray-600"
           placeholder="Enter bank account number"
         />
 
-        <label className="block text-gray-600 mb-1 font-semibold">Re-type Account Number</label>
-         <input
+        <label className="block text-gray-600 mb-1 font-semibold">
+          Re-type Account Number
+        </label>
+        <input
           inputMode="numeric"
           pattern="\d*"
           value={reAccountNumber}
@@ -344,7 +350,7 @@ const BankDetails = () => {
         />
         {accountNumber !== reAccountNumber && reAccountNumber && (
           <p className="text-red-500 text-sm mb-2">Account numbers do not match.</p>
-         )}
+        )}
 
         <label className="block text-gray-600 mb-1 font-semibold">
           Bank Name
@@ -357,8 +363,8 @@ const BankDetails = () => {
           placeholder="Bank name"
         />
 
-         <label className="block text-gray-600 mb-1 font-semibold">IFSC Code</label>
-         <input
+        <label className="block text-gray-600 mb-1 font-semibold">IFSC Code</label>
+        <input
           type="text"
           value={ifscCode}
           onChange={(e) => setIfscCode(e.target.value.toUpperCase())}
@@ -367,7 +373,6 @@ const BankDetails = () => {
           maxLength={11}
         />
 
-        {/* Submit Button - Now saves data and enables next if valid */}
         <button
           className="w-full bg-[#FE7A3A] text-white p-2 rounded-lg mb-4 hover:bg-[#FE7A3A]"
           onClick={saveBankDetails}
@@ -390,12 +395,11 @@ const BankDetails = () => {
           <FaPlus /> Add services provided by your business
         </button>
 
-        {/* Navigation Buttons */}
         <div className="flex justify-end mt-6">
           <button
             className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
             onClick={handleNext}
-            disabled={!hasSubmittedBankDetails} // Disable based on submission status
+            disabled={!hasSubmittedBankDetails}
             style={{
               opacity: !hasSubmittedBankDetails ? 0.5 : 1,
               cursor: !hasSubmittedBankDetails ? "not-allowed" : "pointer",
@@ -410,6 +414,9 @@ const BankDetails = () => {
 };
 
 export default BankDetails;
+
+
+
 // import React, { useState, useEffect } from "react";
 // import { FaPlus, FaTimes } from "react-icons/fa";
 // import { useNavigate } from "react-router-dom";

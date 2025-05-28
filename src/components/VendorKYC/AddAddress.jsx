@@ -772,9 +772,70 @@ const AddAddress = ({ onClose }) => {
   };
 
   // Fetch and pre-fill vendor details
-  useEffect(() => {
-    if (countryOptions.length === 0) return;
+useEffect(() => {
+  if (countryOptions.length === 0) return;
 
+  const localAddress = localStorage.getItem("address");
+
+  if (localAddress) {
+    const addressData = JSON.parse(localAddress);
+    console.log("Using localStorage address:", addressData);
+
+    setFormData({
+      house_no_building_name: addressData.house_no_building_name || "",
+      road_name_area_colony: addressData.road_name_area_colony || "",
+      pincode: addressData.pincode || "",
+      country: addressData.country || "",
+      state: addressData.state || "",
+      city: addressData.city || "",
+      latitude: addressData.latitude || "",
+      longitude: addressData.longitude || "",
+    });
+
+    if (addressData.latitude && addressData.longitude) {
+      setCoordinates({
+        lat: parseFloat(addressData.latitude),
+        lng: parseFloat(addressData.longitude),
+      });
+    }
+
+    const selectedCountryObj = countryOptions.find(
+      (c) => c.label === addressData.country
+    );
+    if (selectedCountryObj) {
+      setSelectedCountry(selectedCountryObj);
+      const states = State.getStatesOfCountry(selectedCountryObj.value);
+      const stateOptionsMapped = states.map((s) => ({
+        value: s.isoCode,
+        label: s.name,
+      }));
+      setStateOptions(stateOptionsMapped);
+
+      const selectedStateObj = stateOptionsMapped.find(
+        (s) => s.label.toLowerCase() === addressData.state.toLowerCase()
+      );
+      if (selectedStateObj) {
+        setSelectedState(selectedStateObj);
+        const cities = City.getCitiesOfState(
+          selectedCountryObj.value,
+          selectedStateObj.value
+        );
+        const cityOptionsMapped = cities.map((c) => ({
+          value: c.name,
+          label: c.name,
+        }));
+        setCityOptions(cityOptionsMapped);
+
+        const selectedCityObj = cityOptionsMapped.find(
+          (c) => c.label.toLowerCase() === addressData.city.toLowerCase()
+        );
+        if (selectedCityObj) {
+          setSelectedCity(selectedCityObj);
+        }
+      }
+    }
+  } else {
+    // If no localStorage, fallback to API
     const fetchVendorDetails = async () => {
       const vendorId = localStorage.getItem("vendor_id");
       if (!vendorId) return;
@@ -790,7 +851,7 @@ const AddAddress = ({ onClose }) => {
         );
 
         const addressData = response.data.addresses?.[0];
-        console.log("Address Data:", addressData); // Debugging line
+        console.log("Fetched from API:", addressData);
 
         if (addressData) {
           setFormData({
@@ -853,7 +914,9 @@ const AddAddress = ({ onClose }) => {
     };
 
     fetchVendorDetails();
-  }, [countryOptions]);
+  }
+}, [countryOptions]);
+
 
   // Update state options when country changes
   useEffect(() => {
@@ -985,11 +1048,7 @@ const AddAddress = ({ onClose }) => {
     localStorage.setItem("address", JSON.stringify(fullAddress));
     // localStorage.setItem("country", formData.country);
     localStorage.setItem("country_code", selectedCountry?.value || ""); // Save country code
-    // localStorage.setItem("state", formData.state);
-    // localStorage.setItem("city", formData.city);
-    // localStorage.setItem("pincode", formData.pincode);
-    // localStorage.setItem("latitude", fullAddress.latitude);
-    // localStorage.setItem("longitude", fullAddress.longitude);
+    
 
     toast.success("Address saved locally!");
 
@@ -1066,16 +1125,7 @@ const AddAddress = ({ onClose }) => {
           className="w-full rounded-lg mb-3"
         />
 
-        {/* <input
-          // type="number"
-           inputMode="numeric"
-            pattern="\d*"
-          name="pincode"
-          value={formData.pincode}
-          onChange={handleChange}
-          className="w-full border p-2 rounded-lg mb-3"
-          placeholder="Enter pincode"
-        /> */}
+        
         <input
           type="text"
           name="pincode"
@@ -1108,17 +1158,7 @@ const AddAddress = ({ onClose }) => {
         />
 
         <div className="flex justify-end mt-6">
-          {/* <button
-            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#e76a2f]"
-            onClick={handleNext}
-            disabled={!isFormValid}
-            style={{
-              opacity: !isFormValid ? 0.5 : 1,
-              cursor: !isFormValid ? 'not-allowed' : 'pointer',
-            }}
-          >
-            Next
-          </button> */}
+          
           <button
             onClick={handleNext}
             disabled={!location || !isFormValid}
