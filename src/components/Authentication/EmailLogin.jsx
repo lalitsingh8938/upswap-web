@@ -147,6 +147,8 @@ const EmailLogin = () => {
         localStorage.setItem("sessionid", response.data.sessionid);
         localStorage.setItem("username", response.data.user.username);
         localStorage.setItem("email", response.data.user.email);
+        localStorage.setItem("phone_number", response.data.user.phone_number);
+        console.log("phone_number", response.data.user.phone_number);
         if (response.data?.user?.country) {
           localStorage.setItem("country", response.data.user.country);
           localStorage.setItem("country_code", response.data.user.country_code);
