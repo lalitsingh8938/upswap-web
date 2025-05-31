@@ -572,7 +572,7 @@ const DealsList = () => {
       </div>
 
       {/* Deals Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 p-4 cursor-pointer">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-3 p-4 cursor-pointer">
         {deals.length > 0 ? (
           deals.map((deal) => (
             <div

@@ -270,13 +270,18 @@ const AddService = ({ onClose }) => {
   };
 
   return (
-    <div className="flex justify-center items-center border-2 min-h-screen bg-[#FE7A3A] to-white p-4 rounded-lg">
-      <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+    // <div className="flex justify-center  items-center border-2 min-h-screen bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+    //  {/* <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white"> */}
+    //  <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md justify-center items-center mx-auto">
+
+    <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl min-h- rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white">
+      <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md justify-center items-center mx-auto">
+        {/* <ToastContainer position="top-center" autoClose={3000} /> */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-600 hover:text-[#FE7A3A]"
+          className="absolute top-2 right-2 text-gray-600 hover:text-[#FE7A3A]"
         >
-          <FaTimes size={20} />
+          <FaTimes size={18} />
         </button>
 
         <div className="flex justify-between items-center mb-4">

@@ -4,9 +4,11 @@ import React from "react";
 
 const UpswapFeatures = () => {
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
+    // <div className="min-h-screen bg-gray-100">
+  <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400">
+    {/* Header */}
       <div className="bg-gradient-to-r bg-[#FE7A3A] border-2 text-white p-4 text-center font-bold text-lg relative rounded-lg">
+        
         <span>New Features</span>
       </div>
       

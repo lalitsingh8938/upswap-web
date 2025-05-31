@@ -212,11 +212,14 @@
 //     </div>
 //   );
 // }
+
+
 import { Pencil } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+// import LogOut from "./Authentication/LogOut";
 
 export default function PersonalAccount() {
   const [profilePic, setProfilePic] = useState("/default-avatar.png");
@@ -316,7 +319,7 @@ export default function PersonalAccount() {
   // --- Loading Spinner and Error Display ---
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FE7A3A] flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white-300 border-white"></div>
           <p className="text-white text-lg mt-4">Loading Profile...</p>
@@ -327,7 +330,7 @@ export default function PersonalAccount() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-[#FE7A3A] flex flex-col items-center justify-center text-white text-xl p-4">
+      <div className="bg-white flex flex-col items-center justify-center text-white text-xl p-4">
         <p className="text-red-300">Error: {error}</p>
         <button
           onClick={() => {
@@ -335,7 +338,7 @@ export default function PersonalAccount() {
             if (userId) {
               fetchUserData(userId); // Retry fetching data
             } else {
-              navigate("/login"); // Go to login if no user ID
+              navigate("/"); // Go to login if no user ID
             }
           }}
           className="mt-4 px-4 py-2 bg-white text-[#FE7A3A] rounded-lg"
@@ -348,9 +351,10 @@ export default function PersonalAccount() {
   // --- End Loading Spinner and Error Display ---
 
   return (
-    <div className="bg-[#FE7A3A] h-screen p-4 rounded-lg border-2">
+    // <div className="bg-[#FE7A3A] h-screen p-4 rounded-lg border-2">
+    <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white">
       <div className="flex items-center text-white text-lg font-semibold pb-4">
-        <button className="mr-4" onClick={() => navigate("/DealsPage")}>
+        <button className="mr-4" onClick={() => navigate("/Home")}>
           &#x276E;
         </button>
         My Personal Account
@@ -403,12 +407,14 @@ export default function PersonalAccount() {
 
       <div className="bg-white rounded-xl shadow-lg p-4 mt-4 flex items-center gap-3 cursor-pointer"
            onClick={() => {
-             localStorage.removeItem("access");
-             localStorage.removeItem("user_id");
+            localStorage.clear();
+            //  localStorage.removeItem("access");
+            //  localStorage.removeItem("user_id");
              toast.info("Logged out successfully!");
              navigate("/login");
            }}>
         <span className="text-red-500 text-xl">➡️</span>
+         {/* <LogOut /> */}
         <div>
           <p className="text-red-500 font-semibold">Logout</p>
           <p className="text-gray-500 text-sm">Sign out from your account</p>
@@ -417,3 +423,4 @@ export default function PersonalAccount() {
     </div>
   );
 }
+

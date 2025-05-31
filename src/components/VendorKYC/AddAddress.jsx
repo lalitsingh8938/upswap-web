@@ -1062,16 +1062,18 @@ useEffect(() => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen border-2 bg-gradient-to-b bg-[#FE7A3A] to-white p-4 rounded-lg">
+    
+    <div className="flex justify-center items-center min-h-screen border-2 bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+      {/* //  <div className="py-8 px-4 justify-center sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white"> */}
       <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md relative">
         <ToastContainer position="top-center" autoClose={3000} />
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-lg font-semibold">Add Address Info</h2>
           <button
             onClick={handleClose}
-            className="text-gray-600 hover:text-[#FE7A3A] absolute top-4 right-4"
+            className="text-gray-600 top-2 right-2 hover:text-[#FE7A3A] absolute"
           >
-            <FaTimes size={20} />
+            <FaTimes size={18} />
           </button>
         </div>
 

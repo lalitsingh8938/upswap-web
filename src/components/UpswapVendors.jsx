@@ -613,13 +613,16 @@ const UpswapVendors = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    // <div className="min-h-screen bg-white">
+    // <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-[#D0B9A7]"></div>
+    // <div className="min-h-screen bg-white px-4 sm:px-6 md:px-8">
+    <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400">
       <ToastContainer position="top-center" autoClose={3000} />
 
       {/* Header */}
       <div className="flex items-center justify-between bg-gradient-to-r border-2 bg-[#FE7A3A] text-white p-4 rounded-lg">
-        <button className="text-xl" onClick={() => navigate("/DealsPage")}>
-          &#8592;
+       <button className="mr-4" onClick={() => navigate("/Home")}>
+          &#x276E;
         </button>
         <h1 className="text-lg font-semibold">Vendors</h1>
         <div className="flex gap-4">

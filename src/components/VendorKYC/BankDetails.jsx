@@ -234,47 +234,53 @@ const BankDetails = () => {
   const vendorId = localStorage.getItem("vendor_id");
 
   useEffect(() => {
-  const localBankAccountNumber = localStorage.getItem("bank_account_number");
-  const localReAccountNumber = localStorage.getItem("retype_bank_account_number");
-  const localBankName = localStorage.getItem("bank_name");
-  const localIfscCode = localStorage.getItem("ifsc_code");
+    const localBankAccountNumber = localStorage.getItem("bank_account_number");
+    const localReAccountNumber = localStorage.getItem(
+      "retype_bank_account_number"
+    );
+    const localBankName = localStorage.getItem("bank_name");
+    const localIfscCode = localStorage.getItem("ifsc_code");
 
-  if (localBankAccountNumber && localReAccountNumber && localBankName && localIfscCode) {
-    console.log("Loading bank details from localStorage");
+    if (
+      localBankAccountNumber &&
+      localReAccountNumber &&
+      localBankName &&
+      localIfscCode
+    ) {
+      console.log("Loading bank details from localStorage");
 
-    setAccountNumber(localBankAccountNumber);
-    setReAccountNumber(localReAccountNumber);
-    setBankName(localBankName);
-    setIfscCode(localIfscCode);
-    setHasSubmittedBankDetails(true); // Mark as submitted since local data exists
-  } else {
-    const fetchVendorDetails = async () => {
-      try {
-        const response = await axios.get(
-          `https://api.upswap.app/api/vendor/details/${vendorId}`
-        );
-        const data = response.data;
-        console.log("Vendor Details from API:", data);
+      setAccountNumber(localBankAccountNumber);
+      setReAccountNumber(localReAccountNumber);
+      setBankName(localBankName);
+      setIfscCode(localIfscCode);
+      setHasSubmittedBankDetails(true); // Mark as submitted since local data exists
+    } else {
+      const fetchVendorDetails = async () => {
+        try {
+          const response = await axios.get(
+            `https://api.upswap.app/api/vendor/details/${vendorId}`
+          );
+          const data = response.data;
+          console.log("Vendor Details from API:", data);
 
-        if (data) {
-          setAccountNumber(data.bank_account_number || "");
-          setReAccountNumber(data.retype_bank_account_number || "");
-          setBankName(data.bank_name || "");
-          setIfscCode(data.ifsc_code || "");
-          if (data.bank_account_number) {
-            setHasSubmittedBankDetails(true);
+          if (data) {
+            setAccountNumber(data.bank_account_number || "");
+            setReAccountNumber(data.retype_bank_account_number || "");
+            setBankName(data.bank_name || "");
+            setIfscCode(data.ifsc_code || "");
+            if (data.bank_account_number) {
+              setHasSubmittedBankDetails(true);
+            }
           }
+        } catch (error) {
+          console.error("Failed to fetch vendor details:", error);
+          toast.error("Error fetching vendor details.");
         }
-      } catch (error) {
-        console.error("Failed to fetch vendor details:", error);
-        toast.error("Error fetching vendor details.");
-      }
-    };
+      };
 
-    fetchVendorDetails();
-  }
-}, [vendorId]);
-
+      fetchVendorDetails();
+    }
+  }, [vendorId]);
 
   useEffect(() => {
     const isValid =
@@ -306,116 +312,122 @@ const BankDetails = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen bg-[#FE7A3A] border-2 to-white p-4 rounded-lg">
-      <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
-        <button
-          className="absolute top-2 right-3 text-gray-600 hover:text-[#FE7A3A]"
-          onClick={() => navigate("/AddAddress")}
-        >
-          <FaTimes size={20} />
-        </button>
-        <div className="relative bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex justify-center items-center">
-          <h2 className="text-xl font-semibold">Become a Vendor</h2>
-        </div>
-        <h3 className="text-gray-700 mb-2 font-semibold mt-4">Bank details</h3>
-
-        <label className="block text-gray-600 mb-1 font-semibold">
-          Account Number
-        </label>
-        <input
-          inputMode="numeric"
-          pattern="\d*"
-          name="accountNumber"
-          value={accountNumber}
-          onChange={(e) => {
-            const onlyNumbers = e.target.value.replace(/\D/g, "");
-            setAccountNumber(onlyNumbers);
-          }}
-          className="w-full border p-2 rounded-lg mb-2 text-gray-600"
-          placeholder="Enter bank account number"
-        />
-
-        <label className="block text-gray-600 mb-1 font-semibold">
-          Re-type Account Number
-        </label>
-        <input
-          inputMode="numeric"
-          pattern="\d*"
-          value={reAccountNumber}
-          onChange={(e) => setReAccountNumber(e.target.value.replace(/\D/g, ""))}
-          className={`w-full border p-2 rounded-lg mb-2 ${
-            accountNumber !== reAccountNumber && reAccountNumber ? "border-red-500" : ""
-          } text-gray-600`}
-          placeholder="Confirm account number"
-        />
-        {accountNumber !== reAccountNumber && reAccountNumber && (
-          <p className="text-red-500 text-sm mb-2">Account numbers do not match.</p>
-        )}
-
-        <label className="block text-gray-600 mb-1 font-semibold">
-          Bank Name
-        </label>
-        <input
-          type="text"
-          value={bankName}
-          onChange={(e) => setBankName(e.target.value)}
-          className="w-full border p-2 rounded-lg mb-2 text-gray-600"
-          placeholder="Bank name"
-        />
-
-        <label className="block text-gray-600 mb-1 font-semibold">IFSC Code</label>
-        <input
-          type="text"
-          value={ifscCode}
-          onChange={(e) => setIfscCode(e.target.value.toUpperCase())}
-          className="w-full border p-2 rounded-lg mb-4 text-gray-600"
-          placeholder="Enter your bank IFSC code"
-          maxLength={11}
-        />
-
-        <button
-          className="w-full bg-[#FE7A3A] text-white p-2 rounded-lg mb-4 hover:bg-[#FE7A3A]"
-          onClick={saveBankDetails}
-          disabled={!isBankDetailsValid}
-          style={{
-            opacity: !isBankDetailsValid ? 0.5 : 1,
-            cursor: !isBankDetailsValid ? "not-allowed" : "pointer",
-          }}
-        >
-          Submit
-        </button>
-
-        <label className="block text-gray-600 mb-1 font-semibold">
-          Add Services Section
-        </label>
-        <button
-          className="flex items-center gap-2 w-full border-2 border-[#FE7A3A] text-[#FE7A3A] p-3 rounded-lg mb-4"
-          onClick={() => navigate("/AddService")}
-        >
-          <FaPlus /> Add services provided by your business
-        </button>
-
-        <div className="flex justify-end mt-6">
-          <button
-            className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
-            onClick={handleNext}
-            disabled={!hasSubmittedBankDetails}
-            style={{
-              opacity: !hasSubmittedBankDetails ? 0.5 : 1,
-              cursor: !hasSubmittedBankDetails ? "not-allowed" : "pointer",
-            }}
-          >
-            Next
-          </button>
-        </div>
-      </div>
+    <div className="flex justify-center items-center py-8 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-orange-400 to-white">
+  <div className="relative bg-white p-6 rounded-xl shadow-lg w-full max-w-md"> {/* removed justify-center items-center from here */}
+    <button
+      className="absolute top-2 right-2 text-gray-600 hover:text-[#FE7A3A]"
+      onClick={() => navigate("/AddAddress")}
+    >
+      <FaTimes size={18} />
+    </button>
+    <div className="relative bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex justify-center items-center">
+      <h2 className="text-xl font-semibold">Become a Vendor</h2>
     </div>
+    <h3 className="text-gray-700 mb-2 font-semibold mt-4">Bank details</h3>
+
+    <label className="block text-gray-600 mb-1 font-semibold">
+      Account Number
+    </label>
+    <input
+      inputMode="numeric"
+      pattern="\d*"
+      name="accountNumber"
+      value={accountNumber}
+      onChange={(e) => {
+        const onlyNumbers = e.target.value.replace(/\D/g, "");
+        setAccountNumber(onlyNumbers);
+      }}
+      className="w-full border p-2 rounded-lg mb-2 text-gray-600"
+      placeholder="Enter bank account number"
+    />
+
+    <label className="block text-gray-600 mb-1 font-semibold">
+      Re-type Account Number
+    </label>
+    <input
+      inputMode="numeric"
+      pattern="\d*"
+      value={reAccountNumber}
+      onChange={(e) =>
+        setReAccountNumber(e.target.value.replace(/\D/g, ""))
+      }
+      className={`w-full border p-2 rounded-lg mb-2 ${
+        accountNumber !== reAccountNumber && reAccountNumber
+          ? "border-red-500"
+          : ""
+      } text-gray-600`}
+      placeholder="Confirm account number"
+    />
+    {accountNumber !== reAccountNumber && reAccountNumber && (
+      <p className="text-red-500 text-sm mb-2">
+        Account numbers do not match.
+      </p>
+    )}
+
+    <label className="block text-gray-600 mb-1 font-semibold">
+      Bank Name
+    </label>
+    <input
+      type="text"
+      value={bankName}
+      onChange={(e) => setBankName(e.target.value)}
+      className="w-full border p-2 rounded-lg mb-2 text-gray-600"
+      placeholder="Bank name"
+    />
+
+    <label className="block text-gray-600 mb-1 font-semibold">
+      IFSC Code
+    </label>
+    <input
+      type="text"
+      value={ifscCode}
+      onChange={(e) => setIfscCode(e.target.value.toUpperCase())}
+      className="w-full border p-2 rounded-lg mb-4 text-gray-600"
+      placeholder="Enter your bank IFSC code"
+      maxLength={11}
+    />
+
+    <button
+      className="w-full bg-[#FE7A3A] text-white p-2 rounded-lg mb-4 hover:bg-[#FE7A3A]"
+      onClick={saveBankDetails}
+      disabled={!isBankDetailsValid}
+      style={{
+        opacity: !isBankDetailsValid ? 0.5 : 1,
+        cursor: !isBankDetailsValid ? "not-allowed" : "pointer",
+      }}
+    >
+      Submit
+    </button>
+
+    <label className="block text-gray-600 mb-1 font-semibold">
+      Add Services Section
+    </label>
+    <button
+      className="flex items-center gap-2 w-full border-2 border-[#FE7A3A] text-[#FE7A3A] p-3 rounded-lg mb-4"
+      onClick={() => navigate("/AddService")}
+    >
+      <FaPlus /> Add services provided by your business
+    </button>
+
+    <div className="flex justify-end mt-6">
+      <button
+        className="bg-[#FE7A3A] text-white px-6 py-2 rounded-lg hover:bg-[#FE7A3A]"
+        onClick={handleNext}
+        disabled={!hasSubmittedBankDetails}
+        style={{
+          opacity: !hasSubmittedBankDetails ? 0.5 : 1,
+          cursor: !hasSubmittedBankDetails ? "not-allowed" : "pointer",
+        }}
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>
   );
 };
 
 export default BankDetails;
-
-
 
 // import React, { useState, useEffect } from "react";
 // import { FaPlus, FaTimes } from "react-icons/fa";
@@ -440,10 +452,10 @@ export default BankDetails;
 //       setIsLoading(true);
 //       try {
 //         // const response = await axios.get(`https://api.upswap.app/api/vendor/details/${vendorId}`);
-       
+
 //        const response = await axios.get(
 //           `https://api.upswap.app/api/vendor/details/${vendorId}`,
-         
+
 //         ); const data = response.data;
 
 //         if (data) {

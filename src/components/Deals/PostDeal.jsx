@@ -116,7 +116,7 @@ const PostDeal = () => {
   };
 
   const handleClose = () => {
-    navigate("/DealsPage", { replace: true });
+    navigate("/Deals", { replace: true });
   };
 
   return (

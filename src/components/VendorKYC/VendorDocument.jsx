@@ -1621,8 +1621,9 @@ const VendorDocument = () => {
   };
 
   return (
-    <div className="relative flex justify-center items-center min-h-screen border-2 bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
-      <div className="relative bg-white rounded-xl w-full max-w-md">
+    // <div className="relative flex justify-center items-center min-h-screen border-2 bg-gradient-to-b from-orange-400 to-white p-4 rounded-lg">
+       <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white">
+      <div className="relative bg-white rounded-xl w-full max-w-md justify-center items-center mx-auto">
         <ToastContainer position="top-center" autoClose={3000} />
 
         <button

@@ -143,7 +143,6 @@
 
 // export default VendorProfile;
 
-
 // import { useEffect, useState } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
 // import { ToastContainer, toast } from "react-toastify";
@@ -271,7 +270,6 @@
 //           />
 //         </div>
 
-
 //         {/* Email and Phone Number */}
 //         <div className="bg-white rounded-lg shadow-md p-4">
 //           <div className="flex items-center mb-2">
@@ -362,8 +360,6 @@
 // };
 
 // export default VendorProfile;
-
-
 
 // import { useEffect, useState } from "react";
 // import { useParams, useNavigate } from "react-router-dom";
@@ -477,7 +473,6 @@
 
 //   const fullAddress = `${address.road_name_area_colony || ''}${address.road_name_area_colony && address.city ? ', ' : ''}${address.city || ''}${address.city && address.state ? ', ' : ''}${address.state || ''}${address.state && address.pincode ? ' - ' : ''}${address.pincode || ''}`.trim();
 
-
 //   // FOR NOW, I'm keeping the placeholder and assuming 'profile_pic' is the only direct image.
 //   // If your API does provide an array of URLs for business images, assign it here.
 //   const businessImages = vendorDetails.business_images && Array.isArray(vendorDetails.business_images)
@@ -487,14 +482,13 @@
 //   // Example for business images if they are nested in 'vendorDetails.data.images' or similar
 //   // const businessImages = (vendorDetails.data && Array.isArray(vendorDetails.data.images)) ? vendorDetails.data.images : [];
 
-
 //   return (
 //     <div className="min-h-screen bg-gray-50 pb-8"> {/* Added padding to bottom */}
 //       <ToastContainer position="top-center" autoClose={3000} />
 
 //       {/* Header */}
-//       <div className="flex items-center bg-gradient-to-r from-[#FE7A3A] to-[#FF9A6A] text-white p-4 relative z-10"> 
-//          <button className="text-2xl" onClick={() => navigate(-1)}> 
+//       <div className="flex items-center bg-gradient-to-r from-[#FE7A3A] to-[#FF9A6A] text-white p-4 relative z-10">
+//          <button className="text-2xl" onClick={() => navigate(-1)}>
 //           &#8592;
 //         </button>
 //         <h1 className="text-xl font-semibold flex-grow text-center pr-10"> {/* Added right padding to balance back arrow */}
@@ -625,7 +619,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import {FaMapMarkerAlt, FaHeart, FaBars } from "react-icons/fa";
-import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaInfoCircle, FaImage,FaHeart, FaBars, FaTag } from "react-icons/fa"; // Added more icons
+import {
+  FaEnvelope,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+  FaInfoCircle,
+  FaImage,
+  FaHeart,
+  FaBars,
+  FaTag,
+} from "react-icons/fa"; // Added more icons
 
 const VendorProfile = () => {
   const { userId } = useParams(); // THIS IS THE VENDOR ID FROM THE URL (e.g., from /vendor/:userId)
@@ -648,14 +651,12 @@ const VendorProfile = () => {
     // Assuming 'vendor/details/{id}' is the correct endpoint for viewing ANY vendor's details.
     const apiUrl = `https://api.upswap.app/api/vendor/details/${userId}/`;
 
-    fetch(apiUrl,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${accessToken || ""}`,
-        }
-      }
-    )
+    fetch(apiUrl, {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${accessToken || ""}`,
+      },
+    })
       .then((res) => {
         if (!res.ok) {
           if (res.status === 401) {
@@ -715,7 +716,9 @@ const VendorProfile = () => {
     return (
       <div className="text-center p-4 min-h-screen flex flex-col justify-center items-center">
         <ToastContainer position="top-center" autoClose={3000} />
-        <h2 className="text-2xl text-gray-700 font-semibold mb-4">No vendor details available.</h2>
+        <h2 className="text-2xl text-gray-700 font-semibold mb-4">
+          No vendor details available.
+        </h2>
         <button
           onClick={() => navigate(-1)}
           className="mt-4 bg-[#FE7A3A] hover:bg-[#FF8C4A] text-white py-2 px-6 rounded-md shadow-md transition duration-300"
@@ -727,51 +730,68 @@ const VendorProfile = () => {
   }
 
   // --- Data preparation for display ---
-  const businessDescription = vendorDetails.business_description || "No business description provided.";
-  const displayDescription = showFullDescription ? businessDescription : businessDescription.substring(0, 200);
+  const businessDescription =
+    vendorDetails.business_description || "No business description provided.";
+  const displayDescription = showFullDescription
+    ? businessDescription
+    : businessDescription.substring(0, 200);
   const needsShowMore = businessDescription.length > 200;
 
-  const address = vendorDetails.addresses && vendorDetails.addresses.length > 0
-    ? vendorDetails.addresses[0]
-    : {};
+  const address =
+    vendorDetails.addresses && vendorDetails.addresses.length > 0
+      ? vendorDetails.addresses[0]
+      : {};
 
-  const fullAddress = `${address.road_name_area_colony || ''}${address.road_name_area_colony && address.city ? ', ' : ''}${address.city || ''}${address.city && address.state ? ', ' : ''}${address.state || ''}${address.state && address.pincode ? ' - ' : ''}${address.pincode || ''}`.trim();
+  const fullAddress = `${address.road_name_area_colony || ""}${
+    address.road_name_area_colony && address.city ? ", " : ""
+  }${address.city || ""}${address.city && address.state ? ", " : ""}${
+    address.state || ""
+  }${address.state && address.pincode ? " - " : ""}${
+    address.pincode || ""
+  }`.trim();
 
   const businessImages = Array.isArray(vendorDetails.uploaded_images)
-    ? vendorDetails.uploaded_images.map(img => img.compressed)
+    ? vendorDetails.uploaded_images.map((img) => img.compressed)
     : [];
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-8">
+    // <div className="min-h-screen bg-gray-50 pb-8">
+    <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white">
       <ToastContainer position="top-center" autoClose={3000} />
       <div className="flex items-center justify-between bg-gradient-to-r border-2 bg-[#FE7A3A] text-white p-4 rounded-lg">
-              <button className="text-xl" onClick={() => navigate("/UpswapVendors")}>
-                &#8592;
-              </button>
-              <h1 className="text-lg font-semibold">Vendor Profile</h1>
-              <div className="flex gap-4">
-                <FaHeart
-                  className="text-xl cursor-pointer"
-                  onClick={() => navigate("/Favorite")}
-                />
-                <FaBars className="text-xl" />
-              </div>
-            </div>
+        <button className="mr-4" onClick={() => navigate("/UpswapVendors")}>
+          &#x276E;
+        </button>
+        <h1 className="text-lg font-semibold">Vendor Profile</h1>
+        <div className="flex gap-4">
+          <FaHeart
+            className="text-xl cursor-pointer"
+            onClick={() => navigate("/Favorite")}
+          />
+          <FaBars className="text-xl" />
+        </div>
+      </div>
 
       {/* Profile Pic - Adjusted positioning since header is removed */}
-      <div className="flex justify-center pt-8 mb-4"> {/* Added padding-top to give space at the very top */}
+      <div className="flex justify-center pt-8 mb-4">
+        {" "}
+        {/* Added padding-top to give space at the very top */}
         <img
-          src={vendorDetails.profile_pic || "https://via.placeholder.com/150?text=Vendor"}
+          src={
+            vendorDetails.profile_pic ||
+            "https://via.placeholder.com/150?text=Vendor"
+          }
           alt={vendorDetails.full_name || "Vendor Profile Picture"}
           className="w-32 h-32 object-cover rounded-full border-4 border-white shadow-lg"
         />
       </div>
 
       <div className="p-4 space-y-5">
-
         {/* Contact Information */}
         <div className="bg-white rounded-xl shadow-md p-5 border border-gray-100">
-          <h2 className="font-bold text-xl mb-3 text-gray-800">Contact Details</h2>
+          <h2 className="font-bold text-xl mb-3 text-gray-800">
+            Contact Details
+          </h2>
           <div className="flex items-center mb-3 text-gray-700">
             <FaEnvelope className="text-[#FE7A3A] mr-3 text-lg" />
             <p>{vendorDetails.business_email_id || "Email not available"}</p>
@@ -842,7 +862,7 @@ const VendorProfile = () => {
           <h2 className="font-bold text-xl mb-3 text-gray-800 flex items-center">
             <FaMapMarkerAlt className="text-red-500 mr-2" /> Location
           </h2>
-          {fullAddress.trim() !== '' ? (
+          {fullAddress.trim() !== "" ? (
             <p className="text-gray-700 leading-relaxed text-base">
               {fullAddress}
             </p>
@@ -859,10 +879,19 @@ const VendorProfile = () => {
             </h3>
             <div className="space-y-4">
               {vendorDetails.services.map((service, index) => (
-                <div key={index} className="p-3 bg-gray-100 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
-                  <p className="font-semibold text-lg text-gray-900 mb-1">{service.item_name || "Service Name"}</p>
-                  <p className="text-sm text-gray-600 mb-2">{service.item_description || "No description provided."}</p>
-                  <p className="text-md font-bold text-[#FE7A3A]">Price: ₹{service.item_price || "N/A"}</p>
+                <div
+                  key={index}
+                  className="p-3 bg-gray-100 rounded-lg border border-gray-200 hover:shadow-sm transition-shadow"
+                >
+                  <p className="font-semibold text-lg text-gray-900 mb-1">
+                    {service.item_name || "Service Name"}
+                  </p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {service.item_description || "No description provided."}
+                  </p>
+                  <p className="text-md font-bold text-[#FE7A3A]">
+                    Price: ₹{service.item_price || "N/A"}
+                  </p>
                 </div>
               ))}
             </div>

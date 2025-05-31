@@ -814,9 +814,10 @@ const MyDeals = () => {
   );
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    // <div className="bg-gray-100 min-h-screen">
+     <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white">
       {/* Filter Buttons */}
-      <div className="flex justify-around bg-white py-3 sticky top-0 z-10 shadow-sm">
+      <div className="flex justify-around bg-white py-3 sticky top-0 z-10 shadow-sm rounded-md">
         {renderButton("Live", "live")}
         {renderButton("Scheduled", "scheduled")}
         {renderButton("History", "history")}

@@ -352,10 +352,11 @@ const FavoritesList = () => {
   if (loading) return <p className="p-6 text-center">Loading favorites...</p>;
 
   return (
-    <div className="p-6">
+    <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl mx-auto">
+      {/* <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto flex items-center justify-center bg-gradient-to-b from-orange-400 to-white"> */}
       <div className="flex items-center justify-between bg-gradient-to-r border-2 bg-[#FE7A3A] text-white p-4 rounded-lg">
-        <button className="text-xl" onClick={() => navigate("/UpswapVendors")}>
-          &#8592;
+        <button className="mr-4" onClick={() => navigate("/UpswapVendors")}>
+          &#x276E;
         </button>
         <h1 className="text-lg font-semibold">Favorite Vendors</h1>
         <div className="flex gap-4">
@@ -373,6 +374,7 @@ const FavoritesList = () => {
       {favorites.length === 0 ? (
         // <p>No favorite vendors found.</p>
         <div className="flex flex-col items-center justify-center h-96">
+          {/* <div className="py-8 px-4 sm:px-6 md:px-8 h-96 rounded-md flex items-center justify-center bg-gradient-to-b from-orange-400 to-white"> */}
           <button
             onClick={() => navigate("/Favorite")}
             className="flex items-center gap-2 px-4 mt-2 py-2 bg-[#FE7A3A] text-white rounded-md hover:bg-[#e4672a]"
@@ -384,7 +386,7 @@ const FavoritesList = () => {
         favorites.map((vendor, index) => (
           <div
             key={index}
-            className="relative grid grid-cols-1 md:grid-cols-3 gap-4 border p-4 rounded shadow-md mb-6"
+            className="relative grid grid-cols-1 md:grid-cols-3 gap-4 border p-4 rounded shadow-md mb-6 mt-4" /* Added mt-4 for spacing below header */
           >
             {/* UnfavoriteButton component use kiya */}
             <Unfavorite

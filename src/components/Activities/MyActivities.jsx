@@ -575,8 +575,8 @@ const MyActivities = () => {
   const filteredActivities = activityData[filter] || [];
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
-      <div className="flex justify-around bg-white py-3 sticky top-0 z-10 shadow-sm">
+    <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto bg-gradient-to-b from-orange-400 to-white">
+      <div className=" rounded-md flex justify-around bg-white py-3 sticky top-0 z-10 shadow-sm">
         {["all", "live", "scheduled", "participation", "history"].map(
           (type) => (
             <button
@@ -608,7 +608,7 @@ const MyActivities = () => {
             return (
               <div
                 key={activity.activity_id}
-                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100"
+                className="bg-white rounded-xl mt-5 shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 border border-gray-100"
               >
                 <div className="relative h-48 bg-gray-200 overflow-hidden">
                   <img

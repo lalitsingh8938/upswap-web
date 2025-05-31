@@ -1869,7 +1869,7 @@ const UserProfile = () => {
   // --- Loading Spinner and Error Display for initial data fetch ---
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#FE7A3A] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-orange-400 to-white flex items-center justify-center">
         <div className="flex flex-col items-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white-300 border-white"></div>
           <p className="text-white text-lg mt-4">Loading Profile</p>
@@ -1880,7 +1880,7 @@ const UserProfile = () => {
 
   if (error && !isSubmitting) { // Show error only if not currently submitting
     return (
-      <div className="min-h-screen bg-[#FE7A3A] flex flex-col items-center justify-center text-white text-xl p-4">
+      <div className="min-h-screen bg-gradient-to-b from-orange-400 to-white flex flex-col items-center justify-center text-white text-xl p-4">
         <p className="text-red-300">Error: {error}</p>
         <button
           onClick={() => {
@@ -1901,7 +1901,8 @@ const UserProfile = () => {
   // --- End Loading Spinner and Error Display for initial data fetch ---
 
   return (
-    <div className="min-h-screen bg-[#FE7A3A] border-2 rounded-lg flex items-center justify-center px-4 py-10">
+   <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl rounded-md mx-auto flex items-center justify-center bg-gradient-to-b from-orange-400 to-white">
+     {/* <div className="min-h-screen bg-gradient-to-b from-orange-400 to-white flex items-center justify-center py-8"> */}
       <form
         onSubmit={handleSubmit}
         className="relative w-full max-w-md bg-gradient-to-b from-orange-100 to-white p-6 rounded-2xl shadow-lg"

@@ -1484,7 +1484,7 @@ const PostActivity = () => {
     navigate("/PostActivitiesnext");
   };
   const handleClose = () => {
-    navigate("/DealsPage", { replace: true });
+    navigate("/Home", { replace: true });
   };
 
   return (

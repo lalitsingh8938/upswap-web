@@ -155,7 +155,7 @@ const EmailLogin = () => {
           localStorage.setItem("dial_code", response.data.user.dial_code);
         }
 
-        navigate("/DealsPage");
+        navigate("/Home");
       } else if (response.data && response.data.message) {
         toast.success(response.data.message);
         navigate("/DealsPage");

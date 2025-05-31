@@ -5139,7 +5139,7 @@ function ActivityDetailsPage() {
       {/* Top bar */}
       <div className="bg-gradient-to-r bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex items-center justify-between">
         <button
-          onClick={() => navigate("/ActivitiesPage")}
+          onClick={() => navigate("/Activities")}
           className="text-white text-sm px-1 py-1 rounded-md hover:bg-red-500"
         >
           <FaLeftLong className="w-5 h-5" />
