@@ -5135,7 +5135,8 @@ function ActivityDetailsPage() {
   );
 
   return (
-    <div className="p-4">
+    // <div className="p-4">
+     <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl mx-auto">
       {/* Top bar */}
       <div className="bg-gradient-to-r bg-[#FE7A3A] text-white py-3 px-4 rounded-lg flex items-center justify-between">
         <button

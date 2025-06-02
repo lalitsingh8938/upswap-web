@@ -158,7 +158,7 @@ const EmailLogin = () => {
         navigate("/Home");
       } else if (response.data && response.data.message) {
         toast.success(response.data.message);
-        navigate("/DealsPage");
+        navigate("/Home");
       } else {
         toast.error("Login successful but token missing.");
       }

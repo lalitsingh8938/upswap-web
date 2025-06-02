@@ -46,7 +46,7 @@ const SocialLogin = () => {
 
         login();
         toast.success("Google Login Successful!");
-        navigate("/DealsPage");
+        navigate("/Home");
       } else {
         toast.error("Login successful but token missing.");
       }
