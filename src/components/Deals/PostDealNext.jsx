@@ -890,7 +890,8 @@ const DealForm = ({ onClose }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FE7A3A] p-4 border-2 rounded-lg">
+    // <div className="min-h-screen flex items-center justify-center bg-[#FE7A3A] p-4 border-2 rounded-lg">
+             <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl mx-auto flex flex-col items-center justify-center">
       <form
         className="bg-gradient-to-b from-orange-100 to-white p-6 rounded-xl shadow-md w-full max-w-md space-y-2 relative"
         onSubmit={handleSubmit}
@@ -904,7 +905,7 @@ const DealForm = ({ onClose }) => {
           className="absolute top-0 right-2 text-gray-500 hover:text-[#FE7A3A]"
           type="button"
         >
-          <FaTimes size={20} />
+          <FaTimes size={18} />
         </button>
 
         {/* Deal Timing */}

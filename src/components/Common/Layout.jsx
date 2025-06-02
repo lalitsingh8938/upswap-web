@@ -124,22 +124,56 @@
 
 // export default Layout;
 
-import Header from "../Dashboard/Header";
-import Footer from "../Dashboard/Footer";
-import { Outlet } from "react-router-dom";
-// import Sidebar from "../Dashboard/Sidebar";
+// import Header from "../Dashboard/Header";
+// import Footer from "../Dashboard/Footer";
+// import { Outlet } from "react-router-dom";
+// // import Sidebar from "../Dashboard/Sidebar";
 
-const Layout = () => {
+// const Layout = () => {
+//   return (
+//     <div className="flex flex-col min-h-screen">
+//       <Header />
+//       {/* <Sidebar /> */}
+//       <div className="flex-grow">
+//         <Outlet />
+//       </div>
+//       <Footer />
+//     </div>
+//   );
+// };
+
+// export default Layout;
+// components/Common/Layout.jsx
+import React, { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import Header from '../Dashboard/Header'; // Adjust path if needed
+import Footer from '../Dashboard/Footer'; // Adjust path if needed
+
+function Layout() {
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
-      {/* <Sidebar /> */}
-      <div className="flex-grow">
+      {/* Header receives the sidebar state and setter */}
+      <Header
+        isSideMenuOpen={isSideMenuOpen}
+        setIsSideMenuOpen={setIsSideMenuOpen}
+      />
+
+      {/* Main content area */}
+      <main
+        className={`flex-grow p-4 transition-all duration-300 ease-in-out ${
+          isSideMenuOpen ? 'mr-[260px]' : 'mr-0' // Adjust margin-right based on sidebar state
+        }`}
+      >
+        {/* The Outlet renders the nested routes (your actual page content) */}
         <Outlet />
-      </div>
+      </main>
+
+      {/* Footer can also be here if it's always present */}
       <Footer />
     </div>
   );
-};
+}
 
 export default Layout;

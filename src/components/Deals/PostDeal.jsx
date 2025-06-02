@@ -120,7 +120,8 @@ const PostDeal = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FE7A3A] p-6 border-2 rounded-lg">
+    // <div className="min-h-screen flex flex-col items-center justify-center bg-[#FE7A3A] p-6 border-2 rounded-lg">
+    <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl mx-auto flex flex-col items-center justify-center">
       <ToastContainer position="top-center" autoClose={3000} />
 
       <div className="relative bg-gradient-to-b from-orange-100 to-white rounded-xl p-6 shadow-md max-w-md w-full">
@@ -133,7 +134,7 @@ const PostDeal = () => {
           className="absolute top-2 right-2 text-gray-500 hover:text-[#FE7A3A]"
           type="button"
         >
-          <FaTimes size={20} />
+          <FaTimes size={18} />
         </button>
 
         <div className="mb-4">

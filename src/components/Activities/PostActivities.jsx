@@ -1484,19 +1484,20 @@ const PostActivity = () => {
     navigate("/PostActivitiesnext");
   };
   const handleClose = () => {
-    navigate("/Home", { replace: true });
+    navigate("/Activities", { replace: true });
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FE7A3A] p-6 border-2 rounded-lg">
+    // <div className="min-h-screen flex flex-col items-center justify-center bg-[#FE7A3A] p-6 border-2 rounded-lg">
+       <div className="py-8 px-4 sm:px-6 md:px-8 max-w-screen-2xl mx-auto flex flex-col items-center justify-center">
       <div className="relative bg-gradient-to-b from-orange-100 to-white rounded-xl p-6 shadow-md max-w-md w-full">
         <div className="relative mb-4">
           <button
             onClick={handleClose}
-            className="absolute -top-6 -right-5 bg-white text-[#FE7A3A] p-1 shadow hover:bg-gray-100 rounded-full"
+            className="absolute -top-6 -right-5 bg-white p-1 text-gray-500 hover:text-[#FE7A3A] rounded-full"
             type="button"
           >
-            <FaTimes size={16} />
+            <FaTimes size={18} />
           </button>
 
           <h2 className="text-xl font-semibold text-center text-white bg-[#FE7A3A] py-3 rounded-lg">

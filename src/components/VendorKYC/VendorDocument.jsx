@@ -1630,7 +1630,7 @@ const VendorDocument = () => {
           onClick={handleClose}
           className="absolute top-2 right-2 text-gray-600 hover:text-[#FE7A3A]"
         >
-          <FaTimes size={20} />
+          <FaTimes size={18} />
         </button>
 
         <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
